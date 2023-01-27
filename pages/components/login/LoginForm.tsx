@@ -1,0 +1,68 @@
+import {useState} from "react";
+
+const credentials =
+    {
+        username: "user1@e-findo.de",
+        password: "pass1"
+    }
+
+const LoginForm = ({setIsSubmitted}: any) => {
+    const [error, setError] = useState(0);
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
+    const handleSubmit = (event: any) => {
+        event.preventDefault();
+        if (email == credentials.username && password == credentials.password)
+        {
+            setIsSubmitted(true)
+        }
+        else {
+            setError(1)
+        }
+    };
+
+    return(
+        <div id="content-page" className="mx-10 p-10">
+            <img className="mb-7 m-auto h-40" src="/logo-1.svg"/>
+            <div className="flex flex-col items-center justify-center px-6 py-8 lg:py-0">
+                <div
+                    className="w-full rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0">
+                    <div className="p-6 space-y-3 sm:p-8">
+                        <h1 className="font-bold text-lg">Sign in to your account</h1>
+                        <p className="text-red-500 text-md">
+                            {error === 1
+                            ? "Invalid username or password."
+                            : ""}
+                        </p>
+                        <form className="space-y-4 md:space-y-6" action="#" onSubmit={handleSubmit}>
+                            <div>
+                                <label htmlFor="email" className="block mb-2 text-sm font-medium
+                            text-gray-900 dark:text-white">
+                                    Your email</label>
+                                <input type="email" name="email" id="email" className="bg-gray-50 border
+                             border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5"
+                                       placeholder="name@company.com" required
+                                       onChange={(e) => setEmail(e.target.value)}/>
+                            </div>
+                            <div>
+                                <label htmlFor="password"
+                                       className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    Password</label>
+                                <input type="password" name="password" id="password" placeholder="••••••••"
+                                       className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg
+                                   w-full p-2.5 mb-2" required
+                                       onChange={(e) => setPassword(e.target.value)}/>
+                            </div>
+                            <button type="submit" className="w-full text-white border font-medium rounded-lg
+                                text-sm px-5 py-2.5 text-center bg-accent-color-2 hover:bg-accent-color-3">
+                                Sign in</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+export default LoginForm
