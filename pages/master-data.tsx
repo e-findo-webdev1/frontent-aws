@@ -4,6 +4,10 @@ import "moment-timezone"
 import API from "axios";
 import Link from "next/link";
 import getFillerStyle from "./components/helpers/getFillerStyle";
+import Popup from "./components/start/Popup";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import {pick} from "next/dist/lib/pick";
 
 const data = [
     {
@@ -22,6 +26,10 @@ const data = [
 const MasterData = () => {
     const [machinesData, setMachinesData] = useState<any>();
     const [shifts, setShift] = useState<any>();
+    const [machineID, setMachineID] = useState<any>("");
+    const [plannedDate, setPlannedDate] = useState<any>(moment);
+    const [pickupDate, setPickupDate] = useState<any>(moment);
+    const [shiftsReady, setShiftsReady] = useState<any>(false);
 
     useEffect(() => {
         let apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines';
@@ -47,14 +55,15 @@ const MasterData = () => {
                 console.log(error.response);
             });
 
-        if (shifts) {
+        if (shifts && shiftsReady == false) {
             // @ts-ignore
             SHIFT_CALENDAR = capitalizeDays(shifts)
-            calculatePickupDate()
+            setShiftsReady(true)
+            calculatePlannedDate( '2023/02/14', '10:00')
         }
 
 
-    }, []);
+    }, );
 
     let SHIFT_CALENDAR = {
         'Sunday': {
@@ -195,10 +204,8 @@ const MasterData = () => {
         6: 'Saturday'
     }
 
-    const calculatePickupDate = () => {
-        const startDate = '2022/12/16';
-        const startTime = '14:01';
-        let taskDuration = 960;
+    const calculatePlannedDate = (startDate: any, startTime: any) => {
+        let taskDuration = workingHours*60;
         let taskStart = moment(startDate + ' ' + startTime)
         // @ts-ignore
         let [firstShift, firstShiftStartDate] = returnFirstShift(taskStart)
@@ -237,8 +244,10 @@ const MasterData = () => {
                             let timeTillTaskEnd = taskEnd.diff(taskStart) / 3600000 * 60
 
                             if (timeTillTaskEnd <= timeTillShiftEnd) {
-                                console.log('Task end:', taskEnd.format('LLL'))
-                                return
+                                console.log('Task end:', taskEnd.format())
+                                setPlannedDate(taskEnd)
+                                setPickupDate(taskEnd)
+                                return taskEnd
                             } else {
                                 taskDuration -= timeTillShiftEnd
                             }
@@ -312,6 +321,7 @@ const MasterData = () => {
             currentDate.add(1,'day')
         }
     }
+
     function capitalizeDays(shiftCalendar: any) {
         const days = {
             'sunday': 'Sunday',
@@ -332,9 +342,9 @@ const MasterData = () => {
         return capitalizedCalendar;
     }
 
-    const averageKiloPerHour = 500
+    const averageKiloPerHour = 800
     const currentNetto = 0
-    const maxNetto = 26500
+    const maxNetto = 25000
     const workingHours = (maxNetto-currentNetto)/averageKiloPerHour
 
     return (
@@ -403,6 +413,12 @@ const MasterData = () => {
                     }
                     </tbody>
                 </table>
+                <Popup
+                    machineID={machineID}
+                    pickupDate={pickupDate}
+                    setMachineID={setMachineID}
+                    setPickupDate={setPickupDate}
+                />
             </div>
             <div className="w-1/2">
                 <Link href="/master-data/shift-manager">

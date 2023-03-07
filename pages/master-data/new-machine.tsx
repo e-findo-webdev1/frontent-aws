@@ -23,10 +23,13 @@ const NewMachine = () => {
     const [plandateCalculation, setPlandateCalculation] = useState<any>("Plandatum V.1");
     const [status, setStatus] = useState<any>("Wird befüllt (1)");
     const [client, setClient] = useState<any>("e-findo GmbH");
+    const [total_working_time, setTotalWorkingTime] = useState<any>(0);
+    const [total_working_weight, setTotalWorkingWeight] = useState<any>(0);
 
     const responseBody = {machine_id: 0, machineType: "", machineName: "", group: "", waretype: "", quality: "",
     index: "", maxNetto: 0, minContainer: 0, maxContainer: 0, averageThroughput: 0, manualTara: "", minForFullStart: 0,
-    newFT111: "", automaticTara: "", fillingType: "", plandateCalculation: "", status: "", client: ""}
+    newFT111: "", automaticTara: "", fillingType: "", plandateCalculation: "", status: "", client: "",
+    total_working_time: 0, total_working_weight: 0}
 
     useEffect(() => {
         const apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/waretypes';
@@ -61,7 +64,8 @@ const NewMachine = () => {
         responseBody.plandateCalculation = plandateCalculation
         responseBody.status = status
         responseBody.client = client
-        console.log(responseBody)
+        responseBody.total_working_time = total_working_time
+        responseBody.total_working_time = total_working_weight
         sendData(responseBody)
     }
     const sendData = (responseBody: any) => {

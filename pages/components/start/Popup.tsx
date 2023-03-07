@@ -1,6 +1,69 @@
 import DatePicker from "react-datepicker";
+import moment from "moment";
+import API from "axios";
 
-const Popup = ({machineID, pickupDate, setMachineID, setPickupDate}: any) => {
+const Popup = ({machineID, pickupDate, setPickupDates, setMachineID, setPickupDate, pickupDates, machinesData,
+                  areDatesConfirmed, setAreDatesConfirmed, setNewPickupDates, newPickupDates, radioConfirmed,
+                   setRadioConfirmed}: any) => {
+
+    const sendData = (responseBody: any) => {
+        API.put('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines',
+            responseBody)
+            .then(function (response) {
+                console.log(response);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
+    const updatePickupDates = (date: any) => {
+        pickupDates = pickupDates.filter((obj:any) =>
+        {return obj.machineID!=machineID})
+        pickupDates.push({machineID: machineID, taskEnd: date})
+        setPickupDates(pickupDates)
+        let machineData = machinesData.filter((obj: any)=> {return obj.machine_id == machineID})[0]
+        let newMachineData = {
+            machine_id: machineData.machine_id,
+            machineType: machineData.machineType,
+            machineName: machineData.machineName,
+            group: machineData.group,
+            waretype: machineData.waretype,
+            quality: machineData.quality,
+            index: machineData.index,
+            maxNetto: machineData.maxNetto,
+            minContainer: machineData.minContainer,
+            maxContainer: machineData.maxContainer,
+            averageThroughput: machineData.averageThroughput,
+            manualTara: machineData.manualTara,
+            minForFullStart: machineData.minForFullStart,
+            newFT111: machineData.newFT111,
+            automaticTara: machineData.automaticTara,
+            fillingType: machineData.fillingType,
+            plandateCalculation: machineData.plandateCalculation,
+            status: machineData.status,
+            client: machineData.client,
+            total_working_time: machineData.total_working_time,
+            total_working_weight: machineData.total_working_weight,
+            pickup_date: date.format('YYYY-MM-DD HH:mm'),
+            isDateConfirmed: radioConfirmed,
+            lastIndicate: machineData.lastIndicate,
+            lastTara: machineData.lastTara,
+        }
+
+        let newDates = newPickupDates.filter((obj:any) =>
+        {return obj.machine_id!=machineID})
+        newDates.push([{machine_id: machineID, date: date.format('YYYY-MM-DD HH:mm')}])
+        setNewPickupDates(newDates.flat())
+        let newDatesConfirmed = areDatesConfirmed.filter((obj:any) =>
+        {return obj.machine_id!=machineID})
+        newDatesConfirmed.push([{machine_id: machineID, date_confirmed: radioConfirmed}])
+        setAreDatesConfirmed(newDatesConfirmed.flat())
+        sendData(newMachineData)
+        setMachineID("")
+        setPickupDate("")
+        setRadioConfirmed("")
+    }
+
     const checkDay = () => {
         const days =
             {
@@ -12,34 +75,53 @@ const Popup = ({machineID, pickupDate, setMachineID, setPickupDate}: any) => {
                 5: "Samstag",
                 6: "Sonntag"
             }
-            if (pickupDate) {
-                const day = pickupDate.getDay()
+            if (pickupDate && pickupDate != "") {
+                const day = pickupDate.day()
             // @ts-ignore
             return days[day]
             }
+            else if ( pickupDates.length != 0) {
+                const day = pickupDates.filter((obj:any) =>
+                    {return obj.machineID==machineID})[0].taskEnd.toDate().getDay()
+            // @ts-ignore
+                return days[day]
+            }
     }
-    const savePickupDate = () => {
-        setPickupDate(pickupDate)
-    }
+
     return(
         <div id="popup"
              className={ machineID != ""
                  ? "text-sm bg-white w-1/3 sm:rounded-lg shadow-md border p-5 space-y-4 " +
-                 "fixed -mt-48 left-0 right-0 m-auto"
+                 "fixed -mt-64 left-0 right-0 m-auto"
                  : "hidden" }>
             <p>Abholdatum bearbeiten (Masch.-ID: {machineID})</p>
             <div className="flex">
                 <div className="flex space-x-1">
                     <p className="m-auto">Abholdatum:</p>
-                    <DatePicker className="shadow-md border text-center p-0.5" selected={pickupDate}
-                                showTimeSelect dateFormat="Pp"
-                                onChange={(date:Date) => setPickupDate(date)}/>
+                    <DatePicker className="shadow-md border text-center p-0.5"
+                                selected={
+                                    pickupDate && pickupDate != ""
+                                        ? pickupDate.toDate()
+                                        : pickupDates.length != 0 ?
+                                            pickupDates
+                                                .filter((obj:any) =>
+                                                {return obj.machineID==machineID})[0].taskEnd.toDate()
+                                            : ""
+                    }
+                                showTimeSelect dateFormat="dd.MM.yyyy HH:mm"
+                                timeFormat="HH:mm"
+                                onChange={(date:Date) => setPickupDate(moment(date))}/>
                     <div className="m-auto">({checkDay()})</div>
                 </div>
             </div>
             <div className="flex space-x-3">
                 <div className="flex items-center">
-                    <input id="radio-1" type="radio" value="" name="default-radio" defaultChecked
+                    <input id="radio-1" type="radio" value="" name="default-radio"
+                           checked={machinesData && radioConfirmed == false
+                                        ? true
+                                        : false
+                            }
+                           onChange={()=>{setRadioConfirmed(false)}}
                            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500
                                dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700
                                dark:border-gray-600"/>
@@ -49,6 +131,11 @@ const Popup = ({machineID, pickupDate, setMachineID, setPickupDate}: any) => {
                 </div>
                 <div className="flex items-center">
                     <input id="radio-2" type="radio" value="" name="default-radio"
+                           checked={machinesData && radioConfirmed == true
+                               ? true
+                               : false
+                           }
+                           onChange={()=>{setRadioConfirmed(true)}}
                            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500
                                dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700
                                dark:border-gray-600"/>
@@ -59,10 +146,10 @@ const Popup = ({machineID, pickupDate, setMachineID, setPickupDate}: any) => {
             </div>
             <div id="popup-buttons" className="space-x-5">
                 <button className="sm:rounded-lg shadow-md border p-1"
-                        onClick={() => {savePickupDate()}}>
+                        onClick={() => {updatePickupDates(pickupDate)}}>
                     Speichern</button>
                 <button className="sm:rounded-lg shadow-md border p-1"
-                        onClick={() => {setMachineID("")}}>
+                        onClick={() => {setMachineID("");setPickupDate("");setRadioConfirmed("")}}>
                     Abbrechen</button>
             </div>
         </div>

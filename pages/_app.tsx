@@ -8,7 +8,7 @@ import Logo from "./components/navigation/Logo";
 import Breadcrumbs from "./components/navigation/Breadcrumbs";
 
 function MyApp({ Component, pageProps }: AppProps) {
-    const [isSubmitted, setIsSubmitted] = useState(false);
+    const [isSubmitted, setIsSubmitted] = useState(true);
 
     if (isSubmitted === false) {
         return(

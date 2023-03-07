@@ -37,20 +37,12 @@ const MachineStorageHistory = () => {
                 console.log(error.response);
             });
 
+        console.log(data)//
+
     },[startDate, endDate]);
 
     const router = useRouter()
     const pid = router.query
-
-    // Status cycle (CMS):
-    // everything is 0:                                         kein Container (2)
-    // brutto positive -> tara is clicked, tara equals brutto:  Container tariert (3) -tara-
-    // container remains tared until first filling:             Conainer tariert (3)
-    // no container - all is 0:                                 kein Container (2)
-    // when loading:                                            Wird beffult (1)
-    // when still:                                              Standstill (7)
-    // when netto is negative:                                  kein Container (2) -clear-
-    // set everything to 0, restart cycle:                      kein Container (2)
 
     const manualTara = () => {
        // set the isNetto from last item to true
@@ -119,10 +111,6 @@ const MachineStorageHistory = () => {
                                     onChange={(date:Date) => setEndDate(date)}/>
                     </div>
                     <button className="p-1 px-3.5 border-accent-color-1 bg-accent-color-4 hover:bg-accent-color-5
-                    sm:rounded-lg shadow-md border" onClick={()=>{updateStatus('Container tariert (3) -tara-')}}>Tara</button>
-                    <button className="p-1 px-3.5 border-accent-color-1 bg-accent-color-4 hover:bg-accent-color-5
-                    sm:rounded-lg shadow-md border" onClick={()=>{updateStatus('kein Container (2)')}}>Reset</button>
-                    <button className="p-1 px-3.5 border-accent-color-1 bg-accent-color-4 hover:bg-accent-color-5
                     sm:rounded-lg shadow-md border" onClick={()=>{refreshList()}}>Refresh</button>
                 </div>
             </div>
@@ -134,8 +122,11 @@ const MachineStorageHistory = () => {
                         <th className="font-normal">Typ</th>
                         <th className="font-normal">Datum erfasst</th>
                         <th className="font-normal">Brutto</th>
+                        <th className="font-normal">Tara (Log)</th>
                         <th className="font-normal">Tara (Masch)</th>
+                        <th className="font-normal">Netto (Log)</th>
                         <th className="font-normal">Netto (Masch)</th>
+                        <th className="font-normal">kg/h</th>
                         <th className="font-normal">Warenart</th>
                         <th className="font-normal">Netto</th>
                         <th className="font-normal">Positiv</th>
@@ -166,17 +157,14 @@ const MachineStorageHistory = () => {
                                     {item.timestamp.slice(10,16)}
                                 </td>
                                 <td>{parseInt(item.indicateWeight)} kg</td>
-                                <td>{ //item.status != "kein Container (2)"
-                                      //? parseInt(item.indicateWeight)
-                                      //: parseInt(item.tareWeight)} kg
-                                     parseInt(item.tareWeight)} kg
-                                </td>
-                                <td>{//item.status != "kein Container (2)"
-                                     parseInt(item.indicateWeight) - parseInt(item.tareWeight)} kg</td>
+                                <td>{parseInt(item.tareWeight)} kg</td>
+                                <td></td>
+                                <td className={parseInt(item.indicateWeight) - parseInt(item.tareWeight) < 0 ? 'text-red-500' : ''}>{parseInt(item.indicateWeight) - parseInt(item.tareWeight)} kg</td>
+                                <td></td>
+                                <td>{item.averageThroughput ? item.averageThroughput.toFixed(2) : ""}</td>
                                 <td></td>
                                 <td>
                                     {
-                                        //item.status != "kein Container (2)"
                                         item.isNetWeight == "true"
                                             ? "Ja"
                                             : "Nein"

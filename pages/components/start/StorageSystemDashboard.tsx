@@ -1,19 +1,22 @@
 import {useEffect, useState} from "react";
-import "react-datepicker/dist/react-datepicker.css";
-
-import MachinesTable from "./MachinesTable";
-import Popup from "./Popup";
 import Link from "next/link";
 import getFillerStyle from "../helpers/getFillerStyle";
 import API from "axios";
 import moment from "moment";
+import Popup from "./Popup";
+import "react-datepicker/dist/react-datepicker.css";
 
 const StorageSystemDashboard = () => {
-    const [startDate] = useState(new Date());
-    const [pickupDate, setPickupDate] = useState(startDate)
-    const [machineID, setMachineID] = useState("")
     const [machinesData, setMachinesData] = useState<any>();
     const [shifts, setShift] = useState<any>();
+    const [machineID, setMachineID] = useState<any>("");
+    const [plannedDates, setPlannedDates] = useState<[]>([]);
+    const [pickupDate, setPickupDate] = useState<any>("");
+    const [pickupDates, setPickupDates] = useState<[]>([]);
+    const [isDateConfirmed, setIsDateConfirmed] = useState<any>("");
+    const [newPickupDates, setNewPickupDates] = useState<[]>([]);
+    const [areDatesConfirmed, setAreDatesConfirmed] = useState<[]>([]);
+    const [radioConfirmed, setRadioConfirmed] = useState<any>("");
 
     useEffect(() => {
         let apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines';
@@ -22,10 +25,10 @@ const StorageSystemDashboard = () => {
             .then((response) => {
                 setMachinesData(response.data.Items
                     .filter((machine: { client: string; }) =>
-                        machine.client == "e-findo GmbH"))
+                        machine.client == "e-findo GmbH"));
             })
             .catch((error) => {
-                console.log(error.response);
+                console.log(error); //
             });
 
         API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/shifts')
@@ -38,14 +41,6 @@ const StorageSystemDashboard = () => {
             .catch((error) => {
                 console.log(error.response);
             });
-
-        if (shifts) {
-            // @ts-ignore
-            SHIFT_CALENDAR = capitalizeDays(shifts)
-            calculatePickupDate()
-        }
-
-
     }, []);
 
     let SHIFT_CALENDAR = {
@@ -176,7 +171,6 @@ const StorageSystemDashboard = () => {
             },
         },
     };
-
     const daysOfWeek = {
         0: 'Sunday',
         1: 'Monday',
@@ -186,61 +180,24 @@ const StorageSystemDashboard = () => {
         5: 'Friday',
         6: 'Saturday'
     }
+    function capitalizeDays(shiftCalendar: any) {
+        const days = {
+            'sunday': 'Sunday',
+            'monday': 'Monday',
+            'tuesday': 'Tuesday',
+            'wednesday': 'Wednesday',
+            'thursday': 'Thursday',
+            'friday': 'Friday',
+            'saturday': 'Saturday',
+        };
 
-    const calculatePickupDate = () => {
-        const startDate = '2022/12/16';
-        const startTime = '14:01';
-        let taskDuration = 960;
-        let taskStart = moment(startDate + ' ' + startTime)
-        // @ts-ignore
-        let [firstShift, firstShiftStartDate] = returnFirstShift(taskStart)
-        let currentDate = moment(taskStart.format('L'))
-        while (taskDuration > 0) {
-            for (let day in SHIFT_CALENDAR) {
-                // @ts-ignore
-                if (day == daysOfWeek[currentDate.day()]) {
-                    // @ts-ignore
-                    let todayShifts = SHIFT_CALENDAR[daysOfWeek[currentDate.day()]]
-
-                    for (let i = 1; i < 5; i++) {
-                        let currentShift = 'shift' + i
-                        if (todayShifts[currentShift].start == "") {
-                            continue
-                        }
-                        let shiftStart = moment(currentDate.format('L')
-                            + ' '
-                            + todayShifts[currentShift].start)
-                        let shiftEnd = moment(currentDate.format('L')
-                            + ' '
-                            + todayShifts[currentShift].end)
-                        if (shiftEnd.isBefore(shiftStart)) {
-                            shiftEnd.add(1, 'day')
-                        }
-
-                        if (shiftStart.isAfter(moment(firstShiftStartDate + ' ' + firstShift.start))) {
-                            taskStart = shiftStart
-                        }
-
-                        if ((taskStart.format('LLL') == shiftStart.format('LLL')
-                            || taskStart.isAfter(shiftStart)) && taskStart.isBefore(shiftEnd)) {
-                            let taskEnd = taskStart.clone()
-                            taskEnd.add(taskDuration, 'minutes')
-                            let timeTillShiftEnd = shiftEnd.diff(taskStart) / 3600000 * 60
-                            let timeTillTaskEnd = taskEnd.diff(taskStart) / 3600000 * 60
-
-                            if (timeTillTaskEnd <= timeTillShiftEnd) {
-                                console.log('Task end:', taskEnd.format('LLL'))
-                                return
-                            } else {
-                                taskDuration -= timeTillShiftEnd
-                            }
-                        }
-                    }
-
-                    currentDate.add(1, 'day')
-                }
-            }
+        const capitalizedCalendar = {};
+        for (const day in shiftCalendar) {
+            // @ts-ignore
+            capitalizedCalendar[days[day]] = shiftCalendar[day];
         }
+
+        return capitalizedCalendar;
     }
 
     const returnFirstShift = (taskStart: any) => {
@@ -304,30 +261,84 @@ const StorageSystemDashboard = () => {
             currentDate.add(1,'day')
         }
     }
-    function capitalizeDays(shiftCalendar: any) {
-        const days = {
-            'sunday': 'Sunday',
-            'monday': 'Monday',
-            'tuesday': 'Tuesday',
-            'wednesday': 'Wednesday',
-            'thursday': 'Thursday',
-            'friday': 'Friday',
-            'saturday': 'Saturday',
-        };
 
-        const capitalizedCalendar = {};
-        for (const day in shiftCalendar) {
-            // @ts-ignore
-            capitalizedCalendar[days[day]] = shiftCalendar[day];
+    const calculatePlannedDate = (workingHours: any, machineID: any) => {
+        let taskDuration = workingHours*60;
+        let taskStart = moment()
+        // @ts-ignore
+        let [firstShift, firstShiftStartDate] = returnFirstShift(taskStart)
+        let currentDate = moment(taskStart.format('L'))
+        while (taskDuration > 0) {
+            for (let day in SHIFT_CALENDAR) {
+                // @ts-ignore
+                if (day == daysOfWeek[currentDate.day()]) {
+                    // @ts-ignore
+                    let todayShifts = SHIFT_CALENDAR[daysOfWeek[currentDate.day()]]
+
+                    for (let i = 1; i < 5; i++) {
+                        let currentShift = 'shift' + i
+                        if (todayShifts[currentShift].start == "") {
+                            continue
+                        }
+                        let shiftStart = moment(currentDate.format('L')
+                            + ' '
+                            + todayShifts[currentShift].start)
+                        let shiftEnd = moment(currentDate.format('L')
+                            + ' '
+                            + todayShifts[currentShift].end)
+                        if (shiftEnd.isBefore(shiftStart)) {
+                            shiftEnd.add(1, 'day')
+                        }
+
+                        if (shiftStart.isAfter(moment(firstShiftStartDate + ' ' + firstShift.start))) {
+                            taskStart = shiftStart
+                        }
+
+                        if ((taskStart.format('LLL') == shiftStart.format('LLL')
+                            || taskStart.isAfter(shiftStart)) && taskStart.isBefore(shiftEnd)) {
+                            let taskEnd = taskStart.clone()
+                            taskEnd.add(taskDuration, 'minutes')
+                            let timeTillShiftEnd = shiftEnd.diff(taskStart) / 3600000 * 60
+                            let timeTillTaskEnd = taskEnd.diff(taskStart) / 3600000 * 60
+
+                            if (timeTillTaskEnd <= timeTillShiftEnd) {
+                                let currentDates = plannedDates
+                                // @ts-ignore
+                                currentDates.push([{"machineID": machineID,
+                                "taskEnd": taskEnd}])
+                                // @ts-ignore
+                                setPlannedDates(currentDates.flat())
+                                // @ts-ignore
+                                setPickupDates(currentDates.flat())
+
+                                return taskEnd
+                            } else {
+                                taskDuration -= timeTillShiftEnd
+                            }
+                        }
+                    }
+
+                    currentDate.add(1, 'day')
+                }
+            }
         }
-
-        return capitalizedCalendar;
     }
 
-    const averageKiloPerHour = 500
-    const currentNetto = 0
-    const maxNetto = 26500
-    const workingHours = (maxNetto-currentNetto)/averageKiloPerHour
+    if (machinesData && shifts && plannedDates.length == 0) {
+        // @ts-ignore
+        SHIFT_CALENDAR = capitalizeDays(shifts)
+        for (let machine in machinesData) {
+            const machineID = machinesData[machine].machine_id
+            const averageThroughput = machinesData[machine].averageThroughput
+            const currentNetto = machinesData[machine].lastTara
+            const maxNetto = machinesData[machine].maxNetto
+            const workingHours = (maxNetto-currentNetto)/averageThroughput
+            if (averageThroughput != 0) {
+                calculatePlannedDate(workingHours, machineID)
+            }
+        }
+    }
+
 
     return (
         <div id="storage-system" className="mt-5">
@@ -342,6 +353,7 @@ const StorageSystemDashboard = () => {
                             <th className="font-normal">Masch.-ID<br/>Max Netto</th>
                             <th className="font-normal">Material</th>
                             <th className="font-normal">Füllgrad</th>
+                            <th className="font-normal">Plandatum<br/>Abholdatum</th>
                             <th className="font-normal">Netto (kg)</th>
                         </tr>
                         </thead>
@@ -358,9 +370,121 @@ const StorageSystemDashboard = () => {
                                         <td>{machine.waretype}</td>
                                         <td className="flex">
                                             <div className="border border-black bg-white w-32 mr-1.5">
-                                                <div className={getFillerStyle(machine.load)}/>
+
+                                                <div
+                                                    // @ts-ignore
+                                                    className={ (machine.lastIndicate - machine.lastTara) * 100
+                                                    / machine.maxNetto > 0
+                                                    ? getFillerStyle(
+                                                    (machine.lastIndicate - machine.lastTara) * 100
+                                                    / machine.maxNetto
+                                                    )
+                                                    : 0
+                                                }/>
                                             </div>
-                                            {machine.load}%</td>
+                                            { parseInt(((machine.lastIndicate - machine.lastTara) * 100
+                                                / machine.maxNetto).toFixed(0)) > 0
+                                                ?
+                                                ((machine.lastIndicate - machine.lastTara) * 100
+                                                / machine.maxNetto).toFixed(0)
+                                                : 0}%</td>
+                                        <td>
+                                            {
+                                                <span>
+                                                    { machine.total_working_time != 0 && plannedDates && plannedDates
+                                                            .filter((obj:any) =>
+                                                            {return obj.machineID===machine.machine_id}).length != 0
+                                                        ? plannedDates
+                                                          .filter((obj:any) =>
+                                                            {return obj.machineID===machine.machine_id})
+                                                            .map((plannedDate: any) =>
+                                                                <a key={plannedDate.machineID}>
+                                                                    {plannedDate.taskEnd.format('DD.MM.YYYY HH:mm')}
+                                                                </a>)
+                                                        : "-"
+                                                    }<br/>
+                                                    <a className={ machine.total_working_time != 0
+                                                        ? "underline cursor-pointer flex"
+                                                        : "underline pointer-events-none flex"}
+                                                    onClick={()=>
+                                                    {
+                                                        setMachineID(machine.machine_id)
+                                                        if (machinesData && machinesData.filter((obj: any) =>
+                                                        {return obj.machine_id == machine.machine_id})[0]
+                                                            .pickup_date != "") {
+                                                            setPickupDate(moment(machinesData.filter((obj: any) =>
+                                                            {return obj.machine_id == machine.machine_id})[0].pickup_date))
+                                                        } else if (pickupDates) {
+                                                         setPickupDate(pickupDates
+                                                             .filter((obj:any) =>
+                                                             {return obj.machineID===machine.machine_id})[0]
+                                                             // @ts-ignore
+                                                             .taskEnd)
+                                                        }
+
+                                                        setIsDateConfirmed(machinesData.filter((obj: any) =>
+                                                        {return obj.machine_id == machine.machine_id})[0]
+                                                            .isDateConfirmed)
+                                                        setRadioConfirmed(machinesData.filter((obj: any) =>
+                                                        {return obj.machine_id == machine.machine_id})[0]
+                                                            .isDateConfirmed)}
+
+                                                    }>
+                                                    {   newPickupDates && newPickupDates.filter((obj:any) =>
+                                                        {return obj.machine_id == machine.machine_id}).length != 0
+                                                        ? moment(newPickupDates.filter((obj:any) =>
+                                                            // @ts-ignore
+                                                        {return obj.machine_id == machine.machine_id})[0].date)
+                                                            .format('DD.MM.YYYY HH:mm')
+                                                        : machine.total_working_time !=0
+                                                        && pickupDates
+                                                        && pickupDates.length != 0
+                                                        && machinesData.filter((obj: any) =>
+                                                        {return obj.machine_id == machine.machine_id})[0]
+                                                        .pickup_date == ""
+                                                            ? pickupDates
+                                                                .filter((obj:any) =>
+                                                                {return obj.machineID===machine.machine_id})
+                                                                .map((pickupDate: any) =>
+                                                                    <span key={pickupDate.machineID}>
+                                                                        {pickupDate.taskEnd.format('DD.MM.YYYY HH:mm')}
+                                                                    </span>
+                                                                )
+                                                            : machine.total_working_time !=0
+                                                            && machinesData.filter((obj: any) =>
+                                                            {return obj.machine_id == machine.machine_id})[0]
+                                                            .pickup_date != ""
+                                                            ? moment(machinesData.filter((obj: any) =>
+                                                                {return obj.machine_id == machine.machine_id})[0]
+                                                                .pickup_date).format('DD.MM.yyyy HH:mm')
+                                                            : "-"
+                                                    }
+                                                        {   areDatesConfirmed.filter((obj:any)=>
+                                                        {return obj.machine_id == machine.machine_id}).length != 0
+                                                            && areDatesConfirmed.filter((obj:any)=>
+                                                        {return obj.machine_id == machine.machine_id})
+                                                            // @ts-ignore
+                                                            .date_confirmed == false
+                                                            ? <img className="ml-1" src="/icon_fragezeichen 1.svg"/>
+                                                            : machine.total_working_time !=0
+                                                            && machine.isDateConfirmed == false
+                                                                    ? <img className="ml-1" src="/icon_fragezeichen 1.svg"/>
+                                                                    :""}
+                                                        {   areDatesConfirmed.filter((obj:any)=>
+                                                        {return obj.machine_id == machine.machine_id}).length != 0
+                                                        && areDatesConfirmed.filter((obj:any)=>
+                                                        {return obj.machine_id == machine.machine_id})
+                                                            // @ts-ignore
+                                                            .date_confirmed == true
+                                                            ? <img className="ml-1" src="/icon_fragezeichen 1.svg"/>
+                                                            : machine.total_working_time !=0
+                                                            && machine.isDateConfirmed == true
+                                                                ? <img className="ml-1" src="/icon_haken 1.svg"/>
+                                                                :""}
+                                                    </a>
+                                                </span>
+                                            }
+                                        </td>
                                         <td>{machine.maxNetto}</td>
                                     </tr>
                             )
@@ -368,13 +492,24 @@ const StorageSystemDashboard = () => {
                         }
                         </tbody>
                     </table>
+                    <Popup
+                        machineID={machineID}
+                        pickupDate={pickupDate}
+                        setMachineID={setMachineID}
+                        setPickupDate={setPickupDate}
+                        setPickupDates={setPickupDates}
+                        pickupDates={pickupDates}
+                        machinesData={machinesData}
+                        isDateConfirmed={isDateConfirmed}
+                        setIsDateConfirmed={setIsDateConfirmed}
+                        setNewPickupDates={setNewPickupDates}
+                        newPickupDates={newPickupDates}
+                        areDatesConfirmed={areDatesConfirmed}
+                        setAreDatesConfirmed={setAreDatesConfirmed}
+                        radioConfirmed={radioConfirmed}
+                        setRadioConfirmed={setRadioConfirmed}
+                    />
                 </div>
-                <Popup
-                    machineID={machineID}
-                    pickupDate={pickupDate}
-                    setMachineID={setMachineID}
-                    setPickupDate={setPickupDate}
-                />
             </div>
         </div>
     )

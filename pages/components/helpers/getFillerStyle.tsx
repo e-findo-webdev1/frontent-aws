@@ -4,7 +4,10 @@ const getFillerStyle = (width: number) => {
     if ( width == 0 ) {
         widthPercent = "w-0"
     }
-    if ( width > 0 && width < 25 ) {
+    if ( width > 0 && width < 10 ) {
+        widthPercent = "w-3"
+    }
+    if ( width >= 10 && width < 25 ) {
         widthPercent = "w-1/5"
     }
     if ( width >= 25 && width < 50 ) {
