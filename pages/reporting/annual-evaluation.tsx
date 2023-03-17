@@ -326,7 +326,7 @@ const AnnualEvaluation = () => {
             document.getElementById('myChart'),
             config
         );
-    },)
+    },[year, dataset])
 
     return(
         <div id="content-page" className="overflow-auto h-full px-20">

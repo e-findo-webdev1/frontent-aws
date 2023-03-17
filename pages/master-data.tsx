@@ -27,8 +27,8 @@ const MasterData = () => {
     const [machinesData, setMachinesData] = useState<any>();
     const [shifts, setShift] = useState<any>();
     const [machineID, setMachineID] = useState<any>("");
-    const [plannedDate, setPlannedDate] = useState<any>(moment);
-    const [pickupDate, setPickupDate] = useState<any>(moment);
+    const [plannedDate, setPlannedDate] = useState<any>(moment());
+    const [pickupDate, setPickupDate] = useState<any>("");
     const [shiftsReady, setShiftsReady] = useState<any>(false);
 
     useEffect(() => {

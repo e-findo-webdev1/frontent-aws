@@ -1,10 +1,14 @@
 import DatePicker from "react-datepicker";
 import moment from "moment";
 import API from "axios";
+import {useState} from "react";
 
 const Popup = ({machineID, pickupDate, setPickupDates, setMachineID, setPickupDate, pickupDates, machinesData,
                   areDatesConfirmed, setAreDatesConfirmed, setNewPickupDates, newPickupDates, radioConfirmed,
                    setRadioConfirmed}: any) => {
+
+    const [displayedDate, setDisplayedDate] = useState<any>()
+
 
     const sendData = (responseBody: any) => {
         API.put('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines',
@@ -17,10 +21,10 @@ const Popup = ({machineID, pickupDate, setPickupDates, setMachineID, setPickupDa
             });
     }
     const updatePickupDates = (date: any) => {
-        pickupDates = pickupDates.filter((obj:any) =>
-        {return obj.machineID!=machineID})
-        pickupDates.push({machineID: machineID, taskEnd: date})
-        setPickupDates(pickupDates)
+       // pickupDates = pickupDates.filter((obj:any) =>
+       // {return obj.machineID!=machineID})
+      //  pickupDates.push({machineID: machineID, taskEnd: date})
+      //  setPickupDates(pickupDates)
         let machineData = machinesData.filter((obj: any)=> {return obj.machine_id == machineID})[0]
         let newMachineData = {
             machine_id: machineData.machine_id,
@@ -76,16 +80,17 @@ const Popup = ({machineID, pickupDate, setPickupDates, setMachineID, setPickupDa
                 6: "Sonntag"
             }
             if (pickupDate && pickupDate != "") {
-                const day = pickupDate.day()
+                const day = moment(pickupDate).day()
             // @ts-ignore
             return days[day]
             }
-            else if ( pickupDates.length != 0) {
-                const day = pickupDates.filter((obj:any) =>
-                    {return obj.machineID==machineID})[0].taskEnd.toDate().getDay()
             // @ts-ignore
-                return days[day]
-            }
+          //  else if ( pickupDates.length != 0) {
+          //      const day = pickupDates.filter((obj:any) =>
+           //         {return obj.machineID==machineID})[0].taskEnd.toDate().getDay()
+            // @ts-ignore
+          //      return days[day]
+          //  }
     }
 
     return(
@@ -99,13 +104,15 @@ const Popup = ({machineID, pickupDate, setPickupDates, setMachineID, setPickupDa
                 <div className="flex space-x-1">
                     <p className="m-auto">Abholdatum:</p>
                     <DatePicker className="shadow-md border text-center p-0.5"
+                                // @ts-ignore
                                 selected={
                                     pickupDate && pickupDate != ""
-                                        ? pickupDate.toDate()
-                                        : pickupDates.length != 0 ?
-                                            pickupDates
-                                                .filter((obj:any) =>
-                                                {return obj.machineID==machineID})[0].taskEnd.toDate()
+                                        ? moment(pickupDate).toDate()
+                                        // @ts-ignore
+                                        //: pickupDates.length != 0 ?
+                                         //   pickupDates
+                                          //      .filter((obj:any) =>
+                                         //       {return obj.machineID==machineID})[0].taskEnd.toDate()
                                             : ""
                     }
                                 showTimeSelect dateFormat="dd.MM.yyyy HH:mm"
