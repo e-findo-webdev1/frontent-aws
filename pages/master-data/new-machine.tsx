@@ -41,7 +41,7 @@ const NewMachine = () => {
             .catch((error) => {
                 console.log(error.response);
             });
-    });
+    }, []);
 
     const onSubmitHandler = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();

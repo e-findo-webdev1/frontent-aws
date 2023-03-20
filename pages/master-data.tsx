@@ -63,7 +63,7 @@ const MasterData = () => {
         }
 
 
-    }, );
+    },[] );
 
     let SHIFT_CALENDAR = {
         'Sunday': {

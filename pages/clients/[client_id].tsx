@@ -31,7 +31,7 @@ const ClientPage = () => {
             .catch((error) => {
                 console.log(error.response);
             });
-    },[data.land_id, pid.client_id]);
+    },[]);
 
     if (data) {
         return(
