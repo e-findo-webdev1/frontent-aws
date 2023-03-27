@@ -113,9 +113,9 @@ const MachineStorageHistory = () => {
                     sm:rounded-lg shadow-md border" onClick={()=>{refreshList()}}>Refresh</button>
                 </div>
             </div>
-            <div className="sm:rounded-lg shadow-md border h-72 overflow-auto mt-5">
+            <div className="shadow-md border h-72 overflow-auto mt-5">
                 <table className="flex-row w-full table-auto">
-                    <thead>
+                    <thead className="sticky top-0 bg-white rounded-lg">
                     <tr className="text-xs text-gray-500 border-b text-left text-center">
                         <th className="font-normal">Masch.-ID</th>
                         <th className="font-normal">Typ</th>
