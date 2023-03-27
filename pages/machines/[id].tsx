@@ -37,7 +37,6 @@ const MachineStorageHistory = () => {
                 console.log(error.response);
             });
 
-        console.log(data)//
 
     },[startDate, endDate]);
 
@@ -158,11 +157,11 @@ const MachineStorageHistory = () => {
                                 </td>
                                 <td>{parseInt(item.indicateWeight)} kg</td>
                                 <td>{parseInt(item.tareWeight)} kg</td>
-                                <td></td>
+                                <td>{parseInt(item.tareWeight)} kg</td>
                                 <td className={parseInt(item.indicateWeight) - parseInt(item.tareWeight) < 0 ? 'text-red-500' : ''}>{parseInt(item.indicateWeight) - parseInt(item.tareWeight)} kg</td>
-                                <td></td>
-                                <td>{item.averageThroughput ? item.averageThroughput.toFixed(2) : ""}</td>
-                                <td></td>
+                                <td className={parseInt(item.indicateWeight) - parseInt(item.tareWeight) < 0 ? 'text-red-500' : ''}>{parseInt(item.indicateWeight) - parseInt(item.tareWeight)} kg</td>
+                                <td>{item.averageThroughput ? item.averageThroughput.toFixed(2) : "0"}</td>
+                                <td>{machinesData[0].waretype}</td>
                                 <td>
                                     {
                                         item.isNetWeight == "true"
