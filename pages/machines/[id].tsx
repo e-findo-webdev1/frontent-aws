@@ -155,13 +155,13 @@ const MachineStorageHistory = () => {
                                     {item.timestamp.slice(0,10)},
                                     {item.timestamp.slice(10,16)}
                                 </td>
+                                <td>{parseInt(item.indicateWeight) + parseInt(item.tareWeight)} kg</td>
+                                <td>{parseInt(item.tareWeight)} kg</td>
+                                <td>{parseInt(item.tareWeight)} kg</td>
                                 <td>{parseInt(item.indicateWeight)} kg</td>
-                                <td>{parseInt(item.tareWeight)} kg</td>
-                                <td>{parseInt(item.tareWeight)} kg</td>
-                                <td className={parseInt(item.indicateWeight) - parseInt(item.tareWeight) < 0 ? 'text-red-500' : ''}>{parseInt(item.indicateWeight) - parseInt(item.tareWeight)} kg</td>
-                                <td className={parseInt(item.indicateWeight) - parseInt(item.tareWeight) < 0 ? 'text-red-500' : ''}>{parseInt(item.indicateWeight) - parseInt(item.tareWeight)} kg</td>
+                                <td>{parseInt(item.indicateWeight)} kg</td>
                                 <td>{item.averageThroughput ? item.averageThroughput.toFixed(2) : "0"}</td>
-                                <td>{machinesData[0].waretype}</td>
+                                <td></td>
                                 <td>
                                     {
                                         item.isNetWeight == "true"
