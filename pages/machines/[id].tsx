@@ -4,6 +4,7 @@ import {useEffect, useState} from "react";
 import "react-datepicker/dist/react-datepicker.css"
 import DatePicker from "react-datepicker";
 import API from 'axios';
+import moment from "moment";
 
 const MachineStorageHistory = () => {
     const [startDate, setStartDate] = useState(new Date());
@@ -43,6 +44,21 @@ const MachineStorageHistory = () => {
     const router = useRouter()
     const pid = router.query
 
+    let averageThroughputInLastHour
+    data !== undefined
+        ? averageThroughputInLastHour = data
+            .filter(item => item.id == pid.id )
+            .filter(item =>
+                new Date(item.timestamp) > moment().subtract(1, 'h').toDate() &&
+                new Date(item.timestamp) < moment().toDate())
+            .reduce((acc, cur)=>((acc = acc + cur.averageThroughput), acc), 0)
+            /
+            data
+            .filter(item => item.id == pid.id )
+            .filter(item =>
+                new Date(item.timestamp) > moment().subtract(1, 'h').toDate() &&
+                new Date(item.timestamp) < moment().toDate()).length
+        : ''
     const manualTara = () => {
        // set the isNetto from last item to true
         let newData = data
@@ -91,7 +107,7 @@ const MachineStorageHistory = () => {
 
     return(
         <div id="content-page" className="mx-10 p-10">
-            <p className="my-9 text-3xl font-bold">Übersicht</p>
+            <p className="text-3xl font-bold">Übersicht</p>
             <span className="text-sm font-bold">Status Maschine</span>
             <div className="text-sm flex">
                 <div className="flex space-x-9 mt-4 mb-2">
@@ -110,9 +126,55 @@ const MachineStorageHistory = () => {
                                     onChange={(date:Date) => setEndDate(date)}/>
                     </div>
                     <button className="p-1 px-3.5 border-accent-color-1 bg-accent-color-4 hover:bg-accent-color-5
-                    sm:rounded-lg shadow-md border" onClick={()=>{refreshList()}}>Refresh</button>
+                    sm:rounded-lg shadow-md border text-xs font-semibold" onClick={()=>{refreshList()}}>Refresh</button>
                 </div>
+
             </div>
+            <button className="my-3 mr-3 p-1 px-3.5 border-accent-color-1 bg-accent-color-4 hover:bg-accent-color-5
+                    sm:rounded-lg shadow-md border text-xs font-semibold">
+                Zeit seit Stellung: {
+                machinesData.length != 0 && machinesData[0].timeOfContainerTara != 0
+                    //TO-DO translate time outputs to german
+                    ? "ca." + moment(machinesData[0].timeOfContainerTara).fromNow()
+                    : ""}</button>
+            <button className="my-3 mr-3 p-1 px-3.5 border-accent-color-1 bg-accent-color-4 hover:bg-accent-color-5
+                    sm:rounded-lg shadow-md border text-xs font-semibold">
+                Füllzeit seit Stellung: {
+                machinesData.length != 0 && machinesData[0].timeOfFillingStart != 0
+                    //TO-DO translate time outputs to german
+                ? "ca." + moment(machinesData[0].timeOfFillingStart).fromNow()
+                : ""}</button>
+            <button className="my-3 mr-3 p-1 px-3.5 border-accent-color-1 bg-accent-color-4 hover:bg-accent-color-5
+                    sm:rounded-lg shadow-md border text-xs font-semibold">
+                Stillstand seit Produktionszeit: {
+                machinesData.length != 0 && machinesData[0].timeInStandstill != 0
+                    //TO-DO translate time outputs to german
+                    ? " ca." + moment(machinesData[0].timeInStandstill).fromNow()
+                    : ""}</button>
+            <button className="my-3 mr-3 p-1 px-3.5 border-accent-color-1 bg-accent-color-4 hover:bg-accent-color-5
+                    sm:rounded-lg shadow-md border text-xs font-semibold">
+                Letzte Befüllung: { machinesData.length != 0
+                  && machinesData[0].lastFilling != 0
+                    ? moment(machinesData[0].lastFilling).format('DD.MM.YYYY, HH:mm')
+                    : ''} {
+                machinesData.length != 0 && machinesData[0].lastFilling != 0
+                    //TO-DO translate time outputs to german
+                    ? "(" + moment(machinesData[0].lastFilling).fromNow() + ")"
+                    : ""}</button>
+            <button className="my-3 mr-3 p-1 px-3.5 border-accent-color-1 bg-accent-color-4 hover:bg-accent-color-5
+                    sm:rounded-lg shadow-md border text-xs font-semibold">
+                Zeit seit Füllstart: { machinesData.length != 0 && machinesData[0].firstFilling != 0
+                    //TO-DO translate time outputs to german
+                    ? "ca." + moment(machinesData[0].firstFilling).fromNow()
+                    : " "}</button>
+            <button className="my-3 mr-3 p-1 px-3.5 border-accent-color-1 bg-accent-color-4 hover:bg-accent-color-5
+                    sm:rounded-lg shadow-md border text-xs font-semibold">
+                Geschwindigkeit letzte Stunde: { machinesData.length != 0 && machinesData[0].averageThroughput != 0
+                //TO-DO translate time outputs to german
+                //@ts-ignore
+                ? "ca. "  + parseInt(averageThroughputInLastHour) + " kg/h"
+                : "ca. 0 kg/h"}</button>
+
             <div className="shadow-md border h-72 overflow-auto mt-5">
                 <table className="flex-row w-full table-auto">
                     <thead className="sticky top-0 bg-white rounded-lg">
