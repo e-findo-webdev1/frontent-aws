@@ -5,9 +5,7 @@ import API from "axios";
 import Link from "next/link";
 import getFillerStyle from "./components/helpers/getFillerStyle";
 import Popup from "./components/start/Popup";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import {pick} from "next/dist/lib/pick";
 
 const data = [
     {
@@ -26,6 +24,8 @@ const data = [
 const MasterData = () => {
     const [machinesData, setMachinesData] = useState<any>();
     const [shifts, setShift] = useState<any>();
+    const [workers, setWorkers] = useState<any>();
+
     const [machineID, setMachineID] = useState<any>("");
     const [plannedDate, setPlannedDate] = useState<any>(moment());
     const [pickupDate, setPickupDate] = useState<any>("");
@@ -55,13 +55,22 @@ const MasterData = () => {
                 console.log(error.response);
             });
 
+        API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/users')
+            .then((response) => {
+                setWorkers(
+                    response.data.Items);
+            })
+            .catch((error) => {
+                console.log(error.response);
+            });
+
         if (shifts && shiftsReady == false) {
             // @ts-ignore
             SHIFT_CALENDAR = capitalizeDays(shifts)
             setShiftsReady(true)
             calculatePlannedDate( '2023/02/14', '10:00')
         }
-
+    console.log(workers)
 
     },[] );
 
@@ -347,16 +356,21 @@ const MasterData = () => {
     const maxNetto = 25000
     const workingHours = (maxNetto-currentNetto)/averageKiloPerHour
 
+
     return (
-        <div id="content-page" className="px-20 h-full overflow-auto">
-            <div>
+        <div id="content-page" className="px-24 h-full overflow-auto">
+            <div className="mt-10">
+                <Link href="/">
+                    <button className="border float-right p-1.5 px-3.5 font-bold border-accent-color-1 bg-accent-color-4
+                    hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs ml-2">← Zurück</button>
+                </Link>
                 <button className="border float-right p-1.5 px-3.5 font-bold border-accent-color-1 bg-accent-color-4
                         hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs">Bearbeiten</button>
-                <p className="mt-5 text-3xl font-bold mb-5">Stammdaten</p>
+                <p className="mt-5 text-2xl font-bold mb-5">Stammdaten</p>
             </div>
             <div className="mb-10">
                 {data.map((line) =>
-                    <div key={line.client_id} className="text-sm space-y-2.5">
+                    <div key={line.client_id} className="text-xs space-y-2.5">
                         <p><span className="font-bold">KundenNr.:</span> {line.client_id}</p>
                         <p><span className="font-bold">Firma:</span> {line.name}<br/></p>
                         <p><span className="font-bold">PLZ:</span> {line.zip}<br/></p>
@@ -403,9 +417,24 @@ const MasterData = () => {
                                 <td>{machine.waretype}</td>
                                 <td className="flex">
                                     <div className="border border-black bg-white w-32 mr-1.5">
-                                        <div className={getFillerStyle(machine.load)}/>
+
+                                        <div
+                                            // @ts-ignore
+                                            className={ (machine.lastIndicate - machine.lastTara) * 100
+                                            / machine.maxNetto > 0
+                                                ? getFillerStyle(
+                                                    (machine.lastIndicate - machine.lastTara) * 100
+                                                    / machine.maxNetto
+                                                )
+                                                : 0
+                                            }/>
                                     </div>
-                                    {machine.load}%</td>
+                                    { parseInt(((machine.lastIndicate - machine.lastTara) * 100
+                                        / machine.maxNetto).toFixed(0)) > 0
+                                        ?
+                                        ((machine.lastIndicate - machine.lastTara) * 100
+                                            / machine.maxNetto).toFixed(0)
+                                        : 0}%</td>
                                 <td>{machine.maxNetto}</td>
                             </tr>
                     )
@@ -420,45 +449,86 @@ const MasterData = () => {
                     setPickupDate={setPickupDate}
                 />
             </div>
-            <div className="w-1/2">
-                <Link href="/master-data/shift-manager">
-                    <button className="border float-right p-1.5 px-3.5 font-bold border-accent-color-1 bg-accent-color-4
-                        hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs">Schichten Bearbeiten
-                    </button>
-                </Link>
+            <div className="columns-2 h-max">
+                <div>
+                    <Link href="/master-data/shift-manager">
+                        <button className="border ml-auto p-1.5 px-3.5 font-bold border-accent-color-1 bg-accent-color-4
+                        hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs flex">Schichten Bearbeiten
+                        </button>
+                    </Link>
+                </div>
+                <span className="text-xs uppercase font-bold text-gray-500">
+                      Schichten
+                </span>
+                <div className="mb-10 sm:rounded-lg shadow-md border overflow-auto h-full">
+                    <table className="flex-row w-full table-auto">
+                        <thead>
+                        <tr className="text-xs text-gray-500 border-b text-left">
+                            <th/>
+                            <th className="font-normal">Start</th>
+                            <th className="font-normal">Ende</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr className="bg-gray-50 text-xs border-b text-left">
+                            <td className="w-24">Schicht 1</td>
+                            <td>22:00</td>
+                            <td>06:00</td>
+                        </tr>
+                        <tr className="bg-gray-50 text-xs border-b text-left">
+                            <td className="w-24">Schicht 2</td>
+                            <td>06:00</td>
+                            <td>14:00</td>
+                        </tr>
+                        <tr className="bg-gray-50 text-xs border-b text-left">
+                            <td className="w-24">Schicht 3</td>
+                            <td>14:00</td>
+                            <td>22:00</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div className="">
+                    <div>
+                        <Link href="/master-data/new-worker">
+                            <button className="border ml-auto p-1.5 px-3.5 font-bold border-accent-color-1 bg-accent-color-4
+                        hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs flex">+ Neuer Mitarbeiter
+                            </button>
+                        </Link>
+                    </div>
+                    <span className="text-xs uppercase font-bold text-gray-500">
+                      Mitarbeiter
+                </span>
+                    <div className="sm:rounded-lg shadow-md border h-full">
+                        <table className="flex-row w-full table-auto">
+                            <thead>
+                            <tr className="text-xs text-gray-500 border-b text-left">
+                                <th className="font-normal">Mitarbeiter</th>
+                                <th className="font-normal">Kürzel</th>
+                                <th className="font-normal">Email</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                { workers
+                                    ? workers.map((worker: any) =>
+                                            <tr key={worker.email} className="bg-gray-50 text-xs border-b text-left">
+                                                <td>
+                                                    <Link href={'/master-data/edit-worker/' + worker.loginName}>
+                                                        <button className="underline">{worker.userName}</button>
+                                                    </Link>
+                                                </td>
+                                                <td>{worker.initials}</td>
+                                                <td>{worker.email}</td>
+                                            </tr>
+                                    )
+                                    : ""
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
-            <span className="text-xs uppercase font-bold text-gray-500">
-                  Schichten
-            </span>
-            <div className="mb-10 sm:rounded-lg shadow-md border overflow-auto w-1/4">
-                <table className="flex-row w-full table-auto">
-                    <thead>
-                    <tr className="text-xs text-gray-500 border-b text-left">
-                        <th/>
-                        <th className="font-normal">Start</th>
-                        <th className="font-normal">Ende</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr className="bg-gray-50 text-xs border-b text-left">
-                        <td className="w-24">Schicht 1</td>
-                        <td>22:00</td>
-                        <td>06:00</td>
-                    </tr>
-                    <tr className="bg-gray-50 text-xs border-b text-left">
-                        <td className="w-24">Schicht 2</td>
-                        <td>06:00</td>
-                        <td>14:00</td>
-                    </tr>
-                    <tr className="bg-gray-50 text-xs border-b text-left">
-                        <td className="w-24">Schicht 3</td>
-                        <td>14:00</td>
-                        <td>22:00</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div className="flex w-1/2">
+            <div className="flex mt-5">
                 <Link href="/master-data/shift-calendar">
                     <button className="border ml-auto p-1.5 px-3.5 font-bold border-accent-color-1 bg-accent-color-4
                         hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs">Zeiten Bearbeiten
@@ -468,7 +538,7 @@ const MasterData = () => {
             <span className="text-xs uppercase font-bold text-gray-500">
                   Arbeitszeiten
             </span>
-            <div className="mb-10 sm:rounded-lg shadow-md border overflow-auto w-1/2">
+            <div className="mb-10 sm:rounded-lg shadow-md border overflow-auto">
                 <table className="flex-row w-full table-auto">
                     <thead>
                     <tr className="text-xs text-gray-500 border-b text-left">

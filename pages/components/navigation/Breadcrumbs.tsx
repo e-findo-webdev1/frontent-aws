@@ -28,7 +28,8 @@ const Breadcrumbs = () => {
                             <Link href={"/"+route
                                 .replace("/", "")
                                 .replace("[id]", pid.id as string)
-                                .replace("[client_id]", pid.id as string)}>
+                                .replace("[client_id]", pid.id as string)
+                            }>
                                 <a className="inline-flex items-center text-sm font-medium text-gray-700
                                 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
                                     {
@@ -37,6 +38,7 @@ const Breadcrumbs = () => {
                                             .replace("/", "")
                                             .replace("[id]", pid.id as string)
                                             .replace("[client_id]", pid.client_id as string)
+                                            .replace("[user]", pid.user as string)
                                         }
                                 </a>
                             </Link>
