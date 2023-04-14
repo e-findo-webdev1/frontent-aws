@@ -410,7 +410,7 @@ const MasterData = () => {
                             <tr key={machine.machine_id} className="text-xs border-t">
                                 <td>
                                     {machine.machineType}: <span className="underline">
-                        <Link href={"/machines/" + machine.machine_id}>
+                        <Link href={"/master-data/edit-machine/" + machine.machine_id}>
                             {machine.machine_id}
                         </Link></span><br/>
                                     <span>{machine.maxNetto}</span></td>
