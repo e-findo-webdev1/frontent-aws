@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import API from "axios";
 import Link from "next/link";
 
@@ -28,6 +28,11 @@ const NewWorker = () => {
     const [storageSystemPermission, setStorageSystemPermission] = useState<any>(false);
     const [showPricesPermission, setShowPricesPermission] = useState<any>(false);
     const [enterAmountReceivedPermission, setEnterAmountReceivedPermission] = useState<any>(false);
+    const [client_id, setClientId] = useState<any>();
+
+    useEffect(() => {
+        setClientId(JSON.parse(localStorage.getItem('user') as string).client_id)
+    }, []);
 
     const responseBody = {
         userName: '', initials: '', email: '', loginName: '', password: '',
@@ -37,7 +42,7 @@ const NewWorker = () => {
         merchandiseManagementPermission: false, logsPermission: false, customerLogsPermission: false,
         totalAmountPermission: false, abholdatumPopupPermission: false, indexMatrixPermission: false,
         adminIndexManagementPermission: false, calculationPermission: false, storageSystemPermission: false,
-        showPricesPermission: false, enterAmountReceivedPermission: false
+        showPricesPermission: false, enterAmountReceivedPermission: false, client_id: 0,
     }
 
     const onSubmitHandler = (event: React.FormEvent<HTMLFormElement>) => {
@@ -65,6 +70,7 @@ const NewWorker = () => {
         responseBody.storageSystemPermission = storageSystemPermission
         responseBody.showPricesPermission = showPricesPermission
         responseBody.enterAmountReceivedPermission = enterAmountReceivedPermission
+        responseBody.client_id = client_id
         sendData(responseBody)
     }
 

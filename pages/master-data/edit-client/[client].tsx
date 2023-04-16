@@ -8,7 +8,7 @@ const EditClient= () => {
     const router = useRouter()
     const pid = router.query
 
-    const [lands, setLands] = useState<any>();
+    const [lands, setLands] = useState<any>([]);
     const [data, setData] = useState({
         address_id: "0", city: "", client_id: 0, client_name: "", client_number: "0", client_status: "0", co_distance: 0,
         co_load: 0, co_orig_amount: 0, co_orig_trips: 0, co_orig_year: 0, co_show: 0, contact: "", country_id: 1,
@@ -169,7 +169,7 @@ const EditClient= () => {
                                         bg-[url('https://www.svgrepo.com/show/80156/down-arrow.svg')]
                                         bg-no-repeat bg-[length:15px] [background-position-x:95%]
                                         [background-position-y:5px]"
-                                        value={data && lands ?
+                                        value={data && lands && lands.length > 0 ?
                                             lands.filter((land: any)=>land.land_id==data.land_id)[0].land_name: ''}
                                         onChange={(e)=>
                                             setData({...data, land_id: parseInt(

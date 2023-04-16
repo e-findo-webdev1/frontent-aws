@@ -1,22 +1,47 @@
-import {useState} from "react";
-
-const credentials =
-    {
-        username: "user1@e-findo.de",
-        password: "pass1"
-    }
+import {useEffect, useState} from "react";
+import API from "axios";
 
 const LoginForm = ({setIsSubmitted}: any) => {
+    const [users, setUsers] = useState([]);
     const [error, setError] = useState(0);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [clients, setClients] = useState();
+
+    useEffect(() => {
+        let apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/users';
+
+        API.get(apiName)
+            .then((response) => {
+                setUsers(response.data.Items)
+            })
+            .catch((error) => {
+                console.log(error.response);
+            });
+
+        API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/clients')
+            .then((response) => {
+                setClients(response.data.Items)
+            })
+            .catch((error) => {
+                console.log(error.response);
+            });
+
+    }, []);
+
 
     const handleSubmit = (event: any) => {
         event.preventDefault();
-        if (email == credentials.username && password == credentials.password)
-        {
+        // @ts-ignore
+        if (users.filter((user: any)=> user.email == email)[0].password == password) {
             setIsSubmitted(true)
+            sessionStorage.setItem("user", JSON.stringify(users.filter((user: any)=> user.email == email)[0]))
+            // @ts-ignore
+            sessionStorage.setItem("company", JSON.stringify(clients.filter((client: any)=>
+                // @ts-ignore
+                client.client_id == users.filter((user: any)=> user.email == email)[0].client_id)[0]))
         }
+
         else {
             setError(1)
         }
