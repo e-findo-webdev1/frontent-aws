@@ -30,10 +30,10 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/master-data/[client]": [
+    "/master-data/new-worker": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/master-data/[client].js"
+      "static/chunks/pages/master-data/new-worker.js"
     ]
   },
   "ampFirstPages": []

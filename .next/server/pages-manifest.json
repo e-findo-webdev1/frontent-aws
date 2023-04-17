@@ -2,6 +2,6 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/": "pages/index.js",
-  "/master-data/[client]": "pages/master-data/[client].js"
+  "/master-data/new-worker": "pages/master-data/new-worker.js",
+  "/": "pages/index.js"
 }

@@ -31,7 +31,7 @@ const NewWorker = () => {
     const [client_id, setClientId] = useState<any>();
 
     useEffect(() => {
-        setClientId(JSON.parse(localStorage.getItem('user') as string).client_id)
+        setClientId(JSON.parse(sessionStorage.getItem('user') as string).client_id)
     }, []);
 
     const responseBody = {
