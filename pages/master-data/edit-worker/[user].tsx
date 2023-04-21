@@ -16,7 +16,7 @@ const EditWorker = () => {
         merchandiseManagementPermission: false, logsPermission: false, customerLogsPermission: false,
         totalAmountPermission: false, abholdatumPopupPermission: false, indexMatrixPermission: false,
         adminIndexManagementPermission: false, calculationPermission: false, storageSystemPermission: false,
-        showPricesPermission: false, enterAmountReceivedPermission: false
+        showPricesPermission: false, enterAmountReceivedPermission: false, client_id: 0,
     });
 
     useEffect(() => {
@@ -30,8 +30,9 @@ const EditWorker = () => {
                 console.log(error.response);
             });
 
-
-    }, [pid]);
+        // @ts-ignore
+        setData({...data, client_id: sessionStorage.getItem("company")[0].client_id})
+    }, [pid])
 
 
     const responseBody = {
@@ -42,7 +43,7 @@ const EditWorker = () => {
         merchandiseManagementPermission: false, logsPermission: false, customerLogsPermission: false,
         totalAmountPermission: false, abholdatumPopupPermission: false, indexMatrixPermission: false,
         adminIndexManagementPermission: false, calculationPermission: false, storageSystemPermission: false,
-        showPricesPermission: false, enterAmountReceivedPermission: false
+        showPricesPermission: false, enterAmountReceivedPermission: false, client_id: 0,
     }
 
     const onSubmitHandler = (event: React.FormEvent<HTMLFormElement>) => {
@@ -70,6 +71,7 @@ const EditWorker = () => {
         responseBody.storageSystemPermission = data.storageSystemPermission
         responseBody.showPricesPermission = data.showPricesPermission
         responseBody.enterAmountReceivedPermission = data.enterAmountReceivedPermission
+        responseBody.client_id = data.client_id
         sendData(responseBody)
     }
 
