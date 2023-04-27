@@ -12,8 +12,8 @@ function MyApp({ Component, pageProps }: AppProps) {
 
         if (isSubmitted == false) {
                 return (
-                    <div id="background" className="bg-accent-color-1 h-screen py-28 px-20">
-                        <div id="template" className="m-auto bg-white h-[48rem] min-w-[67rem] rounded-3xl pb-32 p-3">
+                    <div id="background" className="bg-accent-color-1 h-screen py-20 px-20">
+                        <div id="template" className="m-auto bg-white h-full min-w-[67rem] rounded-3xl pb-32 p-3">
                             <div className="mb-2">
                                 <Logo/>
                             </div>
@@ -27,8 +27,8 @@ function MyApp({ Component, pageProps }: AppProps) {
             }
         else {
             return (
-                <div id="background" className="bg-accent-color-1 h-screen py-28 px-20">
-                    <div id="template" className="m-auto bg-white h-[48rem] min-w-[67rem] rounded-3xl pb-32 p-3">
+                <div id="background" className="bg-accent-color-1 h-screen py-20 px-20">
+                    <div id="template" className="m-auto bg-white h-full min-w-[67rem] rounded-3xl pb-32 p-3">
                         <Navigation setIsSubmitted={setIsSubmitted}/>
                         <hr/>
                         <Breadcrumbs/>

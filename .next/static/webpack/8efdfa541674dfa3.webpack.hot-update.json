@@ -1,1 +1,0 @@
-{"c":["webpack"],"r":["pages/pdf"],"m":["./node_modules/next/dist/build/webpack/loaders/next-client-pages-loader.js?absolutePagePath=%2FUsers%2Fadrianbrodzinski%2FDesktop%2Fnew-mcs-frontend%2Ffrontent-aws%2Fpages%2Fpdf.tsx&page=%2Fpdf!","./node_modules/pdfmake/build/pdfmake.js","./node_modules/pdfmake/build/vfs_fonts.js","./pages/pdf.tsx"]}

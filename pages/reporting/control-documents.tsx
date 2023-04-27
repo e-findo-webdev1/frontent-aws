@@ -1,112 +1,48 @@
-const machineList = [
-    {
-        machine: 7000,
-        pdf: "",
-        weigh: "10000-10069",
-        date: "01/15/2020 11:32 AM",
-        goods: "-",
-        gross: "",
-        tare: 1546,
-        net: -1546,
-        service_life: "287.19h",
-        prod_time: "0.00h",
-        kg_per_hour: -0.31,
-        note: "",
-        certificate: ""
-    },
-    {
-        machine: 7000,
-        pdf: "",
-        weigh: "10000-10068",
-        date: "01/15/2020 11:32 AM",
-        goods: "-",
-        gross: 130,
-        tare: "",
-        net: 130,
-        service_life: "6,089.98h",
-        prod_time: "0.00h",
-        kg_per_hour: 0.03,
-        note: "",
-        certificate: ""
-    },
-    {
-        machine: 7000,
-        pdf: "",
-        weigh: "10000-10059",
-        date: "05/13/2019, 6:23 PM",
-        goods: "-",
-        gross: 1994,
-        tare: 1546,
-        net: 448,
-        service_life: "49.75h",
-        prod_time: "0.00h",
-        kg_per_hour: 19.82,
-        note: "Weighing Steel Frames Fa Sachs",
-        certificate: ""
-    },
-    {
-        machine: 8000,
-        pdf: "",
-        weigh: "10000-10033",
-        date: "28.04.2017, 17:22",
-        goods: "-",
-        gross: 12000,
-        tare: 1290,
-        net: 9360,
-        service_life: "7,45h",
-        prod_time: "0.00h",
-        kg_per_hour: 1256.38,
-        note: "",
-        certificate: ""
-    },
-    {
-        machine: 8000,
-        pdf: "",
-        weigh: "10000-10033",
-        date: "28.04.2017, 17:22",
-        goods: "-",
-        gross: 12000,
-        tare: 1290,
-        net: 9360,
-        service_life: "7,45h",
-        prod_time: "0.00h",
-        kg_per_hour: 1256.38,
-        note: "",
-        certificate: ""
-    },
-    {
-        machine: 8030,
-        pdf: "",
-        weigh: "10000-10081",
-        date: "05.10.2022, 17:38",
-        goods: "Eisenspäne",
-        gross: 2470,
-        tare: 2470,
-        net: "",
-        service_life: "175,18h",
-        prod_time: "126,88h",
-        kg_per_hour: 0.00,
-        note: "",
-        certificate: ""
-    },
-    {
-        machine: 12345,
-        pdf: "",
-        weigh: "10000-10080",
-        date: "18.05.2022, 14:45",
-        goods: "Eisenspäne, gebrochen ESB",
-        gross: 5010,
-        tare: 2340,
-        net: 2670,
-        service_life: "0,64h",
-        prod_time: "0,30h",
-        kg_per_hour: 8949.72,
-        note: "",
-        certificate: ""
-    },
-]
+import {useEffect, useState} from "react";
+import API from "axios";
+import moment from "moment";
+import PDF from "../components/helpers/pdf";
 
 const ControlDocuments = () => {
+    const [company, setCompany] = useState({
+        address_id: '', automatic_email: false, city: "", client_id: 0, client_name: "",
+        client_number: "", client_status: 1, co_distance: 0, co_orig_amount: 0, co_orig_trips: 0,
+        co_orig_year: 0, co_show: 1, contact: "", email: "", land_id: 0, logo_url: "", next_pdf_nr: 0,
+        spokesperson: "", street: "", telefon: "", worktime_mail: 0, worktime_status: 0, zip_code: ""
+    });
+    const [controlDocuments, setControlDocuments] = useState([]);
+    const [machines, setMachines] = useState<any>();
+    const [waretypes, setWaretypes] = useState<any>();
+
+    useEffect(() => {
+        setCompany(JSON.parse(sessionStorage.getItem('company') as string));
+
+        API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/control-documents')
+            .then((response) => {
+                setControlDocuments(response.data.Items)
+                ;})
+            .catch((error) => {
+                console.log(error.response);
+            });
+
+        API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines')
+            .then((response) => {
+                setMachines(response.data.Items)
+                ;})
+            .catch((error) => {
+                console.log(error.response);
+            });
+
+        API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/waretypes')
+            .then((response) => {
+                setWaretypes(response.data.Items);
+            })
+            .catch((error) => {
+                console.log(error.response);
+            });
+
+    }, []);
+
     return(
         <div id="content-page" className="px-20">
             <p className="mt-9 text-3xl font-bold mb-10">Kontrollbelege</p>
@@ -130,20 +66,41 @@ const ControlDocuments = () => {
                     </tr>
                     </thead>
                     <tbody className="bg-gray-50">
-                    {machineList.map((machine) =>
-                        <tr key={machine.machine} className="text-xs border-t">
-                            <td>{machine.machine}</td>
-                            <td><img className="h-5" src="/download-svgrepo-com.svg"/></td>
-                            <td>{machine.weigh.slice(0,6)}<br/>{machine.weigh.slice(6,12)}</td>
-                            <td>{machine.date.slice(0,10).replaceAll("/",".")}</td>
-                            <td>{machine.goods}</td>
-                            <td>{machine.gross}</td>
-                            <td>{machine.tare}</td>
-                            <td>{machine.net}</td>
-                            <td>{machine.service_life}</td>
-                            <td>{machine.prod_time}</td>
-                            <td>{machine.kg_per_hour}</td>
-                            <td>{machine.note}</td>
+                    {controlDocuments.map((document: any) =>
+                        <tr key={document.document_id} className="text-xs border-t">
+                            <td>{document.machine_id}</td>
+                            <td>
+                                <PDF
+                                    document_id = {document.document_id}
+                                    brutto = {document.brutto}
+                                    netto = {document.netto}
+                                    timestamp = {document.timestamp}
+                                    tara = {document.tara}
+                                    machine_id = {document.machine_id}
+                                    company = {company}
+                                    waretype = {machines != undefined
+                                        ? machines.filter((item: any) =>
+                                            item.machine_id == document.machine_id)[0].waretype
+                                        : ''}
+                                    sort = {
+                                    machines != undefined
+                                    && waretypes != undefined
+                                        ? waretypes.filter((ware: any) =>
+                                            ware.name_waretype == document.waretype)[0].waretype_number
+                                        : ''}
+                                />
+
+                            </td>
+                            <td>{company.client_number}-<br/>{parseInt(company.client_number) + document.document_id}</td>
+                            <td>{moment(document.timestamp).format('DD.MM.yyyy')}</td>
+                            <td>{document.waretype}</td>
+                            <td>{document.brutto}</td>
+                            <td>{document.tara}</td>
+                            <td>{document.netto}</td>
+                            <td>{(document.totalStandstill/3600000).toFixed(2)}h</td>
+                            <td>{(document.totalProductionTime/60).toFixed(2)}h</td>
+                            <td>{controlDocuments ? document.averageThroughput : ''}</td>
+                            <td>{}</td>
                             <td><img className="h-5" src="/upload-svgrepo-com.svg"/></td>
                         </tr>
                     )}

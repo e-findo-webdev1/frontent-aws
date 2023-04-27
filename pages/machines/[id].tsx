@@ -14,7 +14,7 @@ const MachineStorageHistory = () => {
     const [machinesData, setMachinesData] = useState<any[]>([]);
 
     useEffect(() => {
-        const apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/items';
+        const apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/log-data';
 
         API.get(apiName)
             .then((response) => {
@@ -37,7 +37,6 @@ const MachineStorageHistory = () => {
             .catch((error) => {
                 console.log(error.response);
             });
-
 
     },[startDate, endDate]);
 
@@ -94,7 +93,7 @@ const MachineStorageHistory = () => {
     }
 
     const refreshList = () => {
-        const apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/items';
+        const apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/log-data';
 
         API.get(apiName)
             .then((response) => {
@@ -136,28 +135,28 @@ const MachineStorageHistory = () => {
                 machinesData.length != 0 && machinesData[0].timeOfContainerTara != 0
                     //TO-DO translate time outputs to german
                     ? "ca." + moment(machinesData[0].timeOfContainerTara).fromNow()
-                    : ""}</button>
+                    : "ca. 0 Stunden"}</button>
             <button className="my-3 mr-3 p-1 px-3.5 border-accent-color-1 bg-accent-color-4 hover:bg-accent-color-5
                     sm:rounded-lg shadow-md border text-xs font-semibold">
                 Füllzeit seit Stellung: {
                 machinesData.length != 0 && machinesData[0].timeOfFillingStart != 0
                     //TO-DO translate time outputs to german
                 ? "ca." + moment(machinesData[0].timeOfFillingStart).fromNow()
-                : ""}</button>
+                : "ca. 0 Stunden"}</button>
             <button className="my-3 mr-3 p-1 px-3.5 border-accent-color-1 bg-accent-color-4 hover:bg-accent-color-5
                     sm:rounded-lg shadow-md border text-xs font-semibold">
                 Stillstand seit Produktionszeit: {
-                machinesData.length != 0 && machinesData[0].timeInStandstill != 0
+                machinesData.length != 0
                     //TO-DO translate time outputs to german
-                    ? " ca." + moment(machinesData[0].timeInStandstill).fromNow()
+                    ? " ca. " + machinesData[0].totalStandstill / 3600000 + " Stunden"
                     : ""}</button>
             <button className="my-3 mr-3 p-1 px-3.5 border-accent-color-1 bg-accent-color-4 hover:bg-accent-color-5
                     sm:rounded-lg shadow-md border text-xs font-semibold">
-                Letzte Befüllung: { machinesData.length != 0
+                Letzte Befüllung: { machinesData.length != 0 && machinesData[0].lastFilling
                   && machinesData[0].lastFilling != 0
                     ? moment(machinesData[0].lastFilling).format('DD.MM.YYYY, HH:mm')
-                    : ''} {
-                machinesData.length != 0 && machinesData[0].lastFilling != 0
+                    : 'ca. 0 Stunden'} {
+                machinesData.length != 0 && machinesData[0].lastFilling != 0 && machinesData[0].lastFilling
                     //TO-DO translate time outputs to german
                     ? "(" + moment(machinesData[0].lastFilling).fromNow() + ")"
                     : ""}</button>
@@ -166,10 +165,11 @@ const MachineStorageHistory = () => {
                 Zeit seit Füllstart: { machinesData.length != 0 && machinesData[0].firstFilling != 0
                     //TO-DO translate time outputs to german
                     ? "ca." + moment(machinesData[0].firstFilling).fromNow()
-                    : " "}</button>
+                    : "ca. 0 Stunden"}</button>
             <button className="my-3 mr-3 p-1 px-3.5 border-accent-color-1 bg-accent-color-4 hover:bg-accent-color-5
                     sm:rounded-lg shadow-md border text-xs font-semibold">
                 Geschwindigkeit letzte Stunde: { machinesData.length != 0 && machinesData[0].averageThroughput != 0
+                && averageThroughputInLastHour
                 //TO-DO translate time outputs to german
                 //@ts-ignore
                 ? "ca. "  + parseInt(averageThroughputInLastHour) + " kg/h"
@@ -201,21 +201,20 @@ const MachineStorageHistory = () => {
                     <tbody className="bg-gray-50 text-center">
                     {data !== undefined
                         ? data
-                            .filter(item => item.id == pid.id )
+                            .filter(item => item.machine_id == pid.id)
                             .filter(item =>
-                                new Date(item.timestamp) > startDate &&
-                                new Date(item.timestamp) < newEndDate)
+                                item.timestamp > moment(startDate).unix() &&
+                                item.timestamp < moment(newEndDate).unix() )
                             .sort(function(a: any, b: any){
                                 // @ts-ignore
-                                return new Date(b.timestamp) - new Date(a.timestamp)
-                            })
+                                return new Date(b.timestamp) - new Date(a.timestamp)})
                             .map((item: any) =>
-                            <tr key={item.id} className="text-xs border-t">
-                                <td>{item.id}</td>
+                            <tr key={item.timestamp} className="text-xs border-t">
+                                <td>{item.machine_id}</td>
                                 <td>{item.machineType}</td>
                                 <td>
-                                    {item.timestamp.slice(0,10)},
-                                    {item.timestamp.slice(10,16)}
+                                    {moment.unix(item.timestamp).utc().format('DD.MM.YYYY')},
+                                    {moment.unix(item.timestamp).utc().format(' HH:mm')}
                                 </td>
                                 <td>{parseInt(item.indicateWeight) + parseInt(item.tareWeight)} kg</td>
                                 <td>{parseInt(item.tareWeight)} kg</td>
@@ -223,7 +222,7 @@ const MachineStorageHistory = () => {
                                 <td>{parseInt(item.indicateWeight)} kg</td>
                                 <td>{parseInt(item.indicateWeight)} kg</td>
                                 <td>{item.averageThroughput ? item.averageThroughput.toFixed(2) : "0"}</td>
-                                <td></td>
+                                <td>{machinesData ? machinesData[0].waretype : ''}</td>
                                 <td>
                                     {
                                         item.isNetWeight == "true"
