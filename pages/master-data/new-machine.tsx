@@ -68,6 +68,7 @@ const NewMachine = () => {
         responseBody.total_working_time = total_working_weight
         sendData(responseBody)
     }
+
     const sendData = (responseBody: any) => {
         API.put('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines',
             responseBody)

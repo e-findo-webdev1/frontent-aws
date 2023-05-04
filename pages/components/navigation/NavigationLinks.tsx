@@ -25,7 +25,7 @@ const navigationLinks = [
     },
     {
         name: "Kalkulation",
-        link: "/calculation",
+        link: "/kalkulation",
         image: ""
     },
     {

@@ -1,11 +1,24 @@
 import {useRouter} from 'next/router';
-
 import Link from "next/link";
+import {useEffect, useState} from "react";
+import fromHex from "../helpers/fromHex";
 
 const Breadcrumbs = () => {
     const router = useRouter()
     const pid = router.query
     const routerArray = router.pathname.split("/").slice(1)
+    const [decodedName, setDecodedName] = useState<any>();
+    const [sortName, setSortName] = useState<any>();
+
+    useEffect(() => {
+        if (pid.indexgroup_name != undefined) {
+           setDecodedName(fromHex(pid.indexgroup_name))
+        }
+        if (pid.sort_name != undefined) {
+            setSortName(fromHex(pid.sort_name))
+        }
+
+    },[pid] );
 
     return(
         <div className="flex ml-20 my-5">
@@ -23,7 +36,7 @@ const Breadcrumbs = () => {
                         </a>
                     </Link>
                 </li>
-                {routerArray.map((route, key) =>
+                {routerArray.map((route: any, key: any) =>
                         <li key="key" className="inline-flex items-center capitalize">
                             <Link href={"/"+route
                                 .replace("/", "")
@@ -32,14 +45,16 @@ const Breadcrumbs = () => {
                             }>
                                 <a className="inline-flex items-center text-sm font-medium text-gray-700
                                 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
-                                    {
+                                    { pid ?
                                         route
                                             .replace("-", " ")
                                             .replace("/", "")
                                             .replace("[id]", pid.id as string)
                                             .replace("[client_id]", pid.client_id as string)
                                             .replace("[user]", pid.user as string)
-                                        }
+                                            .replace("[indexgroup_name]", decodedName as string)
+                                            .replace("[sort_name]", sortName as string)
+                                        : ""}
                                 </a>
                             </Link>
                             { key < (routerArray.length -1 )
