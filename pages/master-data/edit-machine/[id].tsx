@@ -4,7 +4,6 @@ import {useRouter} from "next/router";
 import Link from "next/link";
 
 const EditMachine = () => {
-
     const router = useRouter()
     const pid = router.query
 
@@ -15,11 +14,27 @@ const EditMachine = () => {
         client: ""
         }
     );
-
     const [waretypes, setWaretypes] = useState<any>();
     const [clients, setClients] = useState<any>();
+    const [priceMatrices, setPriceMatrices] = useState<any>();
+    const [indeces, setIndeces] = useState<any>([]);
+    const [company, setCompany] = useState<any>();
 
     useEffect(() => {
+
+        if (priceMatrices) {
+            let indecesList: any = []
+            for (let matrix in priceMatrices) {
+                if (priceMatrices[matrix].indeces) {
+                    for (let index in priceMatrices[matrix].indeces) {
+                        indecesList.push(priceMatrices[matrix].indeces[index])
+                    }
+                }
+                if (indeces == "") {
+                    setIndeces(indecesList)
+                }
+            }
+        }
         const apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines';
 
         API.get(apiName)
@@ -46,7 +61,19 @@ const EditMachine = () => {
                 console.log(error.response);
             });
 
-    }, [pid]);
+        API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/price-matrices')
+            .then((response) => {
+                setPriceMatrices(response.data.Items)
+            })
+            .catch((error) => {
+                console.log(error.response);
+            });
+
+
+        setCompany(sessionStorage.getItem("company"))
+
+
+    }, [data.index] );
 
     const responseBody = {machine_id: 0, machineType: "", machineName: "", group: "", waretype: "", quality: "",
     index: "", maxNetto: 0, minContainer: 0, maxContainer: 0, averageThroughput: 0, manualTara: "", minForFullStart: 0,
@@ -76,6 +103,7 @@ const EditMachine = () => {
         console.log(responseBody)
         sendData(responseBody)
     }
+
     const sendData = (responseBody: any) => {
         API.put('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines',
             responseBody)
@@ -87,9 +115,10 @@ const EditMachine = () => {
             });
     }
 
+    console.log(data)
     return(
         <div id="content-page" className="mx-20 overflow-auto h-full">
-            <Link href="/master-data">
+            <Link href={company ? "/master-data/"+company.company_id : ""}>
                 <button className="float-right border ml-auto p-1.5 px-3.5 font-bold border-accent-color-1 bg-accent-color-4
                         hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs">← Zurück
                 </button>
@@ -246,20 +275,14 @@ const EditMachine = () => {
                                 bg-[url('https://www.svgrepo.com/show/80156/down-arrow.svg')]
                                 bg-no-repeat bg-[length:15px] [background-position-x:95%]
                                 [background-position-y:5px]"
-                                        defaultValue={data ? data.index : ''}
+                                        value={ data.index }
                                         onChange={(e) =>
                                             setData({...data, index: e.target.value})}>
-                                    <option>- kein Index -</option>
-                                    <option>BDSV - Sorte 2/8 - Bundesweit</option>
-                                    <option>BDSV - Sorte 5 - Bundesweit</option>
-                                    <option>Bundesweit</option>
-                                    <option>Euwid V2A</option>
-                                    <option>LME HG</option>
-                                    <option>Marketpreis International Sorte 2</option>
-                                    <option>Nord-Ost</option>
-                                    <option>Sorte 5</option>
-                                    <option>Süd</option>
-                                    <option>West</option>
+                                    <option key={"noIndex"}>{"- kein Index -"}</option>
+                                    {priceMatrices ? indeces.map((index: any) =>
+                                        <option key={index}>{index}</option>
+                                    ): ""}
+
                                 </select>
                             </td>
                             <td className="p-1 pl-3">Plandatum Berechnung</td>
@@ -269,7 +292,7 @@ const EditMachine = () => {
                                 bg-[url('https://www.svgrepo.com/show/80156/down-arrow.svg')]
                                 bg-no-repeat bg-[length:15px] [background-position-x:95%]
                                 [background-position-y:5px]"
-                                        defaultValue={data ? data.plandateCalculation : ''}
+                                        value={data.plandateCalculation}
                                         onChange={(e)=>
                                             setData({...data, plandateCalculation: e.target.value})}>
                                     <option>Plandatum V.1</option>

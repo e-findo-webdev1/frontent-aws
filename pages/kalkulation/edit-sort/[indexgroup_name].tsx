@@ -8,6 +8,7 @@ import API from "axios";
 
 const EditSort = () => {
     const [sorts, setSorts] = useState<any>();
+    const [priceMatrices, setPriceMatrices] = useState<any>();
 
     const router = useRouter()
     const pid = router.query
@@ -23,7 +24,17 @@ const EditSort = () => {
                 console.log(error.response);
             });
 
-    },[sorts] );
+        API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/price-matrices')
+            .then((response) => {
+                setPriceMatrices(response.data.Items)
+            })
+            .catch((error) => {
+                console.log(error.response);
+            });
+
+    },[] );
+
+    console.log(priceMatrices)
 
     const deleteSort = (sort: any) => {
         API.delete('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/sorts',
@@ -100,16 +111,32 @@ const EditSort = () => {
                                     <td>
                                         <Link href={"/kalkulation/price-matrix/" +
                                             toHex(sort.sort_name)}>
-                                            <button className="p-2 font-bold text-xs border-accent-color-1
-                                                bg-accent-color-4 hover:bg-accent-color-5 sm:rounded-lg
-                                                shadow-md border">
-                                                Preismatrix
-                                            </button>
+                                            <div>
+                                                {priceMatrices
+                                                    && priceMatrices.filter((matrix: any) =>
+                                                        matrix.indexgroup_name == sort.indexgroup_name
+                                                        && matrix.price_matrix == sort.sort_name)[0].indeces
+                                                    ? `${priceMatrices.filter((matrix: any) =>
+                                                matrix.indexgroup_name == sort.indexgroup_name
+                                                && matrix.price_matrix == sort.sort_name)[0].indeces.length} Indexe `
+                                                    : "0 Indexe "}
+                                                <button className="p-2 font-bold text-xs border-accent-color-1
+                                                    bg-accent-color-4 hover:bg-accent-color-5 sm:rounded-lg
+                                                    shadow-md border">
+                                                    Preismatrix
+                                                </button>
+                                            </div>
                                         </Link>
                                     </td>
-                                    <td><button className="p-2 font-bold text-xs border-accent-color-1
+                                    <td>
+                                        <Link href={"/kalkulation/indeces/" + toHex(sort.sort_name)}>
+                                            <button className="p-2 font-bold text-xs border-accent-color-1
                                     bg-accent-color-4 hover:bg-accent-color-5 sm:rounded-lg shadow-md border">
-                                        Bearbeiten</button></td>
+                                                Bearbeiten
+                                            </button>
+                                        </Link>
+
+                                    </td>
                                     <td>
                                         <button
                                             className="p-2 font-bold text-xs border-accent-color-1

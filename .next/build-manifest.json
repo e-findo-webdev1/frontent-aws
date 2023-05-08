@@ -5,8 +5,8 @@
   "devFiles": [],
   "ampDevFiles": [],
   "lowPriorityFiles": [
-    "static/Wek3uShuUgu5d-DpbxQFZ/_buildManifest.js",
-    "static/Wek3uShuUgu5d-DpbxQFZ/_ssgManifest.js"
+    "static/DSqbL7apGF1PUoSN8Kc69/_buildManifest.js",
+    "static/DSqbL7apGF1PUoSN8Kc69/_ssgManifest.js"
   ],
   "rootMainFiles": [],
   "pages": {
@@ -17,7 +17,7 @@
       "static/chunks/75fc9c18-e9ae95234248f008.js",
       "static/chunks/9198-41b1a890ed3fcc3a.js",
       "static/css/375a85a193efa97a.css",
-      "static/chunks/3034-a8ab4e84ca4ff2ac.js",
+      "static/chunks/3034-4c0496a55740d5c7.js",
       "static/chunks/pages/index-1861ded7a2a6ff96.js"
     ],
     "/_app": [
@@ -144,7 +144,7 @@
       "static/chunks/75fc9c18-e9ae95234248f008.js",
       "static/chunks/9198-41b1a890ed3fcc3a.js",
       "static/css/375a85a193efa97a.css",
-      "static/chunks/3034-a8ab4e84ca4ff2ac.js",
+      "static/chunks/3034-4c0496a55740d5c7.js",
       "static/chunks/pages/components/start/StorageSystemDashboard-4bdc4d82ffafe776.js"
     ],
     "/components/start/Summary": [
@@ -175,13 +175,31 @@
       "static/chunks/webpack-d82402e31c542c56.js",
       "static/chunks/framework-9d86ef2effbc986f.js",
       "static/chunks/main-8e1b4cdb3bb42451.js",
-      "static/chunks/pages/kalkulation/edit-sort/[indexgroup_name]-bb01060deade0485.js"
+      "static/chunks/pages/kalkulation/edit-sort/[indexgroup_name]-6ce3e030557d5c10.js"
     ],
     "/kalkulation/edit-sort/sort/[sort_name]": [
       "static/chunks/webpack-d82402e31c542c56.js",
       "static/chunks/framework-9d86ef2effbc986f.js",
       "static/chunks/main-8e1b4cdb3bb42451.js",
-      "static/chunks/pages/kalkulation/edit-sort/sort/[sort_name]-349a95ec0696dd63.js"
+      "static/chunks/pages/kalkulation/edit-sort/sort/[sort_name]-8c9dab30475ceb14.js"
+    ],
+    "/kalkulation/indeces/[sort_name]": [
+      "static/chunks/webpack-d82402e31c542c56.js",
+      "static/chunks/framework-9d86ef2effbc986f.js",
+      "static/chunks/main-8e1b4cdb3bb42451.js",
+      "static/chunks/pages/kalkulation/indeces/[sort_name]-fdb983970b4ddaef.js"
+    ],
+    "/kalkulation/indeces/edit-index/[index_name]": [
+      "static/chunks/webpack-d82402e31c542c56.js",
+      "static/chunks/framework-9d86ef2effbc986f.js",
+      "static/chunks/main-8e1b4cdb3bb42451.js",
+      "static/chunks/pages/kalkulation/indeces/edit-index/[index_name]-2f3a982e00dec763.js"
+    ],
+    "/kalkulation/indeces/new-index/[sort_name]": [
+      "static/chunks/webpack-d82402e31c542c56.js",
+      "static/chunks/framework-9d86ef2effbc986f.js",
+      "static/chunks/main-8e1b4cdb3bb42451.js",
+      "static/chunks/pages/kalkulation/indeces/new-index/[sort_name]-852f13b639d497f4.js"
     ],
     "/kalkulation/index-management": [
       "static/chunks/webpack-d82402e31c542c56.js",
@@ -206,7 +224,7 @@
       "static/chunks/framework-9d86ef2effbc986f.js",
       "static/chunks/main-8e1b4cdb3bb42451.js",
       "static/chunks/75fc9c18-e9ae95234248f008.js",
-      "static/chunks/pages/kalkulation/price-matrix/[sort_name]-0d03246dd0d5c141.js"
+      "static/chunks/pages/kalkulation/price-matrix/[sort_name]-f9e1b9a673c77fdd.js"
     ],
     "/machines/[id]": [
       "static/chunks/webpack-d82402e31c542c56.js",
@@ -225,7 +243,7 @@
       "static/chunks/2852872c-f5466c367c48e4b6.js",
       "static/chunks/9198-41b1a890ed3fcc3a.js",
       "static/css/375a85a193efa97a.css",
-      "static/chunks/pages/master-data/[client]-8858bfc9053c79ec.js"
+      "static/chunks/pages/master-data/[client]-e5bedbeba2eca9d2.js"
     ],
     "/master-data/edit-client/[client]": [
       "static/chunks/webpack-d82402e31c542c56.js",
@@ -237,7 +255,7 @@
       "static/chunks/webpack-d82402e31c542c56.js",
       "static/chunks/framework-9d86ef2effbc986f.js",
       "static/chunks/main-8e1b4cdb3bb42451.js",
-      "static/chunks/pages/master-data/edit-machine/[id]-0f4989a7bff1b95b.js"
+      "static/chunks/pages/master-data/edit-machine/[id]-1d27b3302bace6bd.js"
     ],
     "/master-data/edit-worker/[user]": [
       "static/chunks/webpack-d82402e31c542c56.js",
