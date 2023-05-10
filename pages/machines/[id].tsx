@@ -18,7 +18,7 @@ const MachineStorageHistory = () => {
 
         API.get(apiName)
             .then((response) => {
-                setData(response.data.flat())
+                setData(response.data)
             })
             .catch((error) => {
                 console.log(error.response);
@@ -40,6 +40,7 @@ const MachineStorageHistory = () => {
 
     },[startDate, endDate]);
 
+    console.log(data)
     const router = useRouter()
     const pid = router.query
 
@@ -48,26 +49,26 @@ const MachineStorageHistory = () => {
         ? averageThroughputInLastHour = data
             .filter(item => item.id == pid.id )
             .filter(item =>
-                new Date(item.timestamp) > moment().subtract(1, 'h').toDate() &&
-                new Date(item.timestamp) < moment().toDate())
+                new Date(item.published_at) > moment().subtract(1, 'h').toDate() &&
+                new Date(item.published_at) < moment().toDate())
             .reduce((acc, cur)=>((acc = acc + cur.averageThroughput), acc), 0)
             /
             data
             .filter(item => item.id == pid.id )
             .filter(item =>
-                new Date(item.timestamp) > moment().subtract(1, 'h').toDate() &&
-                new Date(item.timestamp) < moment().toDate()).length
+                new Date(item.published_at) > moment().subtract(1, 'h').toDate() &&
+                new Date(item.published_at) < moment().toDate()).length
         : ''
     const manualTara = () => {
        // set the isNetto from last item to true
         let newData = data
             .filter(item => item.id == pid.id )
             .filter(item =>
-                new Date(item.timestamp) > startDate &&
-                new Date(item.timestamp) < newEndDate)
+                new Date(item.published_at) > startDate &&
+                new Date(item.published_at) < newEndDate)
             .sort(function(a: any, b: any){
                 // @ts-ignore
-                return new Date(b.timestamp) - new Date(a.timestamp)
+                return new Date(b.published_at) - new Date(a.published_at)
             })
         newData[0]['isNetWeight'] = 'true'
         newData[0]['tareWeight'] = parseInt(newData[0]['indicateWeight'])
@@ -97,13 +98,13 @@ const MachineStorageHistory = () => {
 
         API.get(apiName)
             .then((response) => {
-                setData(response.data.flat())
+                setData(response.data)
             })
             .catch((error) => {
                 console.log(error.response);
             });
     }
-
+    console.log(data)
     return(
         <div id="content-page" className="mx-10 p-10">
             <p className="text-3xl font-bold">Übersicht</p>
@@ -175,7 +176,7 @@ const MachineStorageHistory = () => {
                 ? "ca. "  + parseInt(averageThroughputInLastHour) + " kg/h"
                 : "ca. 0 kg/h"}</button>
 
-            <div className="shadow-md border h-72 overflow-auto mt-5">
+            <div className="shadow-md border h-[25rem] overflow-auto mt-5">
                 <table className="flex-row w-full table-auto">
                     <thead className="sticky top-0 bg-white rounded-lg">
                     <tr className="text-xs text-gray-500 border-b text-left text-center">
@@ -203,24 +204,28 @@ const MachineStorageHistory = () => {
                         ? data
                             .filter(item => item.machine_id == pid.id)
                             .filter(item =>
-                                item.timestamp > moment(startDate).unix() &&
-                                item.timestamp < moment(newEndDate).unix() )
+                                item.published_at > moment(startDate).unix() &&
+                                item.published_at < moment(newEndDate).unix() )
                             .sort(function(a: any, b: any){
                                 // @ts-ignore
-                                return new Date(b.timestamp) - new Date(a.timestamp)})
+                                return new Date(b.published_at) - new Date(a.published_at)})
                             .map((item: any) =>
-                            <tr key={item.timestamp} className="text-xs border-t">
+                            <tr key={item.published_at} className="text-xs border-t">
                                 <td>{item.machine_id}</td>
                                 <td>{item.machineType}</td>
                                 <td>
-                                    {moment.unix(item.timestamp).utc().format('DD.MM.YYYY')},
-                                    {moment.unix(item.timestamp).utc().format(' HH:mm')}
+                                    {moment.unix(item.published_at).utc().format('DD.MM.YYYY')},
+                                    {moment.unix(item.published_at).utc().format(' HH:mm')}
                                 </td>
-                                <td>{parseInt(item.indicateWeight) + parseInt(item.tareWeight)} kg</td>
+                                <td>{data && item.isPositiveWeight == "true" ?
+                                    parseInt(item.indicateWeight) + parseInt(item.tareWeight)
+                                    : parseInt(item.indicateWeight) - parseInt(item.tareWeight)} kg</td>
                                 <td>{parseInt(item.tareWeight)} kg</td>
                                 <td>{parseInt(item.tareWeight)} kg</td>
-                                <td>{parseInt(item.indicateWeight)} kg</td>
-                                <td>{parseInt(item.indicateWeight)} kg</td>
+                                <td className={data && item.isPositiveWeight == "true" ? "" : "text-red-500"}>
+                                    {data && item.isPositiveWeight == "true" ? parseInt(item.indicateWeight) : -parseInt(item.indicateWeight)} kg</td>
+                                <td className={data && item.isPositiveWeight == "true" ? "" : "text-red-500"}>
+                                    {data && item.isPositiveWeight == "true" ? parseInt(item.indicateWeight) : -parseInt(item.indicateWeight)} kg</td>
                                 <td>{item.averageThroughput ? item.averageThroughput.toFixed(2) : "0"}</td>
                                 <td>{machinesData ? machinesData[0].waretype : ''}</td>
                                 <td>
