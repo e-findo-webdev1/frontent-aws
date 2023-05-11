@@ -12,16 +12,12 @@ const Reporting = () => {
                         Kontrollbelege
                         </button>
                     </Link>
-                    <Link href="reporting/annual-revenues">
-                        <button className="w-full p-3.5 border-accent-color-1 bg-accent-color-4 hover:bg-accent-color-5
+                        <button className="w-full p-3.5 w-full p-3.5 bg-gray-100 cursor-default
                     sm:rounded-lg shadow-md border">
                         Jahreserlöse</button>
-                    </Link>
-                    <Link href="reporting/co2-evaluation">
-                        <button className="w-full p-3.5 border-accent-color-1 bg-accent-color-4 hover:bg-accent-color-5
+                        <button className="w-full p-3.5 w-full p-3.5 bg-gray-100 cursor-default
                     sm:rounded-lg shadow-md border">
                             CO2-Auswertung</button>
-                    </Link>
                     <button className="w-full p-3.5 w-full p-3.5 bg-gray-100 cursor-default
                     sm:rounded-lg shadow-md border">
                         Abfallbilanz</button>
@@ -30,12 +26,9 @@ const Reporting = () => {
                     <button className="w-full p-3.5 w-full p-3.5 bg-gray-100 cursor-default
                     sm:rounded-lg shadow-md border">
                         Monatsauswertung</button>
-                    <Link href="reporting/annual-evaluation">
-                        <button className="w-full p-3.5 order-accent-color-1 bg-accent-color-4 hover:bg-accent-color-5
-                        sm:rounded-lg shadow-md border">
+                        <button className="w-full p-3.5 w-full p-3.5 bg-gray-100 cursor-default
+                    sm:rounded-lg shadow-md border">
                             Jahresauswertung</button>
-                    </Link>
-
                     <button className="w-full p-3.5 w-full p-3.5 bg-gray-100 cursor-default
                     sm:rounded-lg shadow-md border">
                         Schichtauswertung</button>

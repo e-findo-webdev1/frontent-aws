@@ -88,7 +88,7 @@ const Breadcrumbs = ()=>{
                                 href: "/" + route.replace("/", "").replace("[id]", pid.id).replace("[client_id]", pid.id),
                                 children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("a", {
                                     className: "inline-flex items-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white",
-                                    children: pid ? route.replace("-", " ").replace("/", "").replace("[id]", pid.id).replace("[client_id]", pid.client_id).replace("[user]", pid.user).replace("[indexgroup_name]", decodedName).replace("[sort_name]", sortName) : ""
+                                    children: pid ? route.replace("-", " ").replace("/", "").replace("[client]", "").replace("[id]", pid.id).replace("[client_id]", pid.client_id).replace("[user]", pid.user).replace("[indexgroup_name]", decodedName).replace("[sort_name]", sortName) : ""
                                 })
                             }),
                             key < routerArray.length - 1 ? /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("svg", {

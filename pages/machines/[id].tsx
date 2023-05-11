@@ -12,13 +12,17 @@ const MachineStorageHistory = () => {
     const [newEndDate, setNewEndDate] = useState(new Date());
     const [data, setData] = useState<any[]>([]);
     const [machinesData, setMachinesData] = useState<any[]>([]);
+    const [page, setPage] = useState<any>(1);
+    const [listLength, setListLength] = useState<any>();
+    const [pageList, setPageList] = useState<any[]>([1, 2, 3, 4, 5, 6]);
 
     useEffect(() => {
-        const apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/log-data';
+        const apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/log-data/' + page;
 
         API.get(apiName)
             .then((response) => {
-                setData(response.data)
+                setData(response.data[0])
+                setListLength(response.data[1])
             })
             .catch((error) => {
                 console.log(error.response);
@@ -38,9 +42,8 @@ const MachineStorageHistory = () => {
                 console.log(error.response);
             });
 
-    },[startDate, endDate]);
+    },[startDate, endDate, page]);
 
-    console.log(data)
     const router = useRouter()
     const pid = router.query
 
@@ -94,17 +97,41 @@ const MachineStorageHistory = () => {
     }
 
     const refreshList = () => {
-        const apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/log-data';
+        const apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/log-data/' + page;
 
         API.get(apiName)
             .then((response) => {
-                setData(response.data)
+                setData(response.data[0])
+                setListLength(response.data[1])
             })
             .catch((error) => {
                 console.log(error.response);
             });
+
     }
-    console.log(data)
+
+    const changePage = (page: number) => {
+        updatePageList(page)
+        setPage(page)
+
+    }
+
+    const updatePageList = (page: number) => {
+        const lastPage = Math.ceil(listLength/100)
+        if (page <= 4) {
+            setPageList([1, 2, 3, 4, 5, 6])
+        }
+        if (page > 4 && page + 2 < lastPage) {
+            setPageList([page - 2, page -1, page, page + 1, page +2])
+        }
+        if (page > 4 && page + 1 < lastPage) {
+            setPageList([page - 2, page -1, page, page + 1])
+        }
+        if (page > 4 && page + 1 == lastPage) {
+            setPageList([page - 2, page -1, page, page +1])
+        }
+    }
+
     return(
         <div id="content-page" className="mx-10 p-10">
             <p className="text-3xl font-bold">Übersicht</p>
@@ -176,7 +203,32 @@ const MachineStorageHistory = () => {
                 ? "ca. "  + parseInt(averageThroughputInLastHour) + " kg/h"
                 : "ca. 0 kg/h"}</button>
 
-            <div className="shadow-md border h-[25rem] overflow-auto mt-5">
+            <div>
+                <p className="text-xs">Seite:
+                    {page > 4
+                    ? <><button className="underline mx-1"
+                        onClick={()=>changePage(1)}>
+                            1
+                    </button>| ... </>
+                        : ""}
+                    {pageList ? pageList.map((pages: number)=>
+                    <button key={pages}
+                        onClick={()=>changePage(pages)}
+                        className={ pages == page ? "font-bold underline" :"underline"}
+                    >
+                        <span className="font-normal">{pages != 1 ? "|" : ""}</span><span className="mx-1">{pages}</span>
+                    </button>)
+                        : ""}
+                    {listLength>0 && page +1< Math.ceil(listLength/100) ? "| ... |" : ""} {listLength > 0 && page + 1< Math.ceil(listLength/100) ?
+                        <button className={ page == Math.ceil(listLength/100) ? "font-bold underline" :"underline"}
+                        onClick={()=>changePage(Math.ceil(listLength/100))}>
+                            {Math.ceil(listLength/100)}
+                        </button>
+                        : ""}
+                </p>
+            </div>
+
+            <div className="shadow-md border h-[20rem] overflow-auto mt-5">
                 <table className="flex-row w-full table-auto">
                     <thead className="sticky top-0 bg-white rounded-lg">
                     <tr className="text-xs text-gray-500 border-b text-left text-center">

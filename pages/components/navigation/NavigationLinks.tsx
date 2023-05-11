@@ -29,11 +29,6 @@ const navigationLinks = [
         image: ""
     },
     {
-        name: "News",
-        link: "/news",
-        image: ""
-    },
-    {
         name: "Impressum",
         link: "/impressum",
         image: ""
