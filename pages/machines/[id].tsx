@@ -11,13 +11,16 @@ const MachineStorageHistory = () => {
     const [endDate, setEndDate] = useState(new Date());
     const [newEndDate, setNewEndDate] = useState(new Date());
     const [data, setData] = useState<any[]>([]);
-    const [machinesData, setMachinesData] = useState<any[]>([]);
+    const [machinesData, setMachinesData] = useState<any[]>([{
+        machine_id: 0
+    }]);
     const [page, setPage] = useState<any>(1);
     const [listLength, setListLength] = useState<any>();
     const [pageList, setPageList] = useState<any[]>([1, 2, 3, 4, 5, 6]);
 
     useEffect(() => {
-        const apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/log-data/' + page;
+        const apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/log-data/'
+            + machinesData[0].machine_id + "/" + page;
 
         API.get(apiName)
             .then((response) => {
@@ -97,7 +100,8 @@ const MachineStorageHistory = () => {
     }
 
     const refreshList = () => {
-        const apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/log-data/' + page;
+        const apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/log-data/'
+            + machinesData[0].machine_id + "/" + page;
 
         API.get(apiName)
             .then((response) => {
@@ -131,6 +135,8 @@ const MachineStorageHistory = () => {
             setPageList([page - 2, page -1, page, page +1])
         }
     }
+
+    console.log(machinesData)
 
     return(
         <div id="content-page" className="mx-10 p-10">

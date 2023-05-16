@@ -2,8 +2,5 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/": "pages/index.js",
-  "/master-data/edit-worker/[user]": "pages/master-data/edit-worker/[user].js",
-  "/reporting": "pages/reporting.js",
-  "/master-data/[client]": "pages/master-data/[client].js"
+  "/machines/[id]": "pages/machines/[id].js"
 }
