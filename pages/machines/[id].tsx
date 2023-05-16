@@ -45,7 +45,7 @@ const MachineStorageHistory = () => {
                 console.log(error.response);
             });
 
-    },[startDate, endDate, page]);
+    },[startDate, endDate, page, machinesData[0].machine_id]);
 
     const router = useRouter()
     const pid = router.query
