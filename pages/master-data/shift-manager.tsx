@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from "react";
 import API from "axios";
+import {number} from "prop-types";
 
 const ShiftManager = () => {
     const [hoursList, setHoursList] = useState<any[]>([]);
@@ -24,8 +25,10 @@ const ShiftManager = () => {
                         .filter( (shift: any) => shift.client_id == clientId )[0]
                 );
                 if (numberOfShifts == 0) {
-                    setNumberOfShitfs(1);
+                    setNumberOfShitfs(-1)
                 }
+
+
             })
             .catch((error) => {
                 console.log(error.response);
@@ -50,9 +53,12 @@ const ShiftManager = () => {
 
         }
         setHoursList(tempHoursList)
+        { shifts && numberOfShifts == -1
+            ? setNumberOfShitfs(Object.keys(shifts.shiftHours).length/2)
+            : ""
+        }
 
     },[clientId, numberOfShifts]);
-
     const responseBody = { shift_id: 0, client_id: 0, selection: {}, shifts: {}, shiftHours: {} }
 
     const saveShifts = (event: any) => {
@@ -85,6 +91,7 @@ const ShiftManager = () => {
                                 bg-[url('https://www.svgrepo.com/show/80156/down-arrow.svg')]
                                 bg-no-repeat bg-[length:15px] [background-position-x:95%]
                                 [background-position-y:5px]"
+                        value={numberOfShifts}
                         onChange={(e)=>setNumberOfShitfs(e.target.value)}>
                     <option>1</option>
                     <option>2</option>
