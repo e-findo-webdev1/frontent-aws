@@ -131,12 +131,10 @@ const MachineStorageHistory = () => {
         if (page > 4 && page + 1 < lastPage) {
             setPageList([page - 2, page -1, page, page + 1])
         }
-        if (page > 4 && page + 1 == lastPage) {
-            setPageList([page - 2, page -1, page, page +1])
+        if (page > 4 && page  == lastPage) {
+            setPageList([lastPage - 3, lastPage -2, lastPage -1, lastPage])
         }
     }
-
-    console.log(machinesData)
 
     return(
         <div id="content-page" className="mx-10 p-10">
@@ -168,21 +166,25 @@ const MachineStorageHistory = () => {
                 Zeit seit Stellung: {
                 machinesData.length != 0 && machinesData[0].timeOfContainerTara != 0
                     //TO-DO translate time outputs to german
-                    ? "ca." + moment(machinesData[0].timeOfContainerTara).fromNow()
-                    : "ca. 0 Stunden"}</button>
+                    ? "ca. " + moment(machinesData[0].timeOfContainerTara).fromNow()
+                    : "ca . 0 Stunden"}</button>
             <button className="my-3 mr-3 p-1 px-3.5 border-accent-color-1 bg-accent-color-4 hover:bg-accent-color-5
                     sm:rounded-lg shadow-md border text-xs font-semibold">
                 Füllzeit seit Stellung: {
                 machinesData.length != 0 && machinesData[0].timeOfFillingStart != 0
                     //TO-DO translate time outputs to german
-                ? "ca." + moment(machinesData[0].timeOfFillingStart).fromNow()
+                ? "ca. " + moment(machinesData[0].timeOfFillingStart).fromNow()
                 : "ca. 0 Stunden"}</button>
             <button className="my-3 mr-3 p-1 px-3.5 border-accent-color-1 bg-accent-color-4 hover:bg-accent-color-5
                     sm:rounded-lg shadow-md border text-xs font-semibold">
                 Stillstand seit Produktionszeit: {
                 machinesData.length != 0
                     //TO-DO translate time outputs to german
-                    ? " ca. " + machinesData[0].totalStandstill / 3600000 + " Stunden"
+                    ? machinesData && (machinesData[0].totalStandstill / 3600000) < 1
+                        ? " ca. " + Math.ceil(machinesData[0].totalStandstill / 3600000 * 60) + " Minuten"
+                        : machinesData[0].totalStandstill / 3600000 > 1
+                            ? " ca. " + Math.ceil(machinesData[0].totalStandstill / 3600000) + " Stunden"
+                            : ""
                     : ""}</button>
             <button className="my-3 mr-3 p-1 px-3.5 border-accent-color-1 bg-accent-color-4 hover:bg-accent-color-5
                     sm:rounded-lg shadow-md border text-xs font-semibold">
@@ -198,7 +200,7 @@ const MachineStorageHistory = () => {
                     sm:rounded-lg shadow-md border text-xs font-semibold">
                 Zeit seit Füllstart: { machinesData.length != 0 && machinesData[0].firstFilling != 0
                     //TO-DO translate time outputs to german
-                    ? "ca." + moment(machinesData[0].firstFilling).fromNow()
+                    ? "ca. " + moment(machinesData[0].firstFilling).fromNow()
                     : "ca. 0 Stunden"}</button>
             <button className="my-3 mr-3 p-1 px-3.5 border-accent-color-1 bg-accent-color-4 hover:bg-accent-color-5
                     sm:rounded-lg shadow-md border text-xs font-semibold">

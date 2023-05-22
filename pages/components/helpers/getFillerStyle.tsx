@@ -1,5 +1,5 @@
 const getFillerStyle = (width: number) => {
-    let widthPercent
+    let widthPercent = "w-0"
     let bgcolor = "bg-green-600"
     if ( width == 0 ) {
         widthPercent = "w-0"

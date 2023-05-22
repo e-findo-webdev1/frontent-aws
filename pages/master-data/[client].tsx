@@ -18,11 +18,14 @@ const MasterData = () => {
     const [shifts, setShift] = useState<any>();
     const [workers, setWorkers] = useState<any>();
     const [lands, setLands] = useState<any>();
+    const [shiftHours, setShiftHours] = useState<any>();
 
     const [machineID, setMachineID] = useState<any>("");
     const [plannedDate, setPlannedDate] = useState<any>(moment());
     const [pickupDate, setPickupDate] = useState<any>("");
     const [shiftsReady, setShiftsReady] = useState<any>(false);
+
+    const [clientId, setClientId] = useState<any>();
 
     useEffect(() => {
         let apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines';
@@ -32,6 +35,7 @@ const MasterData = () => {
                 setMachinesData(response.data.Items
                     .filter((machine: { client: string; }) =>
                         machine.client == "e-findo GmbH"))
+                setClientId(JSON.parse(sessionStorage.getItem("company") as string).client_id)
             })
             .catch((error) => {
                 console.log(error.response);
@@ -41,7 +45,11 @@ const MasterData = () => {
             .then((response) => {
                 setShift(
                     response.data.Items
-                        .filter( (shift: any) => shift.shift_id == 10000 )[0].shifts
+                        .filter( (shift: any) => shift.client_id == clientId )[0].shifts
+                );
+                setShiftHours(
+                    response.data.Items
+                        .filter( (shift: any) => shift.client_id == clientId )[0].shiftHours
                 );
             })
             .catch((error) => {
@@ -84,7 +92,7 @@ const MasterData = () => {
             calculatePlannedDate( '2023/02/14', '10:00')
         }
 
-    },[pid] );
+    },[pid, clientId] );
 
     let SHIFT_CALENDAR = {
         'Sunday': {
@@ -436,22 +444,22 @@ const MasterData = () => {
 
                                             <div
                                                 // @ts-ignore
-                                                className={ (machine.lastIndicate - machine.lastTara) * 100
+                                                className={ (machine.lastIndicate) * 100
                                                 / machine.maxNetto > 0
                                                     ? getFillerStyle(
-                                                        (machine.lastIndicate - machine.lastTara) * 100
+                                                        (machine.lastIndicate) * 100
                                                         / machine.maxNetto
                                                     )
                                                     : 0
                                                 }/>
                                         </div>
-                                        { parseInt(((machine.lastIndicate - machine.lastTara) * 100
+                                        { parseInt(((machine.lastIndicate) * 100
                                             / machine.maxNetto).toFixed(0)) > 0
                                             ?
-                                            ((machine.lastIndicate - machine.lastTara) * 100
+                                            ((machine.lastIndicate) * 100
                                                 / machine.maxNetto).toFixed(0)
                                             : 0}%</td>
-                                    <td>{machine.maxNetto}</td>
+                                    <td>{machine.lastIndicate}</td>
                                 </tr>
                         )
                         : ""
@@ -488,19 +496,31 @@ const MasterData = () => {
                         <tbody>
                         <tr className="bg-gray-50 text-xs border-b text-left">
                             <td className="w-24">Schicht 1</td>
-                            <td>22:00</td>
-                            <td>06:00</td>
+                            <td>{shiftHours ? shiftHours.shift1_start : "00:00"}</td>
+                            <td>{shiftHours ? shiftHours.shift1_end : "00:00"}</td>
                         </tr>
-                        <tr className="bg-gray-50 text-xs border-b text-left">
-                            <td className="w-24">Schicht 2</td>
-                            <td>06:00</td>
-                            <td>14:00</td>
-                        </tr>
-                        <tr className="bg-gray-50 text-xs border-b text-left">
-                            <td className="w-24">Schicht 3</td>
-                            <td>14:00</td>
-                            <td>22:00</td>
-                        </tr>
+                        {   shiftHours && shiftHours.shift2_start != "00:00" && shiftHours.shift2_end != "00:00"
+                            ? <tr className="bg-gray-50 text-xs border-b text-left">
+                                <td className="w-24">Schicht 2</td>
+                                <td>{shiftHours ? shiftHours.shift2_start : "00:00"}</td>
+                                <td>{shiftHours ? shiftHours.shift2_end : "00:00"}</td>
+                            </tr>
+                            : ""}
+                        {   shiftHours && shiftHours.shift3_start != "00:00" && shiftHours.shift3_end != "00:00"
+                            ? <tr className="bg-gray-50 text-xs border-b text-left">
+                                <td className="w-24">Schicht 3</td>
+                                <td>{shiftHours ? shiftHours.shift3_start : "00:00"}</td>
+                                <td>{shiftHours ? shiftHours.shift3_end : "00:00"}</td>
+                            </tr>
+                            : ""}
+                        {   shiftHours && shiftHours.shift4_start != "00:00" && shiftHours.shift4_end != "00:00"
+                            ? <tr className="bg-gray-50 text-xs border-b text-left">
+                                <td className="w-24">Schicht 4</td>
+                                <td>{shiftHours ? shiftHours.shift4_start : "00:00"}</td>
+                                <td>{shiftHours ? shiftHours.shift4_end : "00:00"}</td>
+                            </tr>
+                        : ""}
+
                         </tbody>
                     </table>
                 </div>

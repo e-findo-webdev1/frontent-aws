@@ -8,13 +8,14 @@ const EditClient= () => {
     const router = useRouter()
     const pid = router.query
 
-    const [lands, setLands] = useState<any>([]);
+    const [lands, setLands] = useState<any[]>([{land_name: ""}]);
     const [data, setData] = useState({
         address_id: "0", city: "", client_id: 0, client_name: "", client_number: "0", client_status: "0", co_distance: 0,
         co_load: 0, co_orig_amount: 0, co_orig_trips: 0, co_orig_year: 0, co_show: 0, contact: "", country_id: 1,
         email: "", land_id: 0, logo_url: "", next_pdf_nr: 0, spokesperson: "", street: "", telefon: "",
         worktime_mail: 0, worktime_status: 0, zip_code: "", automatic_email: false,
     });
+    const [landName, setLandName] = useState<any>("")
 
     useEffect(() => {
         const apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/clients';
@@ -31,12 +32,13 @@ const EditClient= () => {
             .then((response) => {
                 setLands(
                     response.data.Items);
+                setLandName(lands.filter((land: any)=>land.land_id==data.land_id)[0].land_name)
             })
             .catch((error) => {
                 console.log(error.response);
             });
 
-    }, [pid]);
+    }, [pid, lands[0].land_name]);
 
 
     const responseBody = {
@@ -86,6 +88,7 @@ const EditClient= () => {
                 console.log(error);
             });
     }
+
     return(
         <div id="content-page" className="px-20 h-full overflow-auto">
             <Link href="/master-data/0">
@@ -169,14 +172,14 @@ const EditClient= () => {
                                         bg-[url('https://www.svgrepo.com/show/80156/down-arrow.svg')]
                                         bg-no-repeat bg-[length:15px] [background-position-x:95%]
                                         [background-position-y:5px]"
-                                        value={data && lands && lands.length > 0 ?
-                                            lands.filter((land: any)=>land.land_id==data.land_id)[0].land_name: ''}
-                                        onChange={(e)=>
+                                        value={ landName }
+                                        onChange={ lands ?
+                                    (e)=>
                                             setData({...data, land_id: parseInt(
                                                 lands
                                                     .filter((land: any)=>
                                                         land.land_name==e.target.value)[0].land_id)})
-                                        }>
+                                        : (e)=>{}}>
                                     {lands
                                         ? lands
                                             .map((land :any) =>

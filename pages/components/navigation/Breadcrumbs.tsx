@@ -9,6 +9,9 @@ const Breadcrumbs = () => {
     const routerArray = router.pathname.split("/").slice(1)
     const [decodedName, setDecodedName] = useState<any>();
     const [sortName, setSortName] = useState<any>();
+    const [clientId, setClientId] = useState<any>(
+        JSON.parse(sessionStorage.getItem("company") as string).client_id
+    )
 
     useEffect(() => {
         if (pid.indexgroup_name != undefined) {
@@ -42,6 +45,12 @@ const Breadcrumbs = () => {
                                 .replace("/", "")
                                 .replace("[id]", pid.id as string)
                                 .replace("[client_id]", pid.id as string)
+                                .replace("shift-calendar", "master-data/shift-calendar")
+                                .replace("master-data", "master-data/" + clientId)
+                                .replace("edit-client", "master-data/edit-client/" + clientId)
+                                .replace("new-machine", "master-data/new-machine")
+                                .replace("shift-manager", "master-data/shift-manager")
+                                .replace("[client]", "")
                             }>
                                 <a className="inline-flex items-center text-sm font-medium text-gray-700
                                 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">

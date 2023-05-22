@@ -373,19 +373,19 @@ const StorageSystemDashboard = () => {
 
                                                 <div
                                                     // @ts-ignore
-                                                    className={ (machine.lastIndicate - machine.lastTara) * 100
+                                                    className={ (machine.lastIndicate) * 100
                                                     / machine.maxNetto > 0
                                                     ? getFillerStyle(
-                                                    (machine.lastIndicate - machine.lastTara) * 100
+                                                    (machine.lastIndicate) * 100
                                                     / machine.maxNetto
                                                     )
                                                     : 0
                                                 }/>
                                             </div>
-                                            { parseInt(((machine.lastIndicate - machine.lastTara) * 100
+                                            { parseInt(((machine.lastIndicate) * 100
                                                 / machine.maxNetto).toFixed(0)) > 0
                                                 ?
-                                                ((machine.lastIndicate - machine.lastTara) * 100
+                                                ((machine.lastIndicate) * 100
                                                 / machine.maxNetto).toFixed(0)
                                                 : 0}%</td>
                                         <td>
@@ -485,7 +485,7 @@ const StorageSystemDashboard = () => {
                                                 </span>
                                             }
                                         </td>
-                                        <td>{machine.maxNetto}</td>
+                                        <td>{machine.lastIndicate}</td>
                                     </tr>
                             )
                             : ""

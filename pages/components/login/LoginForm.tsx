@@ -29,7 +29,7 @@ const LoginForm = ({setIsSubmitted}: any) => {
             });
 
     }, []);
-    console.log(users)
+
     const handleSubmit = async (event: any) => {
         event.preventDefault();
         // @ts-ignore
