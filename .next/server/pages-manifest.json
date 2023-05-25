@@ -2,7 +2,7 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/master-data/shift-manager": "pages/master-data/shift-manager.js",
+  "/reporting/control-documents": "pages/reporting/control-documents.js",
   "/": "pages/index.js",
-  "/master-data/[client]": "pages/master-data/[client].js"
+  "/machines/[id]": "pages/machines/[id].js"
 }

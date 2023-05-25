@@ -173,7 +173,9 @@ const MachineStorageHistory = () => {
                 Füllzeit seit Stellung: {
                 machinesData.length != 0 && machinesData[0].timeOfFillingStart != 0
                     //TO-DO translate time outputs to german
-                ? "ca. " + moment(machinesData[0].timeOfFillingStart).fromNow()
+                ?  machinesData[0].totalFillingTime < 60
+                    ? machinesData[0].totalFillingTime + " Minuten"
+                    : "ca. " + machinesData[0].totalFillingTime + " Stunden"
                 : "ca. 0 Stunden"}</button>
             <button className="my-3 mr-3 p-1 px-3.5 border-accent-color-1 bg-accent-color-4 hover:bg-accent-color-5
                     sm:rounded-lg shadow-md border text-xs font-semibold">
@@ -200,15 +202,15 @@ const MachineStorageHistory = () => {
                     sm:rounded-lg shadow-md border text-xs font-semibold">
                 Zeit seit Füllstart: { machinesData.length != 0 && machinesData[0].firstFilling != 0
                     //TO-DO translate time outputs to german
-                    ? "ca. " + moment(machinesData[0].firstFilling).fromNow()
+                    ? "ca. " + moment(machinesData[0].firstFilling).fromNow() + " (" +
+                                moment(machinesData[0].firstFilling).format('DD.MM.YYYY, HH:mm') + ")"
                     : "ca. 0 Stunden"}</button>
             <button className="my-3 mr-3 p-1 px-3.5 border-accent-color-1 bg-accent-color-4 hover:bg-accent-color-5
                     sm:rounded-lg shadow-md border text-xs font-semibold">
                 Geschwindigkeit letzte Stunde: { machinesData.length != 0 && machinesData[0].averageThroughput != 0
-                && averageThroughputInLastHour
                 //TO-DO translate time outputs to german
                 //@ts-ignore
-                ? "ca. "  + parseInt(averageThroughputInLastHour) + " kg/h"
+                ? "ca. "  + Math.floor(machinesData[0].averageThroughputInLastHour) + " kg/h"
                 : "ca. 0 kg/h"}</button>
 
             <div>

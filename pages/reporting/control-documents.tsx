@@ -46,8 +46,8 @@ const ControlDocuments = () => {
     return(
         <div id="content-page" className="px-20">
             <p className="mt-9 text-3xl font-bold mb-10">Kontrollbelege</p>
-            <div className="sm:rounded-lg shadow-md border overflow-x-auto">
-                <table className="table-auto w-full">
+            <div className="sm:rounded-lg shadow-md border overflow-auto max-h-96">
+                <table className="table-auto w-full overflow-auto">
                     <thead>
                     <tr className="text-xs text-gray-500 border-b text-left">
                         <th className="font-normal">Maschine</th>
