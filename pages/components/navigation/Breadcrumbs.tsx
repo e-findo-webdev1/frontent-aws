@@ -9,11 +9,12 @@ const Breadcrumbs = () => {
     const routerArray = router.pathname.split("/").slice(1)
     const [decodedName, setDecodedName] = useState<any>();
     const [sortName, setSortName] = useState<any>();
-    const [clientId, setClientId] = useState<any>(
-        JSON.parse(sessionStorage.getItem("company") as string).client_id
-    )
+    const [clientId, setClientId] = useState<any>()
 
     useEffect(() => {
+        if (sessionStorage.getItem('company')) {
+            setClientId(JSON.parse(sessionStorage.getItem("company") as string).client_id)
+        }
         if (pid.indexgroup_name != undefined) {
            setDecodedName(fromHex(pid.indexgroup_name))
         }

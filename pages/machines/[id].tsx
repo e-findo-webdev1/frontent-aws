@@ -19,6 +19,7 @@ const MachineStorageHistory = () => {
     const [pageList, setPageList] = useState<any[]>([1, 2, 3, 4, 5, 6]);
 
     useEffect(() => {
+        setData([])
         const apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/log-data/'
             + machinesData[0].machine_id + "/" + page;
 

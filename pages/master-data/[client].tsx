@@ -35,7 +35,9 @@ const MasterData = () => {
                 setMachinesData(response.data.Items
                     .filter((machine: { client: string; }) =>
                         machine.client == "e-findo GmbH"))
-                setClientId(JSON.parse(sessionStorage.getItem("company") as string).client_id)
+                if (sessionStorage.getItem('company')) {
+                    setClientId(JSON.parse(sessionStorage.getItem("company") as string).client_id)
+                }
             })
             .catch((error) => {
                 console.log(error.response);

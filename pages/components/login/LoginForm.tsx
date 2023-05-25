@@ -2,7 +2,7 @@ import {useEffect, useState} from "react";
 import API from "axios";
 const bcrypt = require('bcryptjs');
 
-const LoginForm = ({setIsSubmitted}: any) => {
+const LoginForm = () => {
     const [users, setUsers] = useState([]);
     const [error, setError] = useState(0);
     const [email, setEmail] = useState("");
@@ -31,18 +31,18 @@ const LoginForm = ({setIsSubmitted}: any) => {
     }, []);
 
     const handleSubmit = async (event: any) => {
-        event.preventDefault();
         // @ts-ignore
         const hash = await users.filter((user: any)=> user.email == email)[0].password
 
         // @ts-ignore
         if (await bcrypt.compare(password, hash) == true) {
-            setIsSubmitted(true)
             sessionStorage.setItem("user", JSON.stringify(users.filter((user: any)=> user.email == email)[0]))
             // @ts-ignore
             sessionStorage.setItem("company", JSON.stringify(clients.filter((client: any)=>
                 // @ts-ignore
                 client.client_id == users.filter((user: any)=> user.email == email)[0].client_id)[0]))
+            // @ts-ignore
+            window.location.reload(false);
         }
 
         else {

@@ -2,7 +2,7 @@ import Logo from "./Logo";
 import NavigationLinks from "./NavigationLinks";
 import NavigationButtons from "./NavigationButtons";
 
-const Navigation = ({setIsSubmitted}: any) => {
+const Navigation = () => {
 
     return (
         <div id="navigation" className="mb-2 flex">
@@ -10,9 +10,9 @@ const Navigation = ({setIsSubmitted}: any) => {
             <NavigationLinks/>
 
             <p className="text-xs my-auto ml-auto font-semibold">{typeof window !== 'undefined'
-            ? JSON.parse(sessionStorage.getItem("company") as string).client_name : ''}
+            && sessionStorage.getItem('company') ? JSON.parse(sessionStorage.getItem("company") as string).client_name : ''}
             </p>
-            <NavigationButtons setIsSubmitted={setIsSubmitted}/>
+            <NavigationButtons/>
         </div>
     )
 }
