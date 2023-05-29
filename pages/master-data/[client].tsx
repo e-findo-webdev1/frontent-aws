@@ -461,7 +461,7 @@ const MasterData = () => {
                         <Link href={"/master-data/edit-machine/" + machine.machine_id}>
                             {machine.machine_id}
                         </Link></span><br/>
-                                        <span>{machine.maxNetto}</span></td>
+                                        <span>{machine.maxNetto} kg</span></td>
                                     <td>{machine.waretype}</td>
                                     <td className="flex">
                                         <div className="border border-black bg-white w-32 mr-1.5">
