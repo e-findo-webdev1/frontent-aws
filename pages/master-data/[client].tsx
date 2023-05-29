@@ -96,6 +96,21 @@ const MasterData = () => {
 
     },[pid, clientId] );
 
+    const monthsList = {
+        0: "Januar",
+        1: "Februar",
+        2: "März",
+        3: "April",
+        4: "Mai",
+        5: "Juni",
+        6: "Juli",
+        7: "August",
+        8: "September",
+        9: "Oktober",
+        10: "November",
+        11: "Dezember"
+    }
+
     let SHIFT_CALENDAR = {
         'Sunday': {
             'shift1': {
@@ -379,6 +394,8 @@ const MasterData = () => {
     const workingHours = (maxNetto-currentNetto)/averageKiloPerHour
 
 
+    // @ts-ignore
+    // @ts-ignore
     return (
         <div id="content-page" className="px-24 h-full overflow-auto">
             <div className="mt-10">
@@ -427,12 +444,17 @@ const MasterData = () => {
                         <th className="font-normal">Masch.-ID<br/>Max Netto</th>
                         <th className="font-normal">Material</th>
                         <th className="font-normal">Füllgrad</th>
-                        <th className="font-normal">Netto (kg)</th>
+                        <th className="font-normal text-right">Netto<br/>(in kg)</th>
+                        <th className="font-normal text-right">Monatspreis<br/>(in € / t)</th>
+                        <th className="font-normal text-right">Summe<br/>(in €)</th>
                     </tr>
                     </thead>
                     <tbody className="bg-gray-50">
                     {machinesData
-                        ? machinesData.map((machine: any) =>
+                        ? machinesData.sort(function(a: any, b: any){
+                            // @ts-ignore
+                            return a.machine_id - b.machine_id})
+                            .map((machine: any) =>
                                 <tr key={machine.machine_id} className="text-xs border-t">
                                     <td>
                                         {machine.machineType}: <span className="underline">
@@ -461,7 +483,21 @@ const MasterData = () => {
                                             ((machine.lastIndicate) * 100
                                                 / machine.maxNetto).toFixed(0)
                                             : 0}%</td>
-                                    <td>{machine.lastIndicate}</td>
+                                    <td className="text-right">{machine.lastIndicate} kg</td>
+                                    <td className="text-right">
+                                        <Link href={"/master-data/price-list/" + machine.machine_id}>
+                                            <button className="underline">
+                                                {machine.price_list ?
+                                                    machine.price_list.prices
+                                                        // @ts-ignore
+                                                        [moment().year()][monthsList[moment().month()]] : "0,00"} €
+                                            </button>
+                                        </Link>
+                                    </td>
+                                    <td className="text-right">{machine.price_list ? (machine.lastIndicate * parseInt(machine.price_list.prices
+                                        // @ts-ignore
+                                        [moment().year()][monthsList[moment().month()]]) /1000).toFixed(2)
+                                        .replace(".",",") : "0,00"} €</td>
                                 </tr>
                         )
                         : ""

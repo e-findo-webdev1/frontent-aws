@@ -338,16 +338,29 @@ const StorageSystemDashboard = () => {
             }
         }
     }
-
+    const monthsList = {
+        0: "Januar",
+        1: "Februar",
+        2: "März",
+        3: "April",
+        4: "Mai",
+        5: "Juni",
+        6: "Juli",
+        7: "August",
+        8: "September",
+        9: "Oktober",
+        10: "November",
+        11: "Dezember"
+    }
 
     return (
         <div id="storage-system" className="mt-5">
               <span className="text-xs uppercase font-bold text-gray-500">
                   Lagersysteme
               </span>
-            <div className="sm:rounded-lg shadow-md border overflow-auto">
+            <div className="sm:rounded-lg shadow-md border overflow-auto w-2/3">
                 <div className="sm:rounded-lg shadow-md border overflow-auto">
-                    <table className="flex-row w-full table-auto">
+                    <table className="flex-row table-auto w-full">
                         <thead>
                         <tr className="text-xs text-gray-500 border-b text-left">
                             <th className="font-normal">Masch.-ID<br/>Max Netto</th>
@@ -359,7 +372,10 @@ const StorageSystemDashboard = () => {
                         </thead>
                         <tbody className="bg-gray-50">
                         {machinesData
-                            ? machinesData.map((machine: any) =>
+                            ? machinesData.sort(function(a: any, b: any){
+                                // @ts-ignore
+                                return a.machine_id - b.machine_id})
+                                .map((machine: any) =>
                                     <tr key={machine.machine_id} className="text-xs border-t">
                                         <td>
                                             {machine.machineType}: <span className="underline">
@@ -485,7 +501,21 @@ const StorageSystemDashboard = () => {
                                                 </span>
                                             }
                                         </td>
-                                        <td>{machine.lastIndicate}</td>
+                                        <td>{machine.lastIndicate} kg</td>
+                                        <td className="text-right">
+                                            <Link href={"/master-data/price-list/" + machine.machine_id}>
+                                                <button className="underline">
+                                                    {machine.price_list ?
+                                                        machine.price_list.prices
+                                                            // @ts-ignore
+                                                            [moment().year()][monthsList[moment().month()]] : "0,00"} €
+                                                </button>
+                                            </Link>
+                                        </td>
+                                        <td className="text-right">{machine.price_list ? (machine.lastIndicate * parseInt(machine.price_list.prices
+                                            // @ts-ignore
+                                            [moment().year()][monthsList[moment().month()]]) /1000).toFixed(2)
+                                            .replace(".",",") : "0,00"} €</td>
                                     </tr>
                             )
                             : ""

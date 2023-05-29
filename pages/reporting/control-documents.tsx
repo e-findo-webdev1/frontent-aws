@@ -66,7 +66,10 @@ const ControlDocuments = () => {
                     </tr>
                     </thead>
                     <tbody className="bg-gray-50">
-                    {controlDocuments.map((document: any) =>
+                    {controlDocuments.sort(function(a: any, b: any){
+                        // @ts-ignore
+                        return b.document_id - a.document_id})
+                        .map((document: any) =>
                         <tr key={document.document_id} className="text-xs border-t">
                             <td>{document.machine_id}</td>
                             <td>
@@ -99,7 +102,7 @@ const ControlDocuments = () => {
                             <td>{document.netto}</td>
                             <td>{(document.totalStandstill/3600000).toFixed(2)}h</td>
                             <td>{(document.totalProductionTime/60).toFixed(2)}h</td>
-                            <td>{controlDocuments ? document.averageThroughput : ''}</td>
+                            <td>{controlDocuments ? Math.floor(document.averageThroughput) : ''}</td>
                             <td>{}</td>
                             <td><img className="h-5" src="/upload-svgrepo-com.svg"/></td>
                         </tr>
