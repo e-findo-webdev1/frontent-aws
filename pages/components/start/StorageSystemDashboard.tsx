@@ -5,7 +5,6 @@ import API from "axios";
 import moment from "moment";
 import Popup from "./Popup";
 import "react-datepicker/dist/react-datepicker.css";
-import {machine} from "os";
 
 const StorageSystemDashboard = () => {
     const [machinesData, setMachinesData] = useState<any>();
@@ -18,6 +17,7 @@ const StorageSystemDashboard = () => {
     const [newPickupDates, setNewPickupDates] = useState<[]>([]);
     const [areDatesConfirmed, setAreDatesConfirmed] = useState<[]>([]);
     const [radioConfirmed, setRadioConfirmed] = useState<any>("");
+    const [controlDocuments, setControlDocuments] = useState<any>();
 
     useEffect(() => {
         let apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines';
@@ -42,7 +42,25 @@ const StorageSystemDashboard = () => {
             .catch((error) => {
                 console.log(error.response);
             });
-    }, []);
+
+        API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/control-documents')
+                .then((response) => {
+                    setControlDocuments(
+                        response.data.Items
+                            .filter( (document: any) =>
+                                machinesData.reduce( function(a: any, b: any){
+                                    return [] + (b['machine_id']);
+                                }).includes(document.machine_id)
+                            )
+                    );
+                })
+                .catch((error) => {
+                    console.log(error.response);
+                });
+
+    }, [pickupDates]);
+
+
 
     let SHIFT_CALENDAR = {
         'Sunday': {
@@ -354,7 +372,6 @@ const StorageSystemDashboard = () => {
         11: "Dezember"
     }
 
-    // @ts-ignore
     return (
         <div id="storage-system" className="mt-5">
               <span className="text-xs uppercase font-bold text-gray-500">
@@ -512,9 +529,11 @@ const StorageSystemDashboard = () => {
                                                             // @ts-ignore
                                                             [moment().year()][monthsList[moment().month()]] : "0,00"} €
                                         </td>
-                                        <td className="text-right">{machine.price_list ? (machine.lastIndicate * parseInt(machine.price_list.prices
+                                        <td className="text-right">{machine.price_list ? (machine.lastIndicate *
+                                            parseInt(machine.price_list.prices
                                             // @ts-ignore
-                                            [moment().year()][monthsList[moment().month()]]) /1000).toFixed(2)
+                                            [moment().year()][monthsList[moment().month()]]) /1000)
+                                            .toFixed(2)
                                             .replace(".",",") : "0,00"} €</td>
                                     </tr>
                             )
@@ -551,15 +570,30 @@ const StorageSystemDashboard = () => {
                         <span className="font-bold">Gesamtmenge aller eMSS<br/></span>
                         {machinesData ? machinesData.reduce( function(a: any, b: any){
                             return a + (b['lastIndicate']);
+                        }, 0) + controlDocuments.
+                        filter((document: any)=>moment(document.timestamp).format("DD/MM/YYYY") ==
+                            moment().format("DD/MM/YYYY")).
+                        reduce( function(a: any, b: any){
+                            return a + (b['netto']);
                         }, 0) + " kg": ""}
                     </p>
                     <p className="flex-grow flex-1">
                         <span className="font-bold">Erlös<br/></span>
-                        {machinesData ? machinesData.reduce( function(a: any, b: any){
+                        { machinesData ?
+                            (machinesData.reduce( function(a: any, b: any){
                             return a + (b['lastIndicate'] *
                                 // @ts-ignore
                                 parseInt(b.price_list.prices[moment().year()][monthsList[moment().month()]]) / 1000);
-                        }, 0).toFixed(2).replace("." , ",") + " €": ""}
+                        }, 0) + controlDocuments.
+                        filter((document: any)=>moment(document.timestamp).format("DD/MM/YYYY") ==
+                            moment().format("DD/MM/YYYY")).
+                        reduce( function(a: any, b: any){
+                            return a + (b['netto'] *
+                                machinesData.filter((machine: any) =>
+                                    machine.machine_id == b['machine_id']
+                                    // @ts-ignore
+                                )[0].price_list.prices[moment().year()][monthsList[moment().month()]] / 1000);
+                        }, 0)).toFixed(2).replace(".", ",") + " €": ""}
                     </p>
                 </div>
                 <hr className="my-5 mx-10"/>
@@ -569,9 +603,43 @@ const StorageSystemDashboard = () => {
                         {// @ts-ignore
                             monthsList[moment().month()]} {moment().year()}</p>
                     <p className="flex-grow flex-1">
-                        <span className="font-bold">Gesamtmenge aller eMSS<br/></span>0 kg</p>
+                        <span className="font-bold">Gesamtmenge aller eMSS<br/></span>
+                        {controlDocuments ? controlDocuments.
+                            filter((document: any)=>moment(document.timestamp).month() == moment().month()).
+                        reduce( function(a: any, b: any){
+                            return a + (b['netto'])
+                        }, 0) + machinesData.reduce( function(a: any, b: any){
+                            return a + (b['lastIndicate']);
+                        }, 0) + controlDocuments.
+                        filter((document: any)=>moment(document.timestamp).format("DD/MM/YYYY") ==
+                            moment().format("DD/MM/YYYY")).
+                        reduce( function(a: any, b: any){
+                            return a + (b['netto']);
+                        }, 0) + " kg" : ""}</p>
                     <p className="flex-grow flex-1">
-                        <span className="font-bold">Gesamterlöse<br/></span>0 €</p>
+                        <span className="font-bold">Gesamterlöse<br/></span>
+                        {controlDocuments ? (controlDocuments.
+                        filter((document: any)=>moment(document.timestamp).month() == moment().month()).
+                        reduce( function(a: any, b: any){
+                            return a + ((b['netto']) *
+                                parseInt(machinesData.filter((machine: any) => machine.machine_id == b['machine_id'])[0]
+                                    // @ts-ignore
+                                    .price_list.prices[moment().year()][monthsList[moment().month()]])/1000)
+                        }, 0) + (machinesData.reduce( function(a: any, b: any){
+                            return a + (b['lastIndicate'] *
+                                // @ts-ignore
+                                parseInt(b.price_list.prices[moment().year()][monthsList[moment().month()]]) / 1000);
+                        }, 0) + controlDocuments.
+                        filter((document: any)=>moment(document.timestamp).format("DD/MM/YYYY") ==
+                            moment().format("DD/MM/YYYY")).
+                        reduce( function(a: any, b: any){
+                            return a + (b['netto'] *
+                                machinesData.filter((machine: any) =>
+                                        machine.machine_id == b['machine_id']
+                                    // @ts-ignore
+                                )[0].price_list.prices[moment().year()][monthsList[moment().month()]] / 1000);
+                        }, 0))).toFixed(2).replace(".", ",") + " €" : ""}
+                        </p>
                 </div>
             </div>
         </div>
