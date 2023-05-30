@@ -89,6 +89,8 @@ const EditClient= () => {
             });
     }
 
+    console.log()
+
     return(
         <div id="content-page" className="px-20 h-full overflow-auto">
             <Link href="/master-data/0">
@@ -114,7 +116,8 @@ const EditClient= () => {
                             <td className="text-xs font-semibold">KundenNr.:</td>
                             <td>
                                 <input id="client_number" className="border rounded px-2.5 py-0.5"
-                                       defaultValue={data ? data.client_number : ''}
+                                       defaultValue={data
+                                           ? JSON.parse(sessionStorage.getItem('company') as string).client_number : ''}
                                        onChange={(e)=>
                                            setData({...data, client_number: e.target.value})}/>
                             </td>
@@ -172,7 +175,10 @@ const EditClient= () => {
                                         bg-[url('https://www.svgrepo.com/show/80156/down-arrow.svg')]
                                         bg-no-repeat bg-[length:15px] [background-position-x:95%]
                                         [background-position-y:5px]"
-                                        value={ landName }
+                                        value={ lands && data &&
+                                        lands.filter((land: any) => land.land_id == data.land_id).length > 0
+                                            ?
+                                            lands.filter((land: any) => land.land_id == data.land_id)[0].land_name : "" }
                                         onChange={ lands ?
                                     (e)=>
                                             setData({...data, land_id: parseInt(

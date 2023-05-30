@@ -5,6 +5,7 @@ import API from "axios";
 import moment from "moment";
 import Popup from "./Popup";
 import "react-datepicker/dist/react-datepicker.css";
+import {machine} from "os";
 
 const StorageSystemDashboard = () => {
     const [machinesData, setMachinesData] = useState<any>();
@@ -353,12 +354,13 @@ const StorageSystemDashboard = () => {
         11: "Dezember"
     }
 
+    // @ts-ignore
     return (
         <div id="storage-system" className="mt-5">
               <span className="text-xs uppercase font-bold text-gray-500">
                   Lagersysteme
               </span>
-            <div className="sm:rounded-lg shadow-md border overflow-auto w-2/3">
+            <div className="sm:rounded-lg shadow-md  overflow-auto w-2/3">
                 <div className="sm:rounded-lg shadow-md border overflow-auto">
                     <table className="flex-row table-auto w-full">
                         <thead>
@@ -537,6 +539,39 @@ const StorageSystemDashboard = () => {
                         radioConfirmed={radioConfirmed}
                         setRadioConfirmed={setRadioConfirmed}
                     />
+                </div>
+            </div>
+            <div id="statistics"
+                 className="mt-8 overflow-auto sm:rounded-lg shadow-md border flex-row text-center py-7 mt-1 text-xs w-2/3">
+                <div className="flex">
+                    <p className="flex-grow flex-1">
+                        <span className="font-bold">Aktuell</span><br/>
+                        {moment().format("DD.MM.YYYY")}</p>
+                    <p className="flex-grow flex-1">
+                        <span className="font-bold">Gesamtmenge aller eMSS<br/></span>
+                        {machinesData ? machinesData.reduce( function(a: any, b: any){
+                            return a + (b['lastIndicate']);
+                        }, 0) + " kg": ""}
+                    </p>
+                    <p className="flex-grow flex-1">
+                        <span className="font-bold">Erlös<br/></span>
+                        {machinesData ? machinesData.reduce( function(a: any, b: any){
+                            return a + (b['lastIndicate'] *
+                                // @ts-ignore
+                                parseInt(b.price_list.prices[moment().year()][monthsList[moment().month()]]) / 1000);
+                        }, 0).toFixed(2).replace("." , ",") + " €": ""}
+                    </p>
+                </div>
+                <hr className="my-5 mx-10"/>
+                <div className="flex">
+                    <p className="flex-grow flex-1">
+                        <span className="font-bold">lfd. Monat</span><br/>
+                        {// @ts-ignore
+                            monthsList[moment().month()]} {moment().year()}</p>
+                    <p className="flex-grow flex-1">
+                        <span className="font-bold">Gesamtmenge aller eMSS<br/></span>0 kg</p>
+                    <p className="flex-grow flex-1">
+                        <span className="font-bold">Gesamterlöse<br/></span>0 €</p>
                 </div>
             </div>
         </div>

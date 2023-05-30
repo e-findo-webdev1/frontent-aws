@@ -412,7 +412,8 @@ const MasterData = () => {
             <div className="mb-10">
                 {data ? data.map((data: any) =>
                     <div key={data.client_id} className="text-xs space-y-2.5">
-                        <p><span className="font-bold">KundenNr.:</span> {data.client_id}</p>
+                        <p><span className="font-bold">KundenNr.:</span> {sessionStorage.getItem('company') ?
+                        JSON.parse(sessionStorage.getItem('company') as string).client_number : ""}</p>
                         <p><span className="font-bold">Firma:</span> {data.client_name}<br/></p>
                         <p><span className="font-bold">PLZ:</span> {data.zip_code}<br/></p>
                         <p><span className="font-bold">Stadt:</span> {data.city}<br/></p>
