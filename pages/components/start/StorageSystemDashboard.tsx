@@ -568,7 +568,7 @@ const StorageSystemDashboard = () => {
                         {moment().format("DD.MM.YYYY")}</p>
                     <p className="flex-grow flex-1">
                         <span className="font-bold">Gesamtmenge aller eMSS<br/></span>
-                        {machinesData ? machinesData.reduce( function(a: any, b: any){
+                        {machinesData && controlDocuments ? machinesData.reduce( function(a: any, b: any){
                             return a + (b['lastIndicate']);
                         }, 0) + controlDocuments.
                         filter((document: any)=>moment(document.timestamp).format("DD/MM/YYYY") ==
@@ -579,7 +579,7 @@ const StorageSystemDashboard = () => {
                     </p>
                     <p className="flex-grow flex-1">
                         <span className="font-bold">Erlös<br/></span>
-                        { machinesData ?
+                        { machinesData && controlDocuments ?
                             (machinesData.reduce( function(a: any, b: any){
                             return a + (b['lastIndicate'] *
                                 // @ts-ignore
