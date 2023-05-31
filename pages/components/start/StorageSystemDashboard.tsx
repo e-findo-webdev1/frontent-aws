@@ -36,7 +36,8 @@ const StorageSystemDashboard = () => {
             .then((response) => {
                 setShift(
                     response.data.Items
-                        .filter( (shift: any) => shift.shift_id == 10000 )[0].shifts
+                        .filter( (shift: any) => shift.shift_id
+                            == JSON.parse(sessionStorage.getItem('company') as string).client_number )[0].shifts
                 );
             })
             .catch((error) => {

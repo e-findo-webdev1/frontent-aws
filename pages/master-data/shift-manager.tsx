@@ -11,20 +11,30 @@ const ShiftManager = () => {
         client_id: 0,
         selection: {},
         shifts: {},
-        shiftHours: {}
+        shiftHours: {
+            shift1_end: "00:00",
+            shift1_start: "00:00",
+            shift2_end: "00:00",
+            shift2_start: "00:00",
+            shift3_end: "00:00",
+            shift3_start: "00:00",
+            shift4_end: "00:00",
+            shift4_start: "00:00"
+        }
     });
 
     useEffect(() => {
         const apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/shifts';
-        setClientId(JSON.parse(sessionStorage.getItem("company") as string).client_id)
+        setClientId(parseInt(JSON.parse(sessionStorage.getItem("company") as string).client_number))
         API.get(apiName)
             .then((response) => {
                 setShifts(
                     response.data.Items
-                        .filter( (shift: any) => shift.client_id == clientId )[0]
+                        .filter( (shift: any) => shift.shift_id ==
+                            JSON.parse(sessionStorage.getItem("company") as string).client_number )[0]
                 );
                 if (numberOfShifts == 0) {
-                    setNumberOfShitfs(1)
+                    setNumberOfShitfs(-1)
                 }
 
 
@@ -52,18 +62,18 @@ const ShiftManager = () => {
 
         }
         setHoursList(tempHoursList)
-        { shifts && numberOfShifts == 1
+        { shifts.shiftHours && numberOfShifts == -1
             ? setNumberOfShitfs(Object.keys(shifts.shiftHours).length/2)
             : ""
         }
 
     },[clientId, numberOfShifts]);
+
     const responseBody = { shift_id: 0, client_id: 0, selection: {}, shifts: {}, shiftHours: {} }
 
     const saveShifts = (event: any) => {
         event.preventDefault();
-        responseBody.shift_id = shifts.shift_id
-        responseBody.client_id = clientId
+        responseBody.shift_id = clientId
         responseBody.shifts = shifts.shifts
         responseBody.selection = shifts.selection
         responseBody.shiftHours = shifts.shiftHours
@@ -80,24 +90,26 @@ const ShiftManager = () => {
                 console.log(error);
             });
     }
-    console.log(numberOfShifts)
+    console.log(shifts)
 
     return(
         <div id="content-page" className="px-20 h-full overflow-auto">
                 <p className="mt-5 text-3xl font-bold mb-5">Schichten</p>
             <div className="flex-row">
                 <p className="text-sm">Anzahl Schichten:</p>
-                <select className="w-52 pl-2.5 py-0.5 appearance-none border rounded
+                { shifts.shiftHours && numberOfShifts != -1 ?
+                    <select className="w-52 pl-2.5 py-0.5 appearance-none border rounded
                                 bg-[url('https://www.svgrepo.com/show/80156/down-arrow.svg')]
                                 bg-no-repeat bg-[length:15px] [background-position-x:95%]
                                 [background-position-y:5px]"
-                        defaultValue={numberOfShifts}
-                        onChange={(e)=>setNumberOfShitfs(e.target.value)}>
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                </select>
+                            defaultValue={numberOfShifts}
+                            onChange={(e) => setNumberOfShitfs(e.target.value)}>
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                    </select>
+                : ""}
             </div>
             <div className="mt-5 sm:rounded-lg shadow-md border w-1/5 min-w-max">
                 <table className="flex-row table-auto w-full">
@@ -119,7 +131,7 @@ const ShiftManager = () => {
                                 bg-[url('https://www.svgrepo.com/show/80156/down-arrow.svg')]
                                 bg-no-repeat bg-[length:15px] [background-position-x:95%]
                                 [background-position-y:5px]"
-                                                value={shifts
+                                                value={shifts.shiftHours
                                                     ? shifts.shiftHours.shift1_start
                                                     : ""}
                                                 onChange={(e: any)=>
@@ -147,7 +159,7 @@ const ShiftManager = () => {
                                 bg-[url('https://www.svgrepo.com/show/80156/down-arrow.svg')]
                                 bg-no-repeat bg-[length:15px] [background-position-x:95%]
                                 [background-position-y:5px]"
-                                                value={shifts
+                                                value={shifts.shiftHours
                                                     ? shifts.shiftHours.shift1_end
                                                     : ""}
                                                 onChange={(e: any)=>
@@ -182,7 +194,7 @@ const ShiftManager = () => {
                                 bg-[url('https://www.svgrepo.com/show/80156/down-arrow.svg')]
                                 bg-no-repeat bg-[length:15px] [background-position-x:95%]
                                 [background-position-y:5px]"
-                                                    value={shifts
+                                                    value={shifts.shiftHours
                                                         ? shifts.shiftHours.shift1_start
                                                         : ""}
                                                     onChange={(e: any)=>
@@ -209,7 +221,7 @@ const ShiftManager = () => {
                                 bg-[url('https://www.svgrepo.com/show/80156/down-arrow.svg')]
                                 bg-no-repeat bg-[length:15px] [background-position-x:95%]
                                 [background-position-y:5px]"
-                                                    value={shifts
+                                                    value={shifts.shiftHours
                                                         ? shifts.shiftHours.shift1_end
                                                         : ""}
                                                     onChange={(e: any)=>
@@ -239,7 +251,7 @@ const ShiftManager = () => {
                                 bg-[url('https://www.svgrepo.com/show/80156/down-arrow.svg')]
                                 bg-no-repeat bg-[length:15px] [background-position-x:95%]
                                 [background-position-y:5px]"
-                                                    value={shifts
+                                                    value={shifts.shiftHours
                                                         ? shifts.shiftHours.shift2_start
                                                         : ""}
                                                     onChange={(e: any)=>
@@ -266,7 +278,7 @@ const ShiftManager = () => {
                                 bg-[url('https://www.svgrepo.com/show/80156/down-arrow.svg')]
                                 bg-no-repeat bg-[length:15px] [background-position-x:95%]
                                 [background-position-y:5px]"
-                                                    value={shifts
+                                                    value={shifts.shiftHours
                                                         ? shifts.shiftHours.shift2_end
                                                         : ""}
                                                     onChange={(e: any)=>
@@ -300,7 +312,7 @@ const ShiftManager = () => {
                                 bg-[url('https://www.svgrepo.com/show/80156/down-arrow.svg')]
                                 bg-no-repeat bg-[length:15px] [background-position-x:95%]
                                 [background-position-y:5px]"
-                                                    value={shifts
+                                                    value={shifts.shiftHours
                                                         ? shifts.shiftHours.shift1_start
                                                         : ""}
                                                     onChange={(e: any)=>
@@ -326,7 +338,7 @@ const ShiftManager = () => {
                                 bg-[url('https://www.svgrepo.com/show/80156/down-arrow.svg')]
                                 bg-no-repeat bg-[length:15px] [background-position-x:95%]
                                 [background-position-y:5px]"
-                                                    value={shifts
+                                                    value={shifts.shiftHours
                                                         ? shifts.shiftHours.shift1_end
                                                         : ""}
                                                     onChange={(e: any)=>
@@ -355,7 +367,7 @@ const ShiftManager = () => {
                                 bg-[url('https://www.svgrepo.com/show/80156/down-arrow.svg')]
                                 bg-no-repeat bg-[length:15px] [background-position-x:95%]
                                 [background-position-y:5px]"
-                                                    value={shifts
+                                                    value={shifts.shiftHours
                                                         ? shifts.shiftHours.shift2_start
                                                         : ""}
                                                     onChange={(e: any)=>
@@ -381,7 +393,7 @@ const ShiftManager = () => {
                                 bg-[url('https://www.svgrepo.com/show/80156/down-arrow.svg')]
                                 bg-no-repeat bg-[length:15px] [background-position-x:95%]
                                 [background-position-y:5px]"
-                                                    value={shifts
+                                                    value={shifts.shiftHours
                                                         ? shifts.shiftHours.shift2_end
                                                         : ""}
                                                     onChange={(e: any)=>
@@ -410,7 +422,7 @@ const ShiftManager = () => {
                                 bg-[url('https://www.svgrepo.com/show/80156/down-arrow.svg')]
                                 bg-no-repeat bg-[length:15px] [background-position-x:95%]
                                 [background-position-y:5px]"
-                                                    value={shifts
+                                                    value={shifts.shiftHours
                                                         ? shifts.shiftHours.shift3_start
                                                         : ""}
                                                     onChange={(e: any)=>
@@ -436,7 +448,7 @@ const ShiftManager = () => {
                                 bg-[url('https://www.svgrepo.com/show/80156/down-arrow.svg')]
                                 bg-no-repeat bg-[length:15px] [background-position-x:95%]
                                 [background-position-y:5px]"
-                                                    value={shifts
+                                                    value={shifts.shiftHours
                                                         ? shifts.shiftHours.shift3_end
                                                         : ""}
                                                     onChange={(e: any)=>
@@ -469,7 +481,7 @@ const ShiftManager = () => {
                                 bg-[url('https://www.svgrepo.com/show/80156/down-arrow.svg')]
                                 bg-no-repeat bg-[length:15px] [background-position-x:95%]
                                 [background-position-y:5px]"
-                                                        value={shifts
+                                                        value={shifts.shiftHours
                                                             ? shifts.shiftHours.shift1_start
                                                             : ""}
                                                         onChange={(e: any)=>
@@ -495,7 +507,7 @@ const ShiftManager = () => {
                                 bg-[url('https://www.svgrepo.com/show/80156/down-arrow.svg')]
                                 bg-no-repeat bg-[length:15px] [background-position-x:95%]
                                 [background-position-y:5px]"
-                                                        value={shifts
+                                                        value={shifts.shiftHours
                                                             ? shifts.shiftHours.shift1_end
                                                             : ""}
                                                         onChange={(e: any)=>
@@ -524,7 +536,7 @@ const ShiftManager = () => {
                                 bg-[url('https://www.svgrepo.com/show/80156/down-arrow.svg')]
                                 bg-no-repeat bg-[length:15px] [background-position-x:95%]
                                 [background-position-y:5px]"
-                                                        value={shifts
+                                                        value={shifts.shiftHours
                                                             ? shifts.shiftHours.shift2_start
                                                             : ""}
                                                         onChange={(e: any)=>
@@ -550,7 +562,7 @@ const ShiftManager = () => {
                                 bg-[url('https://www.svgrepo.com/show/80156/down-arrow.svg')]
                                 bg-no-repeat bg-[length:15px] [background-position-x:95%]
                                 [background-position-y:5px]"
-                                                        value={shifts
+                                                        value={shifts.shiftHours
                                                             ? shifts.shiftHours.shift2_end
                                                             : ""}
                                                         onChange={(e: any)=>
@@ -579,7 +591,7 @@ const ShiftManager = () => {
                                 bg-[url('https://www.svgrepo.com/show/80156/down-arrow.svg')]
                                 bg-no-repeat bg-[length:15px] [background-position-x:95%]
                                 [background-position-y:5px]"
-                                                        value={shifts
+                                                        value={shifts.shiftHours
                                                             ? shifts.shiftHours.shift3_start
                                                             : ""}
                                                         onChange={(e: any)=>
@@ -605,7 +617,7 @@ const ShiftManager = () => {
                                 bg-[url('https://www.svgrepo.com/show/80156/down-arrow.svg')]
                                 bg-no-repeat bg-[length:15px] [background-position-x:95%]
                                 [background-position-y:5px]"
-                                                        value={shifts
+                                                        value={shifts.shiftHours
                                                             ? shifts.shiftHours.shift3_end
                                                             : ""}
                                                         onChange={(e: any)=>
@@ -634,7 +646,7 @@ const ShiftManager = () => {
                                 bg-[url('https://www.svgrepo.com/show/80156/down-arrow.svg')]
                                 bg-no-repeat bg-[length:15px] [background-position-x:95%]
                                 [background-position-y:5px]"
-                                                        value={shifts
+                                                        value={shifts.shiftHours
                                                             ? shifts.shiftHours.shift4_start
                                                             : ""}
                                                         onChange={(e: any)=>
@@ -660,7 +672,7 @@ const ShiftManager = () => {
                                 bg-[url('https://www.svgrepo.com/show/80156/down-arrow.svg')]
                                 bg-no-repeat bg-[length:15px] [background-position-x:95%]
                                 [background-position-y:5px]"
-                                                        value={shifts
+                                                        value={shifts.shiftHours
                                                             ? shifts.shiftHours.shift4_end
                                                             : ""}
                                                         onChange={(e: any)=>

@@ -176,7 +176,7 @@ const MachineStorageHistory = () => {
                     //TO-DO translate time outputs to german
                 ?  machinesData[0].totalFillingTime < 60
                     ? machinesData[0].totalFillingTime + " Minuten"
-                    : "ca. " + machinesData[0].totalFillingTime + " Stunden"
+                    : "ca. " + Math.floor(machinesData[0].totalFillingTime /60) + " Stunden"
                 : "ca. 0 Stunden"}</button>
             <button className="my-3 mr-3 p-1 px-3.5 border-accent-color-1 bg-accent-color-4 hover:bg-accent-color-5
                     sm:rounded-lg shadow-md border text-xs font-semibold">

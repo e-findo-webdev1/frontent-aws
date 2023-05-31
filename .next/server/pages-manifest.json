@@ -2,6 +2,9 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
+  "/reporting": "pages/reporting.js",
+  "/machines/[id]": "pages/machines/[id].js",
+  "/": "pages/index.js",
   "/master-data/[client]": "pages/master-data/[client].js",
-  "/master-data/shift-calendar": "pages/master-data/shift-calendar.js"
+  "/reporting/control-documents": "pages/reporting/control-documents.js"
 }
