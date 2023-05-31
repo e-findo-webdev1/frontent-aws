@@ -2,7 +2,6 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/": "pages/index.js",
-  "/master-data/shift-manager": "pages/master-data/shift-manager.js",
-  "/master-data/[client]": "pages/master-data/[client].js"
+  "/master-data/[client]": "pages/master-data/[client].js",
+  "/master-data/shift-calendar": "pages/master-data/shift-calendar.js"
 }

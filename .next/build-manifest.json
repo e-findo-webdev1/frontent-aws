@@ -15,11 +15,6 @@
   ],
   "rootMainFiles": [],
   "pages": {
-    "/": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/index.js"
-    ],
     "/_app": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
@@ -35,10 +30,10 @@
       "static/chunks/main.js",
       "static/chunks/pages/master-data/[client].js"
     ],
-    "/master-data/shift-manager": [
+    "/master-data/shift-calendar": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/master-data/shift-manager.js"
+      "static/chunks/pages/master-data/shift-calendar.js"
     ]
   },
   "ampFirstPages": []

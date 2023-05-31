@@ -196,11 +196,13 @@ const ShiftCalendar = () => {
             .then((response) => {
                 setShift(
                     response.data.Items
-                        .filter( (shift: any) => shift.shift_id == 10000 )[0].shifts
+                        .filter( (shift: any) => shift.shift_id ==
+                            JSON.parse(sessionStorage.getItem('company') as string).client_number)[0].shifts
                 );
                 setSelection(
                     response.data.Items
-                        .filter( (shift: any) => shift.shift_id == 10000 )[0].selection
+                        .filter( (shift: any) => shift.shift_id ==
+                            JSON.parse(sessionStorage.getItem('company') as string).client_number )[0].selection
                 )
             })
             .catch((error) => {
@@ -223,10 +225,10 @@ const ShiftCalendar = () => {
         });
     }
 
-    const responseBody = { shift_id: "10000", selection: {}, shifts: {} }
+    const responseBody = { shift_id: JSON.parse(sessionStorage.getItem('company') as string).client_number, selection: {}, shifts: {} }
     const saveShiftCalendar = (event: any) => {
         event.preventDefault();
-        responseBody.shift_id = "10000"
+        responseBody.shift_id = parseInt(JSON.parse(sessionStorage.getItem('company') as string).client_number)
         responseBody.shifts = shifts
         responseBody.selection = selection
         sendData(responseBody)

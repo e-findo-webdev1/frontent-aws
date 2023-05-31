@@ -91,11 +91,6 @@ const MasterData = () => {
         API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/clients')
             .then((response) => {
                 setClients(response.data.Items);
-                sessionStorage.setItem("company", JSON.stringify(clients.filter((client: any)=>
-                    // @ts-ignore
-                    client.client_id == JSON.stringify(sessionStorage.getItem('user') as string).client_id)))
-                // @ts-ignore
-                window.location.reload(false);
             })
             .catch((error) => {
                 console.log(error.response);
@@ -109,6 +104,8 @@ const MasterData = () => {
         }
 
     },[pid, clientId] );
+
+
 
     const monthsList = {
         0: "Januar",
@@ -424,7 +421,10 @@ const MasterData = () => {
             <div className="mb-10">
                 {data ? data.map((data: any) =>
                     <div key={data.client_id} className="text-xs space-y-2.5">
-                        <p><span className="font-bold">KundenNr.:</span> {clients ? clients[0].client_number : ""}</p>
+                        <p><span className="font-bold">KundenNr.:</span> {clients ?
+                            clients.filter((client: any) => client.client_id ==
+                                JSON.parse(sessionStorage.getItem('company') as string).client_id)[0].client_number
+                             : ""}</p>
                         <p><span className="font-bold">Firma:</span> {data.client_name}<br/></p>
                         <p><span className="font-bold">PLZ:</span> {data.zip_code}<br/></p>
                         <p><span className="font-bold">Stadt:</span> {data.city}<br/></p>
