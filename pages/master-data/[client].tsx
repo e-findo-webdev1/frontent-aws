@@ -26,6 +26,7 @@ const MasterData = () => {
     const [shiftsReady, setShiftsReady] = useState<any>(false);
 
     const [clientId, setClientId] = useState<any>();
+    const [clients, setClients] = useState<any>();
 
     useEffect(() => {
         let apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines';
@@ -87,6 +88,19 @@ const MasterData = () => {
                 console.log(error.response);
             });
 
+        API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/clients')
+            .then((response) => {
+                setClients(response.data.Items);
+                sessionStorage.setItem("company", JSON.stringify(clients.filter((client: any)=>
+                    // @ts-ignore
+                    client.client_id == JSON.stringify(sessionStorage.getItem('user') as string).client_id)))
+                // @ts-ignore
+                window.location.reload(false);
+            })
+            .catch((error) => {
+                console.log(error.response);
+            });
+
         if (shifts && shiftsReady == false) {
             // @ts-ignore
             SHIFT_CALENDAR = capitalizeDays(shifts)
@@ -110,7 +124,6 @@ const MasterData = () => {
         10: "November",
         11: "Dezember"
     }
-
     let SHIFT_CALENDAR = {
         'Sunday': {
             'shift1': {
@@ -239,7 +252,6 @@ const MasterData = () => {
             },
         },
     };
-
     const daysOfWeek = {
         0: 'Sunday',
         1: 'Monday',
@@ -412,8 +424,7 @@ const MasterData = () => {
             <div className="mb-10">
                 {data ? data.map((data: any) =>
                     <div key={data.client_id} className="text-xs space-y-2.5">
-                        <p><span className="font-bold">KundenNr.:</span> {sessionStorage.getItem('company') ?
-                        JSON.parse(sessionStorage.getItem('company') as string).client_number : ""}</p>
+                        <p><span className="font-bold">KundenNr.:</span> {clients ? clients[0].client_number : ""}</p>
                         <p><span className="font-bold">Firma:</span> {data.client_name}<br/></p>
                         <p><span className="font-bold">PLZ:</span> {data.zip_code}<br/></p>
                         <p><span className="font-bold">Stadt:</span> {data.city}<br/></p>
