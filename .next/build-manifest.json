@@ -30,10 +30,15 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/machines/[id]": [
+    "/impressum": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/machines/[id].js"
+      "static/chunks/pages/impressum.js"
+    ],
+    "/kalkulation": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/kalkulation.js"
     ],
     "/master-data/[client]": [
       "static/chunks/webpack.js",
@@ -44,11 +49,6 @@
       "static/chunks/webpack.js",
       "static/chunks/main.js",
       "static/chunks/pages/reporting.js"
-    ],
-    "/reporting/control-documents": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/reporting/control-documents.js"
     ]
   },
   "ampFirstPages": []

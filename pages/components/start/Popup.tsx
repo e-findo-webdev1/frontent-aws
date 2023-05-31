@@ -52,6 +52,7 @@ const Popup = ({machineID, pickupDate, setPickupDates, setMachineID, setPickupDa
             isDateConfirmed: radioConfirmed,
             lastIndicate: machineData.lastIndicate,
             lastTara: machineData.lastTara,
+            price_list: machineData.price_list,
         }
 
         let newDates = newPickupDates.filter((obj:any) =>
