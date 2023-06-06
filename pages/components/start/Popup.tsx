@@ -5,7 +5,7 @@ import {useState} from "react";
 
 const Popup = ({machineID, pickupDate, setPickupDates, setMachineID, setPickupDate, pickupDates, machinesData,
                   areDatesConfirmed, setAreDatesConfirmed, setNewPickupDates, newPickupDates, radioConfirmed,
-                   setRadioConfirmed}: any) => {
+                   setRadioConfirmed, popup, setPopup}: any) => {
 
     const [displayedDate, setDisplayedDate] = useState<any>()
 
@@ -96,7 +96,7 @@ const Popup = ({machineID, pickupDate, setPickupDates, setMachineID, setPickupDa
 
     return(
         <div id="popup"
-             className={ machineID != ""
+             className={ machineID != "" && popup
                  ? "text-sm bg-white w-1/3 sm:rounded-lg shadow-md border p-5 space-y-4 " +
                  "fixed -mt-64 left-0 right-0 m-auto"
                  : "hidden" }>

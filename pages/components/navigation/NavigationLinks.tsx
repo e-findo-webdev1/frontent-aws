@@ -10,7 +10,7 @@ const navigationLinks = [
     },
     {
         name: "Stammdaten",
-        link: "/master-data/0",
+        link: "/master-data",
         image: ""
     },
     //{

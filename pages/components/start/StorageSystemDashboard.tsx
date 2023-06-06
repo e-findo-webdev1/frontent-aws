@@ -5,6 +5,7 @@ import API from "axios";
 import moment from "moment";
 import Popup from "./Popup";
 import "react-datepicker/dist/react-datepicker.css";
+import PopupFilling from "./PopupFilling";
 
 const StorageSystemDashboard = () => {
     const [machinesData, setMachinesData] = useState<any>();
@@ -18,6 +19,9 @@ const StorageSystemDashboard = () => {
     const [areDatesConfirmed, setAreDatesConfirmed] = useState<[]>([]);
     const [radioConfirmed, setRadioConfirmed] = useState<any>("");
     const [controlDocuments, setControlDocuments] = useState<any>();
+    const [popupFilling, setPopupFilling] = useState<any>(false);
+    const [popup, setPopup] = useState<any>(false);
+    const [contractors, setContractors] = useState<any>();
 
     useEffect(() => {
         let apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines';
@@ -58,6 +62,16 @@ const StorageSystemDashboard = () => {
                 .catch((error) => {
                     console.log(error.response);
                 });
+
+        API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/contractors')
+            .then((response) => {
+                setContractors(
+                    response.data.Items
+                );
+            })
+            .catch((error) => {
+                console.log(error.response);
+            });
 
     }, [pickupDates]);
 
@@ -404,25 +418,55 @@ const StorageSystemDashboard = () => {
                                             <span>{machine.maxNetto} kg</span></td>
                                         <td>{machine.waretype}</td>
                                         <td className="flex py-4">
-                                            <div className="border border-black bg-white w-32 mr-1.5">
+                                            <a className={ machine.total_working_time != 0
+                                                ? "cursor-pointer flex"
+                                                : "pointer-events-none flex"}
+                                               onClick={()=>
+                                               {
+                                                   setPopupFilling(true)
+                                                   setMachineID(machine.machine_id)
+                                                   if (machinesData && machinesData.filter((obj: any) =>
+                                                   {return obj.machine_id == machine.machine_id})[0]
+                                                       .pickup_date != "") {
+                                                       setPickupDate(moment(machinesData.filter((obj: any) =>
+                                                       {return obj.machine_id == machine.machine_id})[0].pickup_date))
+                                                   } else if (pickupDates) {
+                                                       setPickupDate(pickupDates
+                                                           .filter((obj:any) =>
+                                                           {return obj.machineID===machine.machine_id})[0]
+                                                           // @ts-ignore
+                                                           .taskEnd)
+                                                   }
 
-                                                <div
-                                                    // @ts-ignore
-                                                    className={ (machine.lastIndicate) * 100
-                                                    / machine.maxNetto > 0
-                                                    ? getFillerStyle(
-                                                    (machine.lastIndicate) * 100
-                                                    / machine.maxNetto
-                                                    )
-                                                    : 0
-                                                }/>
-                                            </div>
-                                            { parseInt(((machine.lastIndicate) * 100
-                                                / machine.maxNetto).toFixed(0)) > 0
-                                                ?
-                                                ((machine.lastIndicate) * 100
-                                                / machine.maxNetto).toFixed(0)
-                                                : 0}%</td>
+                                                   setIsDateConfirmed(machinesData.filter((obj: any) =>
+                                                   {return obj.machine_id == machine.machine_id})[0]
+                                                       .isDateConfirmed)
+                                                   setRadioConfirmed(machinesData.filter((obj: any) =>
+                                                   {return obj.machine_id == machine.machine_id})[0]
+                                                       .isDateConfirmed)
+                                               }
+                                               }>
+                                                <div className="border border-black bg-white w-32 mr-1.5">
+
+                                                    <div
+                                                        // @ts-ignore
+                                                        className={ (machine.lastIndicate) * 100
+                                                        / machine.maxNetto > 0
+                                                        ? getFillerStyle(
+                                                        (machine.lastIndicate) * 100
+                                                        / machine.maxNetto
+                                                        )
+                                                        : 0
+                                                    }/>
+                                                </div>
+                                                { parseInt(((machine.lastIndicate) * 100
+                                                    / machine.maxNetto).toFixed(0)) > 0
+                                                    ?
+                                                    ((machine.lastIndicate) * 100
+                                                    / machine.maxNetto).toFixed(0)
+                                                    : 0}%
+                                                </a>
+                                            </td>
                                         <td>
                                             {
                                                 <span>
@@ -443,6 +487,7 @@ const StorageSystemDashboard = () => {
                                                         : "underline pointer-events-none flex"}
                                                     onClick={()=>
                                                     {
+                                                        setPopup(true)
                                                         setMachineID(machine.machine_id)
                                                         if (machinesData && machinesData.filter((obj: any) =>
                                                         {return obj.machine_id == machine.machine_id})[0]
@@ -539,6 +584,26 @@ const StorageSystemDashboard = () => {
                         }
                         </tbody>
                     </table>
+                    <PopupFilling
+                        machineID={machineID}
+                        pickupDate={pickupDate}
+                        setMachineID={setMachineID}
+                        setPickupDate={setPickupDate}
+                        setPickupDates={setPickupDates}
+                        pickupDates={pickupDates}
+                        machinesData={machinesData}
+                        isDateConfirmed={isDateConfirmed}
+                        setIsDateConfirmed={setIsDateConfirmed}
+                        setNewPickupDates={setNewPickupDates}
+                        newPickupDates={newPickupDates}
+                        areDatesConfirmed={areDatesConfirmed}
+                        setAreDatesConfirmed={setAreDatesConfirmed}
+                        radioConfirmed={radioConfirmed}
+                        setRadioConfirmed={setRadioConfirmed}
+                        popupFilling={popupFilling}
+                        setPopupFilling={setPopupFilling}
+                        contractors = {contractors}
+                    />
                     <Popup
                         machineID={machineID}
                         pickupDate={pickupDate}
@@ -555,6 +620,8 @@ const StorageSystemDashboard = () => {
                         setAreDatesConfirmed={setAreDatesConfirmed}
                         radioConfirmed={radioConfirmed}
                         setRadioConfirmed={setRadioConfirmed}
+                        popup={popup}
+                        setPopup={setPopup}
                     />
                 </div>
             </div>
