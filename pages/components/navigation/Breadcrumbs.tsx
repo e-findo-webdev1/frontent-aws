@@ -51,10 +51,17 @@ const Breadcrumbs = () => {
                                 .replace("edit-client", "master-data/edit-client/" + clientId)
                                 .replace("new-machine", "master-data/new-machine")
                                 .replace("shift-manager", "master-data/shift-manager")
+                                .replace("edit-machine", "master-data/edit-machine/" + pid.id)
                                 .replace("[client]", "")
                             }>
-                                <a className="inline-flex items-center text-sm font-medium text-gray-700
-                                hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
+                                <a className={
+                                    route == "[id]"
+                                        ? "inline-flex items-center text-sm font-medium text-gray-700" +
+                                        "hover:text-gray-900 dark:text-gray-400 dark:hover:text-white" +
+                                        "pointer-events-none"
+                                        : "inline-flex items-center text-sm font-medium text-gray-700" +
+                                        "hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"}
+                                    >
                                     { pid ?
                                         route
                                             .replace("-", " ")

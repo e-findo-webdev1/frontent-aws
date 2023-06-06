@@ -9,9 +9,11 @@ const EditMachine = () => {
 
     const [data, setData] = useState({
         machine_id: 0, machineType: "", machineName: "", group: "", waretype: "", quality: "",
-        index: "", maxNetto: 0, minContainer: 0, maxContainer: 0, averageThroughput: 0, manualTara: "",
+        index: "", maxNetto: 0, minContainer_weight: 0, maxContainer_weight: 0, averageThroughput: 0, manualTara: 0,
         minForFullStart: 0, newFT111: false, automaticTara: false, fillingType: "", plandateCalculation: "", status: "",
-        client: ""
+        client: "", averageThroughputLastHour: 0, isDateConfirmed: false, lastFilling: 0, lastIndicate: 0,
+        lastStandstill: 0, lastTara: 0, pickup_date: "", price_list: {}, tenLastIndicates: 0, totalFillingTime: 0,
+        totalStandstill: 0
         }
     );
     const [waretypes, setWaretypes] = useState<any>();
@@ -75,32 +77,71 @@ const EditMachine = () => {
 
     }, [data.index] );
 
-    const responseBody = {machine_id: 0, machineType: "", machineName: "", group: "", waretype: "", quality: "",
-    index: "", maxNetto: 0, minContainer: 0, maxContainer: 0, averageThroughput: 0, manualTara: "", minForFullStart: 0,
-    newFT111: false, automaticTara: false, fillingType: "", plandateCalculation: "", status: "", client: ""}
+    const responseBody = {
+        automaticTara: false,
+        averageThroughput: 0,
+        averageThroughputLastHour: 0,
+        client: "",
+        fillingType: "",
+        group: "",
+        index: "",
+        isDateConfirmed: false,
+        lastFilling: 0,
+        lastIndicate: 0,
+        lastStandstill: 0,
+        lastTara: 0,
+        machineName: "",
+        machineType: "",
+        machine_id: 0,
+        manualTara: 0,
+        maxContainer_weight: 0,
+        maxNetto: 0,
+        minContainer_weight: 0,
+        minForFullStart: 0,
+        newFT111: false,
+        pickup_date: "",
+        plandateCalculation: "",
+        price_list: {},
+        quality: "",
+        status: "",
+        tenLastIndicates: 0,
+        totalFillingTime: 0,
+        totalStandstill: 0,
+        waretype: ""
+    }
 
     const onSubmitHandler = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        responseBody.automaticTara = data.automaticTara
+        responseBody.averageThroughput = data.averageThroughput
+        responseBody.averageThroughputLastHour = data.averageThroughputLastHour
+        responseBody.client = data.client
+        responseBody.fillingType = data.fillingType
+        responseBody.group = data.group
+        responseBody.index = data.index
+        responseBody.isDateConfirmed = data.isDateConfirmed
+        responseBody.lastFilling = data.lastFilling
+        responseBody.lastIndicate = data.lastIndicate
+        responseBody.lastStandstill = data.lastStandstill
+        responseBody.lastTara = data.lastTara
+        responseBody.machineName = data.machineName
+        responseBody.machineType = data.machineType
         responseBody.machine_id = data.machine_id
-        responseBody.machineType =  data.machineType
-        responseBody.machineName =  data.machineName
-        responseBody.group =  data.group
-        responseBody.waretype =  data.waretype
-        responseBody.quality =  data.quality
-        responseBody.index =  data.index
-        responseBody.maxNetto =  data.maxNetto
-        responseBody.minContainer =  data.minContainer
-        responseBody.maxContainer =  data.maxContainer
-        responseBody.averageThroughput =  data.averageThroughput
-        responseBody.manualTara =  data.manualTara
-        responseBody.minForFullStart =  data.minForFullStart
-        responseBody.newFT111 =  data.newFT111
-        responseBody.automaticTara =  data.automaticTara
-        responseBody.fillingType =  data.fillingType
-        responseBody.plandateCalculation =  data.plandateCalculation
-        responseBody.status =  data.status
-        responseBody.client =  data.client
-        console.log(responseBody)
+        responseBody.manualTara = data.manualTara
+        responseBody.maxContainer_weight = data.maxContainer_weight
+        responseBody.maxNetto = data.maxNetto
+        responseBody.minContainer_weight = data.minContainer_weight
+        responseBody.minForFullStart = data.minForFullStart
+        responseBody.newFT111 = data.newFT111
+        responseBody.pickup_date = data.pickup_date
+        responseBody.plandateCalculation = data.plandateCalculation
+        responseBody.price_list = data.price_list
+        responseBody.quality = data.quality
+        responseBody.status = data.status
+        responseBody.tenLastIndicates = data.tenLastIndicates
+        responseBody.totalFillingTime = data.totalFillingTime
+        responseBody.totalStandstill = data.totalStandstill
+        responseBody.waretype = data.waretype
         sendData(responseBody)
     }
 
@@ -141,7 +182,7 @@ const EditMachine = () => {
                             <td className="p-1 pl-3">Durchsatz Durchschnitt</td>
                             <td className="p-1 pl-0">
                                 <input className="border rounded w-full pl-2.5 py-0.5"
-                                       defaultValue={data ? data.averageThroughput : ''}
+                                       value={data ? Math.floor(data.averageThroughput) : ''}
                                        onChange={(e)=>
                                            setData({...data, averageThroughput: parseInt(e.target.value)})}/>
                             </td>
@@ -164,9 +205,9 @@ const EditMachine = () => {
                             <td className="p-1 pl-3">Man. Tara (Maschine)</td>
                             <td className="p-1 pl-0">
                                 <input className="border rounded w-full pl-2.5 py-0.5"
-                                       defaultValue={data ? data.manualTara : '0'}
+                                       value={data ? data.manualTara : '0'}
                                        onChange={(e)=>
-                                           setData({...data, manualTara: e.target.value})}/>
+                                           setData({...data, manualTara: parseInt(e.target.value)})}/>
                             </td>
                         </tr>
                         <tr>
@@ -304,8 +345,8 @@ const EditMachine = () => {
                             <td className="p-1 pl-0">Max Netto</td>
                             <td className="p-1 pl-0">
                                 <input className="border rounded w-full pl-2.5 py-0.5"
-                                       defaultValue={data ? data.maxNetto : 0}
-                                       onChange={(e)=>
+                                       value={data ? data.maxNetto : 0}
+                                       onChange={ (e)=>
                                            setData({...data, maxNetto: parseInt(e.target.value)})}/>
                             </td>
                             <td className="p-1 pl-3">Status</td>
@@ -333,9 +374,9 @@ const EditMachine = () => {
                             <td className="p-1 pl-0">Min Container Gewicht</td>
                             <td className="p-1 pl-0">
                                 <input className="border rounded w-full pl-2.5 py-0.5"
-                                       defaultValue={data ? data.minContainer : 0}
+                                       value={data ? data.minContainer_weight : 0}
                                        onChange={(e)=>
-                                           setData({...data, minContainer: parseInt(e.target.value)})}/>
+                                           setData({...data, minContainer_weight: parseInt(e.target.value)})}/>
                             </td>
                             <td className="p-1 pl-3">Kunde</td>
                             <td className="p-1 pl-0">
@@ -356,9 +397,9 @@ const EditMachine = () => {
                             <td className="p-1 pl-0">Max Container Gewicht</td>
                             <td className="p-1 pl-0">
                                 <input className="border rounded w-full pl-2.5 py-0.5"
-                                       defaultValue="0"
+                                       value={data ? data.maxContainer_weight : 0}
                                        onChange={(e)=>
-                                           setData({...data, maxContainer: parseInt(e.target.value)})}/>
+                                           setData({...data, maxContainer_weight: parseInt(e.target.value)})}/>
                             </td>
                         </tr>
                         <tr>

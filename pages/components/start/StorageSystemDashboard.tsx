@@ -61,8 +61,6 @@ const StorageSystemDashboard = () => {
 
     }, [pickupDates]);
 
-
-
     let SHIFT_CALENDAR = {
         'Sunday': {
             'shift1': {
@@ -219,7 +217,6 @@ const StorageSystemDashboard = () => {
 
         return capitalizedCalendar;
     }
-
     const returnFirstShift = (taskStart: any) => {
         let currentDate = moment(taskStart.format('L'))
         // @ts-ignore
@@ -349,7 +346,7 @@ const StorageSystemDashboard = () => {
         SHIFT_CALENDAR = capitalizeDays(shifts)
         for (let machine in machinesData) {
             const machineID = machinesData[machine].machine_id
-            const averageThroughput = machinesData[machine].averageThroughput
+            const averageThroughput = machinesData[machine].averageThroughputInLastHour
             const currentNetto = machinesData[machine].lastTara
             const maxNetto = machinesData[machine].maxNetto
             const workingHours = (maxNetto-currentNetto)/averageThroughput

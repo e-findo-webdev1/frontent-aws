@@ -165,10 +165,11 @@ const MachineStorageHistory = () => {
             <button className="my-3 mr-3 p-1 px-3.5 border-accent-color-1 bg-accent-color-4 hover:bg-accent-color-5
                     sm:rounded-lg shadow-md border text-xs font-semibold">
                 Zeit seit Stellung: {
-                machinesData.length != 0 && machinesData[0].timeOfContainerTara != 0
+                machinesData.length != 0 && machinesData[0].timeOfContainerTara != 0 &&
+                machinesData[0].timeOfContainerTara
                     //TO-DO translate time outputs to german
                     ? "ca. " + moment(machinesData[0].timeOfContainerTara).fromNow()
-                    : "ca . 0 Stunden"}</button>
+                    : "ca. 0 Stunden"}</button>
             <button className="my-3 mr-3 p-1 px-3.5 border-accent-color-1 bg-accent-color-4 hover:bg-accent-color-5
                     sm:rounded-lg shadow-md border text-xs font-semibold">
                 Füllzeit seit Stellung: {
