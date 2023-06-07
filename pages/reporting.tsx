@@ -23,9 +23,11 @@ const Reporting = () => {
                         Abfallbilanz</button>
                 </div>
                 <div className="m-x-auto space-y-12">
-                    <button className="w-full p-3.5 w-full p-3.5 bg-gray-100 cursor-default
-                    sm:rounded-lg shadow-md border">
-                        Monatsauswertung</button>
+                    <Link href="/reporting/monthly-evaluation">
+                        <button className="w-full p-3.5 border-accent-color-1 bg-accent-color-4 hover:bg-accent-color-5
+                        sm:rounded-lg shadow-md border">
+                            Monatsauswertung</button>
+                    </Link>
                         <button className="w-full p-3.5 w-full p-3.5 bg-gray-100 cursor-default
                     sm:rounded-lg shadow-md border">
                             Jahresauswertung</button>

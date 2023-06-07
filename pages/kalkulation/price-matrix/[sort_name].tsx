@@ -23,7 +23,7 @@ const PriceMatrix = () => {
                 'September': {},
                 'Oktober': {},
                 'November': {},
-                'Dezember:': {}
+                'Dezember': {}
             },
         }
     );
@@ -39,7 +39,7 @@ const PriceMatrix = () => {
             'September': {},
             'Oktober': {},
             'November': {},
-            'Dezember:': {}
+            'Dezember': {}
     });
 
     const router = useRouter()

@@ -1,13 +1,15 @@
 import {useEffect, useState} from "react";
 import API from "axios";
 import Link from "next/link";
-import {machine} from "os";
+import moment from "moment";
 
 const MasterDataSummary = () => {
     const [machinesData, setMachinesData] = useState<any>();
     const [clients, setClients] = useState<any>();
     const [materials, setMaterials] = useState<any>();
     const [machineTypes, setMachineTypes] = useState<any>();
+    const [priceMatrices, setPriceMatrices] = useState<any>();
+    const [contractors, setContractors] = useState<any>();
 
 
     useEffect(() => {
@@ -45,7 +47,38 @@ const MasterDataSummary = () => {
                 console.log(error); //
             });
 
+        API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/price-matrices')
+            .then((response) => {
+                setPriceMatrices(response.data.Items)
+            })
+            .catch((error) => {
+                console.log(error); //
+            });
+
+        API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/contractors')
+            .then((response) => {
+                setContractors(response.data.Items)
+            })
+            .catch((error) => {
+                console.log(error); //
+            });
+
     }, []);
+
+    const monthsList = [
+        "Januar",
+        "Februar",
+        "März",
+        "April",
+        "Mai",
+        "Juni",
+        "Juli",
+        "August",
+        "September",
+        "Oktober",
+        "November",
+        "Dezember"
+    ]
 
     return (
         <div id="content-page" className="px-24 h-full overflow-auto">
@@ -164,7 +197,7 @@ const MasterDataSummary = () => {
                     <Link href="/">
                         <button className="border float-right p-1.5 px-3.5 font-bold border-accent-color-1
                             bg-accent-color-4
-                    hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs ml-2">+ Neuer Index</button>
+                    hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs ml-2 mt-7">+ Neuer Index</button>
                     </Link>
                     <p className="text-2xl font-bold mb-5 mt-5">Indexe</p>
                     <div className="sm:rounded-lg shadow-md overflow-auto h-full"></div>
@@ -177,9 +210,43 @@ const MasterDataSummary = () => {
                             </tr>
                             </thead>
                             <tbody className="bg-gray-50">
-                            <tr>
-                                <td></td>
-                            </tr>
+                            { priceMatrices ?
+                                priceMatrices.map((priceMatrix: any) =>
+                                            priceMatrix.indeces ?
+                                                    priceMatrix.indeces.map((index: any) =>
+                                                        <tr key={priceMatrix.price_matrix + index}
+                                                            className="text-xs text-gray-500 border-b text-left">
+                                                            <td className="underline">
+                                                                {priceMatrix.indexgroup_name + " - "
+                                                                    + priceMatrix.price_matrix + " - " + index}
+                                                            </td>
+                                                            <td>
+                                                                {
+                                                                    priceMatrix.prices ?
+                                                                            priceMatrix.prices
+                                                                                [monthsList[moment().month()]]
+                                                                                [index].toFixed(2) + " €"
+                                                                        : "0.00 €"
+                                                                }
+                                                            </td>
+                                                        </tr>
+                                                  )
+                                                : <tr key={priceMatrix.indexgroup_name}
+                                                    className="text-xs text-gray-500 border-b text-left">
+                                                <td className="underline">
+                                                    {priceMatrix.indexgroup_name + " - " +
+                                                    priceMatrix.price_matrix}
+                                                </td>
+                                                <td>
+                                                    {
+                                                        priceMatrix.prices ?
+                                                            "0.01 €"
+                                                            : "0.00 €"
+                                                    }
+                                                </td>
+                                                </tr>
+                                )
+                            : ""}
                             </tbody>
                         </table>
                     </div>
@@ -273,9 +340,18 @@ const MasterDataSummary = () => {
                                 </tr>
                                 </thead>
                                 <tbody className="bg-gray-50">
-                                    <tr>
-                                    <td></td>
-                                    </tr>
+                                {
+                                    contractors ?
+                                        contractors.map((contractor: any) =>
+                                        <tr key={contractor.contractor_id}
+                                            className="text-xs text-gray-500 border-b text-left">
+                                            <td>
+                                                {contractor.contractor_name}
+                                            </td>
+                                        </tr>
+                                        )
+                                        : ""
+                                }
                                 </tbody>
                             </table>
                         </div>
