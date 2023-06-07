@@ -87,21 +87,21 @@ const ControlDocuments = () => {
                                         : ''}
                                     sort = {
                                     machines != undefined
-                                    && waretypes != undefined
+                                    && waretypes
                                         ? waretypes.filter((ware: any) =>
-                                            ware.name_waretype == document.waretype)[0].waretype_number
+                                            ware.name_waretype == document.waretype).waretype_number
                                         : ''}
                                 />
 
                             </td>
                             <td>{company.client_number}-<br/>{parseInt(company.client_number) + document.document_id}</td>
-                            <td>{moment(document.timestamp).format('DD.MM.yyyy')}</td>
+                            <td>{moment(document.timestamp).format('DD.MM.yyyy HH:mm')}</td>
                             <td>{document.waretype}</td>
                             <td>{document.brutto}</td>
                             <td>{document.tara}</td>
                             <td>{document.netto}</td>
                             <td>{(document.totalStandstill/3600000).toFixed(2)}h</td>
-                            <td>{(document.totalProductionTime/60).toFixed(2)}h</td>
+                            <td>{(document.totalProductionTime/3600000).toFixed(2)}h</td>
                             <td>{controlDocuments ? (document.averageThroughput).toFixed(2) : ''}</td>
                             <td>{}</td>
                             <td><img className="h-5" src="/upload-svgrepo-com.svg"/></td>

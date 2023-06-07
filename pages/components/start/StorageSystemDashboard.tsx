@@ -669,7 +669,7 @@ const StorageSystemDashboard = () => {
                             monthsList[moment().month()]} {moment().year()}</p>
                     <p className="flex-grow flex-1">
                         <span className="font-bold">Gesamtmenge aller eMSS<br/></span>
-                        {controlDocuments ? controlDocuments.
+                        {machinesData && controlDocuments ? controlDocuments.
                             filter((document: any)=>moment(document.timestamp).month() == moment().month()).
                         reduce( function(a: any, b: any){
                             return a + (b['netto'])
