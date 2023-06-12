@@ -3,6 +3,9 @@ import API from "axios";
 import moment from "moment";
 import Link from "next/link";
 import Chart from 'chart.js/auto';
+import PDF from "../components/helpers/pdf";
+import PDFLink from "../components/helpers/pdfLink";
+import Proforma from "../components/helpers/proforma";
 
 const dataYear2022: any = []
 
@@ -163,7 +166,7 @@ const MonthlyEvaluation = () => {
             <p className="mt-5 text-xs uppercase font-bold text-gray-500">Gewichtentwicklung</p>
             <div className="mb-10 mt-5 w-10/12" id="line-chart"/>
             <div className="mb-10 mt-5 w-10/12" id="line-chart2"/>
-            <div className="sm:rounded-lg shadow-md  w-full overflow-auto">
+            <div className="sm:rounded-lg shadow-md  w-full overflow-auto mb-10">
             <div className="rounded-lg shadow-md border w-max">
                 <table className="table-auto w-full">
                     <thead>
@@ -204,21 +207,38 @@ const MonthlyEvaluation = () => {
                                         {moment(document.endOfCycle).format('DD.MM.YYYY HH:mm')}
                                 </td>
                                 <td>
-                                    <span className="underline">
-                                       {
-                                           JSON.parse(sessionStorage.getItem('company') as string).client_number
-                                       }-
-                                        {
-                                            parseInt(
-                                                JSON.parse(
-                                                    sessionStorage.getItem('company') as string).client_number)
-                                            + document.document_id
+                                    <PDFLink
+                                        document_id = {document.document_id}
+                                        brutto = {document.brutto}
+                                        netto = {document.netto}
+                                        timestamp = {document.timestamp}
+                                        tara = {document.tara}
+                                        machine_id = {document.machine_id}
+                                        company = {JSON.parse(sessionStorage.getItem('company') as string)}
+                                        waretype = {document.waretype}
+                                        sort = {
+                                            waretypes.filter((ware: any) =>
+                                                ware.name_waretype == document.waretype)[0].waretype_number
                                         }
-                                    </span>
-                                    <br/>
+                                    />
                                     {document.machine_id}
                                 </td>
-                                <td/>
+                                <td>
+                                    <PDF
+                                        document_id = {document.document_id}
+                                        brutto = {document.brutto}
+                                        netto = {document.netto}
+                                        timestamp = {document.timestamp}
+                                        tara = {document.tara}
+                                        machine_id = {document.machine_id}
+                                        company = {JSON.parse(sessionStorage.getItem('company') as string)}
+                                        waretype = {document.waretype}
+                                        sort = {
+                                                waretypes.filter((ware: any) =>
+                                                    ware.name_waretype == document.waretype)[0].waretype_number
+                                                }
+                                    />
+                                </td>
                                 <td>
                                     {document.waretype}<br/>
                                     {waretypes.filter((item: any) =>
@@ -255,8 +275,21 @@ const MonthlyEvaluation = () => {
                                 <td className="text-right">
 
                                 </td>
-                                <td className="underline">
-                                    Rechnung
+                                <td>
+                                    <Proforma
+                                        document_id = {document.document_id}
+                                        brutto = {document.brutto}
+                                        netto = {document.netto}
+                                        timestamp = {document.timestamp}
+                                        tara = {document.tara}
+                                        machine_id = {document.machine_id}
+                                        company = {JSON.parse(sessionStorage.getItem('company') as string)}
+                                        waretype = {document.waretype}
+                                        sort = {
+                                            waretypes.filter((ware: any) =>
+                                                ware.name_waretype == document.waretype)[0].waretype_number
+                                        }
+                                    />
                                 </td>
                                 <td>
 

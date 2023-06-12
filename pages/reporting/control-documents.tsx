@@ -92,7 +92,6 @@ const ControlDocuments = () => {
                                             ware.name_waretype == document.waretype).waretype_number
                                         : ''}
                                 />
-
                             </td>
                             <td>{company.client_number}-<br/>{parseInt(company.client_number) + document.document_id}</td>
                             <td>{moment(document.timestamp).format('DD.MM.yyyy HH:mm')}</td>
