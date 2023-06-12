@@ -31,6 +31,20 @@ const StorageSystemDashboard = () => {
                 setMachinesData(response.data.Items
                     .filter((machine: { client: string; }) =>
                         machine.client == "e-findo GmbH"));
+                API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/control-documents')
+                    .then((response) => {
+                        setControlDocuments(
+                            response.data.Items
+                                .filter( (document: any) =>
+                                    machinesData.reduce( function(a: any, b: any){
+                                        return [] + (b['machine_id']);
+                                    }).includes(document.machine_id)
+                                )
+                        );
+                    })
+                    .catch((error) => {
+                        console.log(error.response);
+                    });
             })
             .catch((error) => {
                 console.log(error); //
@@ -48,20 +62,7 @@ const StorageSystemDashboard = () => {
                 console.log(error.response);
             });
 
-        API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/control-documents')
-                .then((response) => {
-                    setControlDocuments(
-                        response.data.Items
-                            .filter( (document: any) =>
-                                machinesData.reduce( function(a: any, b: any){
-                                    return [] + (b['machine_id']);
-                                }).includes(document.machine_id)
-                            )
-                    );
-                })
-                .catch((error) => {
-                    console.log(error.response);
-                });
+
 
         API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/contractors')
             .then((response) => {

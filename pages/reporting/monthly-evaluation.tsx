@@ -21,9 +21,11 @@ const MonthlyEvaluation = () => {
         "November",
         "Dezember"
     ]
+
     const [dataset, setDataset] = useState<any>(dataYear2022);
-    const [machinesData, setMachinesData] = useState<any>();
-    const [controlDocuments, setControlDocuments] = useState<any>();
+    const [machinesData, setMachinesData] = useState<any>([0]);
+    const [controlDocuments, setControlDocuments] = useState<any>({set: false});
+    const [waretypes, setWaretypes] = useState<any>();
     const [year, setYear] = useState<any>(moment().year());
     const [month, setMonth] = useState<any>(monthsList[moment().month()])
 
@@ -33,20 +35,32 @@ const MonthlyEvaluation = () => {
         API.get(apiName)
             .then((response) => {
                 setMachinesData(response.data.Items.filter((machine: any)=>
-                    machine.client == JSON.parse(sessionStorage.getItem('company') as string).client_name))
+                    machine.client == JSON.parse(sessionStorage.getItem('company') as string).client_name));
+                API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/control-documents')
+                    .then((response) => {
+                        setControlDocuments(
+                            response.data.Items
+                                .filter( (document: any) =>
+                                    machinesData.reduce( function(a: any, b: any){
+                                        return a + (b['machine_id']);
+                                    }, []).includes(document.machine_id)
+                                )
+                        );
+                    })
+                    .catch((error) => {
+                        console.log(error.response);
+                    });
             })
             .catch((error) => {
                 console.log(error); //
             });
 
-        API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/control-documents')
+        API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/waretypes')
             .then((response) => {
-                setControlDocuments(response.data.Items.filter((controlDocument: any)=>
-                    controlDocument.client_id ==
-                    JSON.parse(sessionStorage.getItem('company') as string).client_id))
+                setWaretypes(response.data.Items);
             })
             .catch((error) => {
-                console.log(error); //
+                console.log(error.response);
             });
 
         const labels = [
@@ -99,7 +113,7 @@ const MonthlyEvaluation = () => {
             config
         );
 
-    }, []);
+    }, [controlDocuments.set]);
 
     return(
         <div id="content-page" className="overflow-auto h-full px-24">
@@ -149,15 +163,16 @@ const MonthlyEvaluation = () => {
             <p className="mt-5 text-xs uppercase font-bold text-gray-500">Gewichtentwicklung</p>
             <div className="mb-10 mt-5 w-10/12" id="line-chart"/>
             <div className="mb-10 mt-5 w-10/12" id="line-chart2"/>
-            <div className="sm:rounded-lg shadow-md border">
-                <table className="flex-row w-full table-auto overflow-auto">
+            <div className="sm:rounded-lg shadow-md  w-full overflow-auto">
+            <div className="rounded-lg shadow-md border w-max">
+                <table className="table-auto w-full">
                     <thead>
                     <tr className="text-xs text-gray-500 text-right border-b">
-                        <th className="font-normal">Datum</th>
-                        <th className="font-normal text-right">Wiege-Nr.<br/>
+                        <th className="font-normal text-left">Datum</th>
+                        <th className="font-normal text-left">Wiege-Nr.<br/>
                             Masch.-ID</th>
-                        <th className="font-normal text-right">PDF</th>
-                        <th className="font-normal text-right">Warenart<br/>
+                        <th className="font-normal">PDF</th>
+                        <th className="font-normal text-left">Warenart<br/>
                             Sorte-Nr.</th>
                         <th className="font-normal text-right">Abgangs-<br/>
                             gew.</th>
@@ -181,11 +196,81 @@ const MonthlyEvaluation = () => {
                     </tr>
                     </thead>
                     <tbody className="bg-gray-50">
-                    <tr>
-                        <td></td>
-                    </tr>
+                    { waretypes && controlDocuments.set != false ?
+                        controlDocuments.map((document: any) =>
+                            <tr key={document.document_id}
+                                className="text-xs text-gray-500 border-b text-left">
+                                <td>
+                                        {moment(document.endOfCycle).format('DD.MM.YYYY HH:mm')}
+                                </td>
+                                <td>
+                                    <span className="underline">
+                                       {
+                                           JSON.parse(sessionStorage.getItem('company') as string).client_number
+                                       }-
+                                        {
+                                            parseInt(
+                                                JSON.parse(
+                                                    sessionStorage.getItem('company') as string).client_number)
+                                            + document.document_id
+                                        }
+                                    </span>
+                                    <br/>
+                                    {document.machine_id}
+                                </td>
+                                <td/>
+                                <td>
+                                    {document.waretype}<br/>
+                                    {waretypes.filter((item: any) =>
+                                    item.name_waretype == document.waretype
+                                    )[0].internal_number}
+                                </td>
+                                <td className="text-right">
+                                    {document.netto}
+                                </td>
+                                <td className="text-right">
+                                </td>
+                                <td className="text-right">
+                                </td>
+                                <td className="text-right">
+                                        {machinesData.filter((machine:any)=>machine.machine_id==document.machine_id)[0].price_list ?
+                                            machinesData.filter((machine:any)=>machine.machine_id==document.machine_id)
+                                                [0].price_list.prices
+                                                // @ts-ignore
+                                                [moment().year()][monthsList[moment().month()]] : "0,00"} €
+                                </td>
+                                <td className="text-right">
+                                    {document.netto / 1000 * machinesData.filter((machine:any)=>machine.machine_id==document.machine_id)[0].price_list ?
+                                    machinesData.filter((machine:any)=>machine.machine_id==document.machine_id)
+                                        [0].price_list.prices
+                                        // @ts-ignore
+                                        [moment().year()][monthsList[moment().month()]].toFixed(2) : "0,00"} €
+                                </td>
+                                <td className="text-right">
+
+                                </td>
+                                <td className="text-right">
+
+                                </td>
+                                <td className="text-right">
+
+                                </td>
+                                <td className="underline">
+                                    Rechnung
+                                </td>
+                                <td>
+
+                                </td>
+                                <td>
+
+                                </td>
+
+                            </tr>
+                        )
+                    : ""}
                     </tbody>
                 </table>
+            </div>
             </div>
         </div>
     )
