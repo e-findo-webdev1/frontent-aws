@@ -166,8 +166,8 @@ const MonthlyEvaluation = () => {
             <p className="mt-5 text-xs uppercase font-bold text-gray-500">Gewichtentwicklung</p>
             <div className="mb-10 mt-5 w-10/12" id="line-chart"/>
             <div className="mb-10 mt-5 w-10/12" id="line-chart2"/>
-            <div className="sm:rounded-lg shadow-md  w-full overflow-auto mb-10">
-            <div className="rounded-lg shadow-md border w-max">
+            <div className="sm:rounded-lg shadow-md overflow-auto  mb-10">
+            <div className="rounded-lg shadow-md border overflow-auto w-max">
                 <table className="table-auto w-full">
                     <thead>
                     <tr className="text-xs text-gray-500 text-right border-b">
@@ -292,7 +292,9 @@ const MonthlyEvaluation = () => {
                                     />
                                 </td>
                                 <td>
-
+                                    <Link href={"/reporting/monthly-evaluation/" + document.document_id}>
+                                        <button className="m-auto flex"><img className="h-5" src="/download-svgrepo-com.svg"/></button>
+                                    </Link>
                                 </td>
                                 <td>
 

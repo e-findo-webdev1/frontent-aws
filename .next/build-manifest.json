@@ -25,10 +25,10 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/reporting/monthly-evaluation": [
+    "/reporting/monthly-evaluation/[document_id]": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/reporting/monthly-evaluation.js"
+      "static/chunks/pages/reporting/monthly-evaluation/[document_id].js"
     ]
   },
   "ampFirstPages": []

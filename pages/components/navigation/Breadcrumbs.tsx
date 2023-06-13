@@ -53,6 +53,8 @@ const Breadcrumbs = () => {
                                 .replace("shift-manager", "master-data/shift-manager")
                                 .replace("edit-machine", "master-data/edit-machine/" + pid.id)
                                 .replace("[client]", "")
+                                .replace("[document_id]", "")
+                                .replace("monthly-evaluation", "reporting/monthly-evaluation")
                             }>
                                 <a className={
                                     route == "[id]"
@@ -72,6 +74,7 @@ const Breadcrumbs = () => {
                                             .replace("[user]", pid.user as string)
                                             .replace("[indexgroup_name]", decodedName as string)
                                             .replace("[sort_name]", sortName as string)
+                                            .replace("[document_id]", "")
                                         : ""}
                                 </a>
                             </Link>
