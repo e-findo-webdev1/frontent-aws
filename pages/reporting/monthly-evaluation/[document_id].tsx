@@ -8,14 +8,14 @@ const MonthlyComment = () => {
     const router = useRouter()
     const pid = router.query
 
-    const [controlDocument, setControlDocument] = useState<any>();
+    const [controlDocument, setControlDocument] = useState<any>({set:false});
     const [selectedFile, setSelectedFile] = useState<any>();
     const [isFilePicked, setIsFilePicked] = useState<any>(false);
+    const [isFileSent, setIsFileSent] = useState<any>(false);
     const [pdfBase64, setPdfBase64] = useState<any>();
-    const [blob, setBlob] = useState<any>('');
-    const [url, setUrl] = useState('');
 
     useEffect(() => {
+        setIsFileSent(false)
         API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/control-documents')
             .then((response) => {
                 setControlDocument(
@@ -39,7 +39,7 @@ const MonthlyComment = () => {
                 console.log(error.response);
             });
 
-    }, []);
+    }, [controlDocument.set, isFileSent]);
 
     const changeHandler = () => {
         // @ts-ignore
@@ -66,6 +66,7 @@ const MonthlyComment = () => {
                     responseBody)
                     .then(function (response) {
                         console.log(response);
+                        setIsFileSent(true)
                     })
                     .catch(function (error) {
                         console.log(error);
@@ -80,7 +81,7 @@ const MonthlyComment = () => {
         getBase64(file);
 
     }
-
+    console.log(isFileSent)
     return (
         <div id="content-page" className="overflow-auto h-full px-24">
             <Link href="/reporting/monthly-evaluation">
@@ -95,7 +96,7 @@ const MonthlyComment = () => {
                 <div className="rounded-lg shadow-md border overflow-auto ">
                     <table className="table-auto w-full">
                         <tbody className="bg-gray-50">
-                        {controlDocument ? controlDocument.map((document:any) =>
+                        {controlDocument.set != false ? controlDocument.map((document:any) =>
                                 <tr key={document.document_id}
                                     className="text-xs text-gray-500 border-b">
                                         <td className="border-r text-left">
@@ -107,7 +108,7 @@ const MonthlyComment = () => {
                                     </tr>
                                 )
                                 : ""}
-                            {controlDocument ? controlDocument.map((document:any) =>
+                            {controlDocument.set != false ? controlDocument.map((document:any) =>
                                     <tr key={document.document_id}
                                         className="text-xs text-gray-500 border-b">
                                         <td className="border-r text-left">
@@ -119,7 +120,7 @@ const MonthlyComment = () => {
                                     </tr>
                                 )
                                 : ""}
-                            {controlDocument ? controlDocument.map((document:any) =>
+                            {controlDocument.set != false ? controlDocument.map((document:any) =>
                                     <tr key={document.document_id}
                                         className="text-xs text-gray-500 border-b">
                                         <td className="border-r">
@@ -131,7 +132,7 @@ const MonthlyComment = () => {
                                     </tr>
                                 )
                                 : ""}
-                            {controlDocument ? controlDocument.map((document:any) =>
+                            {controlDocument.set != false ? controlDocument.map((document:any) =>
                                     <tr key={document.document_id}
                                         className="text-xs text-gray-500 border-b">
                                         <td className="border-r">
