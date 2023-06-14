@@ -293,7 +293,7 @@ const MonthlyEvaluation = () => {
                                 </td>
                                 <td>
                                     <Link href={"/reporting/monthly-evaluation/" + document.document_id}>
-                                        <button className="m-auto flex"><img className="h-5" src="/download-svgrepo-com.svg"/></button>
+                                        <button className="m-auto flex"><img className="h-5" src="/upload-svgrepo-com.svg"/></button>
                                     </Link>
                                 </td>
                                 <td>
