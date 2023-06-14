@@ -62,8 +62,6 @@ const StorageSystemDashboard = () => {
                 console.log(error.response);
             });
 
-
-
         API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/contractors')
             .then((response) => {
                 setContractors(
@@ -655,10 +653,10 @@ const StorageSystemDashboard = () => {
                             moment().format("DD/MM/YYYY")).
                         reduce( function(a: any, b: any){
                             return a + (b['netto'] *
-                                machinesData.filter((machine: any) =>
+                                parseInt(machinesData.filter((machine: any) =>
                                     machine.machine_id == b['machine_id']
                                     // @ts-ignore
-                                )[0].price_list.prices[moment().year()][monthsList[moment().month()]] / 1000);
+                                )[0].price_list.prices[moment().year()][monthsList[moment().month()]]) / 1000);
                         }, 0)).toFixed(2).replace(".", ",") + " €": ""}
                     </p>
                 </div>
@@ -700,10 +698,10 @@ const StorageSystemDashboard = () => {
                             moment().format("DD/MM/YYYY")).
                         reduce( function(a: any, b: any){
                             return a + (b['netto'] *
-                                machinesData.filter((machine: any) =>
+                                parseInt(machinesData.filter((machine: any) =>
                                         machine.machine_id == b['machine_id']
                                     // @ts-ignore
-                                )[0].price_list.prices[moment().year()][monthsList[moment().month()]] / 1000);
+                                )[0].price_list.prices[moment().year()][monthsList[moment().month()]]) / 1000);
                         }, 0))).toFixed(2).replace(".", ",") + " €" : ""}
                         </p>
                 </div>
