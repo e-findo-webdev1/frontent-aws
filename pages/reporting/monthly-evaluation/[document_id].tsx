@@ -86,7 +86,7 @@ const MonthlyComment = () => {
     }
 
     const responseBody = {
-        formData: '', document_id: pid.document_id, workingWeight: 0, comment: ''
+        formData: '', document_id: pid.document_id, workingWeight: 0, comment: '', income: 0
     }
 
     const handleSubmission = async () => {
@@ -94,6 +94,7 @@ const MonthlyComment = () => {
         responseBody.document_id = pid.document_id
         responseBody.workingWeight = workingWeight
         responseBody.comment = comment
+        responseBody.income = certificate.income
 
         function getBase64(file: any) {
             let reader = new FileReader();

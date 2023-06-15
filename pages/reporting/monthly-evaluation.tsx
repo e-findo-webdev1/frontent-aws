@@ -32,6 +32,9 @@ const MonthlyEvaluation = () => {
     const [year] = useState<any>(moment().year());
     const [month] = useState<any>(monthsList[moment().month()])
     const [certificates, setCertificates] = useState<any>();
+    const [popupCertificate, setPopupCertificate] = useState<any>();
+    const [receivedIncome, setReceivedIncome] = useState<any>(0);
+
 
     useEffect(() => {
         let apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines';
@@ -128,6 +131,26 @@ const MonthlyEvaluation = () => {
     }, [controlDocuments.set]);
 
 
+    const handlePopupSend = () => {
+        let certificate = certificates.filter((certificate: any)=> certificate.document_id == popupCertificate)[0]
+        let responseBody = {
+            workingWeight: certificate.workingWeight,
+            comment: certificate.comment,
+            document_id: certificate.document_id,
+            formData: certificate.pdf_data,
+            income: receivedIncome
+        }
+
+        API.put('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/certificates',
+            responseBody)
+            .then(function (response) {
+                console.log(response);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
+
     return(
         <div id="content-page" className="overflow-auto h-full px-24">
             <p className="mt-5 text-3xl font-bold mb-5">Monatsauswertung</p>
@@ -174,9 +197,36 @@ const MonthlyEvaluation = () => {
                 </div>
             </div>
             <p className="mt-5 text-xs uppercase font-bold text-gray-500">Gewichtentwicklung</p>
+
             <div className="mb-10 mt-5 w-10/12" id="line-chart"/>
             <div className="mb-10 mt-5 w-10/12" id="line-chart2"/>
-            <div className="sm:rounded-lg shadow-md overflow-auto  mb-10">
+            <div id="popup" className={ popupCertificate ?
+                "border ml-[40rem]  w-max shadow-md mb-2 rounded"
+                : "border ml-[40rem]w-max shadow-md mb-2 rounded hidden"}>
+                <button className="float-right p-0.5 w-5 h-5 text-xs flex bg-red-500"
+                        onClick={()=>setPopupCertificate(null)}>
+                    <span className="w-full font-bold text-white">X</span>
+                </button>
+                <div className=" text-xs p-5">
+                    <span className="font-bold">Betrag erhalten</span><br/>
+                    <input className="w-20 text-right border rounded pl-2.5 py-0.5"
+                           defaultValue={certificates && popupCertificate && certificates.filter((certificate: any) =>
+                               certificate.document_id == popupCertificate
+                           )[0].income ?
+                               certificates.filter((certificate: any) =>
+                               certificate.document_id == popupCertificate
+                               )[0].income
+                               : 0}
+                           onChange={(e)=>setReceivedIncome(e.target.value)}
+                    /> €
+                    <button className="border border-accent-color-1 bg-accent-color-4
+                            hover:bg-accent-color-5 rounded p-2.5 py-0.5 shadow-md ml-2"
+                            onClick={certificates ? ()=>handlePopupSend() : ()=>{}}
+                    >Setzen
+                    </button>
+                </div>
+            </div>
+            <div className="sm:rounded-lg shadow-md overflow-auto mb-10">
             <div className="rounded-lg shadow-md border overflow-auto w-max">
                 <table className="table-auto w-full">
                     <thead>
@@ -302,10 +352,25 @@ const MonthlyEvaluation = () => {
                                             .toFixed(2) + ' €' : ''}
                                 </td>
                                 <td className="text-right">
-
+                                    <button className="underline"
+                                            onClick={()=>setPopupCertificate(document.document_id)}>
+                                        {certificates && certificates.filter((certificate: any)=>
+                                            certificate.document_id == document.document_id)[0].income ? certificates.filter((certificate: any)=>
+                                        certificate.document_id == document.document_id)[0].income : '0.00'} €</button>
                                 </td>
                                 <td className="text-right">
-
+                                    {certificates && machinesData.filter((machine:any)=>
+                                        machine.machine_id==document.machine_id)[0].price_list
+                                    && certificates.filter((certificate: any) =>
+                                        certificate.document_id == document.document_id)[0].workingWeight
+                                        ?   (certificates.filter((certificate: any) =>
+                                                certificate.document_id == document.document_id)[0].workingWeight / 1000 *
+                                            parseInt(machinesData.filter((machine:any)=>
+                                                machine.machine_id==document.machine_id)[0].price_list.prices
+                                                [moment().year()][monthsList[moment().month()]])
+                                            - certificates.filter((certificate: any)=>
+                                        certificate.document_id == document.document_id)[0].income)
+                                        .toFixed(2) + ' €': ''}
                                 </td>
                                 <td>
                                     <Proforma
@@ -325,7 +390,8 @@ const MonthlyEvaluation = () => {
                                 </td>
                                 <td>
                                     <Link href={"/reporting/monthly-evaluation/" + document.document_id}>
-                                        <button className="m-auto flex"><img className="h-5" src="/upload-svgrepo-com.svg"/></button>
+                                        <button className="m-auto flex">
+                                            <img className="h-5" src="/upload-svgrepo-com.svg"/></button>
                                     </Link>
                                 </td>
                                 <td>
@@ -340,6 +406,7 @@ const MonthlyEvaluation = () => {
                 </table>
             </div>
             </div>
+
         </div>
     )
 }
