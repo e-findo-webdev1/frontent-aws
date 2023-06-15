@@ -29,8 +29,9 @@ const MonthlyEvaluation = () => {
     const [machinesData, setMachinesData] = useState<any>([0]);
     const [controlDocuments, setControlDocuments] = useState<any>({set: false});
     const [waretypes, setWaretypes] = useState<any>();
-    const [year, setYear] = useState<any>(moment().year());
-    const [month, setMonth] = useState<any>(monthsList[moment().month()])
+    const [year] = useState<any>(moment().year());
+    const [month] = useState<any>(monthsList[moment().month()])
+    const [certificates, setCertificates] = useState<any>();
 
     useEffect(() => {
         let apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines';
@@ -61,6 +62,14 @@ const MonthlyEvaluation = () => {
         API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/waretypes')
             .then((response) => {
                 setWaretypes(response.data.Items);
+            })
+            .catch((error) => {
+                console.log(error.response);
+            });
+
+        API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/certificates')
+            .then((response) => {
+                setCertificates(response.data.Items)
             })
             .catch((error) => {
                 console.log(error.response);
@@ -117,6 +126,7 @@ const MonthlyEvaluation = () => {
         );
 
     }, [controlDocuments.set]);
+
 
     return(
         <div id="content-page" className="overflow-auto h-full px-24">
@@ -249,25 +259,47 @@ const MonthlyEvaluation = () => {
                                     {document.netto}
                                 </td>
                                 <td className="text-right">
+                                    {certificates && certificates.filter((certificate: any) =>
+                                        certificate.document_id == document.document_id)[0].workingWeight
+                                        ? certificates.filter((certificate: any) =>
+                                        certificate.document_id == document.document_id)[0].workingWeight
+                                        : ''}
                                 </td>
                                 <td className="text-right">
+                                    {certificates &&  certificates.filter((certificate: any) =>
+                                            certificate.document_id == document.document_id)[0].workingWeight
+                                        ? document.netto - certificates.filter((certificate: any) =>
+                                            certificate.document_id == document.document_id)[0].workingWeight
+                                        : ''}
                                 </td>
                                 <td className="text-right">
                                         {machinesData.filter((machine:any)=>machine.machine_id==document.machine_id)[0].price_list ?
-                                            machinesData.filter((machine:any)=>machine.machine_id==document.machine_id)
+                                            parseInt(machinesData.filter((machine:any)=>machine.machine_id==document.machine_id)
                                                 [0].price_list.prices
                                                 // @ts-ignore
-                                                [moment().year()][monthsList[moment().month()]] : "0,00"} €
+                                                [moment().year()][monthsList[moment().month()]]).toFixed(2) : "0,00"} €
                                 </td>
                                 <td className="text-right">
-                                    {document.netto / 1000 * machinesData.filter((machine:any)=>machine.machine_id==document.machine_id)[0].price_list ?
-                                    machinesData.filter((machine:any)=>machine.machine_id==document.machine_id)
-                                        [0].price_list.prices
-                                        // @ts-ignore
-                                        [moment().year()][monthsList[moment().month()]].toFixed(2) : "0,00"} €
+                                    { machinesData.filter((machine:any)=>
+                                        machine.machine_id==document.machine_id)[0].price_list
+                                        ?   (document.netto / 1000 *
+                                            parseInt(machinesData.filter((machine:any)=>
+                                                machine.machine_id==document.machine_id)[0].price_list.prices
+                                                [moment().year()][monthsList[moment().month()]]))
+                                            .toFixed(2)
+                                        : '0.00'} €
                                 </td>
                                 <td className="text-right">
-
+                                    { certificates && machinesData.filter((machine:any)=>
+                                        machine.machine_id==document.machine_id)[0].price_list
+                                        && certificates.filter((certificate: any) =>
+                                        certificate.document_id == document.document_id)[0].workingWeight
+                                        ?   (certificates.filter((certificate: any) =>
+                                                certificate.document_id == document.document_id)[0].workingWeight / 1000 *
+                                            parseInt(machinesData.filter((machine:any)=>
+                                                machine.machine_id==document.machine_id)[0].price_list.prices
+                                                [moment().year()][monthsList[moment().month()]]))
+                                            .toFixed(2) + ' €' : ''}
                                 </td>
                                 <td className="text-right">
 
@@ -297,7 +329,8 @@ const MonthlyEvaluation = () => {
                                     </Link>
                                 </td>
                                 <td>
-
+                                    {certificates ? certificates.filter((certificate: any) =>
+                                        certificate.document_id == document.document_id)[0].comment : '' }
                                 </td>
 
                             </tr>
