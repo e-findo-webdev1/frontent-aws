@@ -102,7 +102,7 @@ const MachineStorageHistory = () => {
 
     const refreshList = () => {
         const apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/log-data/'
-            + machinesData[0].machine_id + "/" + page;
+            + machinesData[0].machine_id + "/" + moment(startDate).unix() + "/" + moment(endDate).unix() + "/" + page
 
         API.get(apiName)
             .then((response) => {
