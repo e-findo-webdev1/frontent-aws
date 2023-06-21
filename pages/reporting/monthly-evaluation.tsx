@@ -7,8 +7,6 @@ import PDF from "../components/helpers/pdf";
 import PDFLink from "../components/helpers/pdfLink";
 import Proforma from "../components/helpers/proforma";
 
-const dataYear2022: any = []
-
 const MonthlyEvaluation = () => {
     const monthsList = [
         "Januar",
@@ -25,16 +23,17 @@ const MonthlyEvaluation = () => {
         "Dezember"
     ]
 
-    const [dataset, setDataset] = useState<any>(dataYear2022);
+    const [selectedMachine, setSelectedMachine] = useState<any>(null);
+    const [selectedMonth, setSelectedMonth] = useState<any>(monthsList[moment().month()])
+    const [selectedYear, setSelectedYear] = useState<any>(moment().year());
     const [machinesData, setMachinesData] = useState<any>([0]);
     const [controlDocuments, setControlDocuments] = useState<any>({set: false});
-    const [waretypes, setWaretypes] = useState<any>();
-    const [year] = useState<any>(moment().year());
-    const [month] = useState<any>(monthsList[moment().month()])
+    const [waretypes, setWaretypes] = useState<any>({set:false});
     const [certificates, setCertificates] = useState<any>();
     const [popupCertificate, setPopupCertificate] = useState<any>();
     const [receivedIncome, setReceivedIncome] = useState<any>(0);
-
+    const [myChart, setMyChart] = useState<any>({set: false});
+    const [myChart2, setMyChart2] = useState<any>();
 
     useEffect(() => {
         let apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines';
@@ -47,12 +46,147 @@ const MonthlyEvaluation = () => {
                     .then((response) => {
                         setControlDocuments(
                             response.data.Items
+                                .filter( (document: any) => moment(document.endOfCycle).year() == selectedYear
+                                && moment(document.endOfCycle).month() == monthsList.indexOf(selectedMonth))
                                 .filter( (document: any) =>
                                     machinesData.reduce( function(a: any, b: any){
                                         return a + (b['machine_id']);
                                     }, []).includes(document.machine_id)
                                 )
                         );
+                        const labels: any = [
+                        ];
+                        for (let day = 1; day<=moment(`${selectedYear}-${monthsList.indexOf(selectedMonth)+1}`,
+                            "YYYY-MM")
+                            .daysInMonth(); day++) {
+                            labels.push(day)
+                        }
+
+                        const datasets = controlDocuments.reduce( function(a: any, b: any){
+                            if (a && a.includes(b['waretype'])==false) {
+                                return [...a, (b['waretype'])];
+                            } else {
+                                return a
+                            }
+                        }, [])
+
+                        const data = {
+                            labels: labels,
+                            datasets: [
+                                {
+                                    label: 'Gesamt-Werksgewicht',
+                                    backgroundColor: 'rgb(218,0,44)',
+                                    borderColor: 'rgb(218,0,44)',
+                                    data: labels.map((day: any)=>
+                                        controlDocuments
+                                            .filter((document: any) => {
+                                                if (selectedMachine != '- Alle -') {
+                                                    return document.machine_id == selectedMachine
+                                                } else {
+                                                    return true
+                                                }
+                                            })
+                                            .filter((document: any) =>
+                                                moment(document.endOfCycle).month() ==
+                                                monthsList.indexOf(selectedMonth))
+                                            .filter((document: any) => moment(document.endOfCycle).date() == day)
+                                            .reduce( function(a: any, b: any){
+                                        return a + (b['netto']);
+                                    }, 0))
+                                },
+                            ]
+                        };
+
+                        const colors = [
+                            'rgb(232,188,83)',
+                            'rgb(88,206,48)',
+                            'rgb(99,217,213)',
+                            'rgb(56,97,201)',
+                            'rgb(161,68,192)',
+                            'rgb(194,100,41)',
+                            'rgb(166,220,150)',
+                            'rgb(69,203,142)',
+                        ]
+
+                        for (let dataset in datasets) {
+                            data.datasets.push(
+                                {
+                                    label: datasets[dataset],
+                                    // @ts-ignore
+                                    backgroundColor: colors[dataset],
+                                    // @ts-ignore
+                                    borderColor: colors[dataset],
+                                    data: labels.map((day: any)=>
+                                        controlDocuments
+                                            .filter((document: any) => {
+                                                if (selectedMachine != '- Alle -') {
+                                                    return document.machine_id == selectedMachine
+                                                } else {
+                                                    return true
+                                                }
+                                            })
+                                            .filter((document: any)=>
+                                                moment(document.endOfCycle).month() == monthsList.indexOf(selectedMonth))
+                                            .filter((document: any)=> moment(document.endOfCycle).date() == day)
+                                            .reduce( function(a: any, b: any){
+                                                return a + (b['netto']);
+                                            }, 0))
+                                }
+                            )
+                        }
+
+                        const config = {
+                            type: 'bar',
+                            data: data,
+                            options: {
+                                scales: {
+                                    y: {
+                                    }
+                                },
+                                plugins: {
+                                    legend: {
+                                        position: 'right'
+                                    }
+                                },
+                            },
+                        };
+
+                        const config2 = {
+                            type: 'line',
+                            data: data,
+                            options: {
+                                scales: {
+                                    y: {
+                                    }
+                                },
+                                plugins: {
+                                    legend: {
+                                        position: 'right'
+                                    }
+                                },
+                            },
+                        };
+
+                        // @ts-ignore
+                        document.getElementById("line-chart").innerHTML =
+                            "<canvas id=\"myChart\"></canvas>"
+                        // @ts-ignore
+                        document.getElementById("line-chart2").innerHTML =
+                            "<canvas id=\"myChart2\"></canvas>"
+
+
+                        setMyChart(new Chart(
+                            // @ts-ignore
+                            document.getElementById('myChart'),
+                            config
+                        ));
+
+                        setMyChart2(new Chart(
+                            // @ts-ignore
+                            document.getElementById('myChart2'),
+                            config2
+                        ));
+
                     })
                     .catch((error) => {
                         console.log(error.response);
@@ -78,58 +212,7 @@ const MonthlyEvaluation = () => {
                 console.log(error.response);
             });
 
-        const labels = [
-            1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30
-        ];
-
-        const data = {
-            labels: labels,
-            datasets: [{
-                label: 'Gesamt-Werksgewicht',
-                backgroundColor: 'rgb(218,0,44)',
-                borderColor: 'rgb(218,0,44)',
-                data: dataset.filter((month: any) => month.weight != 0).map((month:any)=>month.weight),
-            }]
-        };
-
-        const config = {
-            type: 'line',
-            data: data,
-            options: {
-                scales: {
-                    y: {
-                    }
-                },
-                plugins: {
-                    legend: {
-                        position: 'right'
-                    }
-                },
-            },
-        };
-
-        // @ts-ignore
-        document.getElementById("line-chart").innerHTML =
-            "<canvas id=\"myChart\"></canvas>"
-        // @ts-ignore
-        document.getElementById("line-chart2").innerHTML =
-            "<canvas id=\"myChart2\"></canvas>"
-
-
-        const myChart = new Chart(
-            // @ts-ignore
-            document.getElementById('myChart'),
-            config
-        );
-
-        const myChart2 = new Chart(
-            // @ts-ignore
-            document.getElementById('myChart2'),
-            config
-        );
-
-    }, [controlDocuments.set]);
-
+    }, [controlDocuments.set, selectedMonth, myChart.set, selectedMachine]);
 
     const handlePopupSend = () => {
         let certificate = certificates.filter((certificate: any)=> certificate.document_id == popupCertificate)[0]
@@ -156,7 +239,9 @@ const MonthlyEvaluation = () => {
             <p className="mt-5 text-3xl font-bold mb-5">Monatsauswertung</p>
             <div className="flex space-x-2 text-sm">
                 <span>Maschine:</span>
-                <select className="w-40 text-blue-500 border" name="machines" id="machines">
+                <select className="w-40 text-blue-500 border" name="machines" id="machines"
+                    onChange={(e)=>setSelectedMachine(e.target.value)}
+                >
                     <option selected>- Alle -</option>
                     {machinesData ?
                     machinesData.map((machine: any) =>
@@ -168,9 +253,27 @@ const MonthlyEvaluation = () => {
                 </select>
             </div>
             <div className="font-bold justify-center flex space-x-10 mt-5 mb-3">
-                <button>&lt;</button>
-                <span>{month} {year}</span>
-                <button>&gt;</button>
+                <button onClick={()=> {
+                    if(monthsList.indexOf(selectedMonth) > 0) {
+                        setSelectedMonth(monthsList[monthsList.indexOf(selectedMonth) - 1])
+                        setMyChart({set:false})
+                    } else {
+                        setSelectedMonth(monthsList[11])
+                        setSelectedYear(selectedYear - 1)
+                        setMyChart({set:false})
+                    }
+                }}>&lt;</button>
+                <span>{selectedMonth} {selectedYear}</span>
+                <button onClick={()=> {
+                    if(monthsList.indexOf(selectedMonth) < 11) {
+                        setSelectedMonth(monthsList[monthsList.indexOf(selectedMonth) + 1])
+                        setMyChart({set:false})
+                    } else {
+                        setSelectedMonth(monthsList[0])
+                        setSelectedYear(selectedYear + 1)
+                        setMyChart({set:false})
+                    }
+                }}>&gt;</button>
             </div>
             <Link href="/reporting/annual-evaluation">
                 <button className="border mx-auto p-1.5 px-3.5 font-bold border-accent-color-1 bg-accent-color-4
