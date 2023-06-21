@@ -23,7 +23,7 @@ const MonthlyEvaluation = () => {
         "Dezember"
     ]
 
-    const [selectedMachine, setSelectedMachine] = useState<any>(null);
+    const [selectedMachine, setSelectedMachine] = useState<any>('- Alle -');
     const [selectedMonth, setSelectedMonth] = useState<any>(monthsList[moment().month()])
     const [selectedYear, setSelectedYear] = useState<any>(moment().year());
     const [machinesData, setMachinesData] = useState<any>([0]);
