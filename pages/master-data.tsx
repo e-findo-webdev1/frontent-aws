@@ -348,6 +348,11 @@ const MasterDataSummary = () => {
                                             <td>
                                                 {contractor.contractor_name}
                                             </td>
+                                            <td/>
+                                            <td/>
+                                            <td/>
+                                            <td/>
+                                            <td/>
                                         </tr>
                                         )
                                         : ""
