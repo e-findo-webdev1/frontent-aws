@@ -53,7 +53,6 @@ const NewIndex = () => {
             });
 
     }, []);
-    console.log(prices)
 
     const onSubmitHandler = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();

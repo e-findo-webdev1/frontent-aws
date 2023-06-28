@@ -49,8 +49,6 @@ const IndecesManegement = () => {
 
     }, [pid]);
 
-    console.log(machines)
-
     const deleteIndex = (index: any) => {
         let indeces
         {priceMatrix.indeces ? indeces = priceMatrix.indeces : indeces = []}
@@ -94,7 +92,7 @@ const IndecesManegement = () => {
                         </tr>
                         </thead>
                         <tbody className="bg-gray-50">
-                        {priceMatrix? priceMatrix.indeces
+                        {priceMatrix && priceMatrix.indeces ? priceMatrix.indeces
                             .sort(function (a: any, b: any){
                                 if (a < b) {
                                     return -1;

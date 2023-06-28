@@ -35,8 +35,32 @@ const MonthlyEvaluation = () => {
     const [myChart, setMyChart] = useState<any>({set: false});
     const [myChart2, setMyChart2] = useState<any>();
     const [selectedCategory, setSelectedCategory] = useState<any>('Gewichtentwicklung');
+    const [priceMatrices, setPriceMatrices] = useState<any>();
+    const [sorts, setSorts] = useState<any>();
 
     useEffect(() => {
+        API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/sorts')
+            .then((response) => {
+                setSorts(
+                    response.data.Items
+                );
+            })
+            .catch((error) => {
+                console.log(error.response);
+            });
+
+        console.log(sorts)
+
+        API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/price-matrices')
+            .then((response) => {
+                setPriceMatrices(
+                    response.data.Items
+                );
+            })
+            .catch((error) => {
+                console.log(error.response);
+            });
+
         let apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines';
 
         API.get(apiName)
@@ -232,38 +256,24 @@ const MonthlyEvaluation = () => {
                             }
                         }, [])
 
+                        const datasetExtra = machinesData.reduce(function (a: any, b: any) {
+                            if (a && a.includes(b['index']) == false && b['index'] != '') {
+                                return [...a, 'Index: ' + b['index']];
+                            } else {
+                                return a
+                            }
+                        }, [])
+
+                        for (let dataset in datasetExtra) {
+                            datasetsIndex.push(datasetExtra[dataset])
+                        }
+
 
 
                         if (selectedCategory == 'Monatspreis') {
                             const data: any = {
-                                labels: labels,
+                                labels: [monthsList[monthsList.indexOf(selectedMonth)]],
                                 datasets: [
-                                    {
-                                        label: 'Gesamt-Erlöse',
-                                        backgroundColor: 'rgb(218,0,44)',
-                                        borderColor: 'rgb(218,0,44)',
-                                        data: labels.map((day: any) =>
-                                            controlDocuments
-                                                .filter((document: any) => {
-                                                    if (selectedMachine != '- Alle -') {
-                                                        return document.machine_id == selectedMachine
-                                                    } else {
-                                                        return true
-                                                    }
-                                                })
-                                                .filter((document: any) =>
-                                                    moment(document.endOfCycle).month() ==
-                                                    monthsList.indexOf(selectedMonth))
-                                                .filter((document: any) => moment(document.endOfCycle).date() == day)
-                                                .reduce(function (a: any, b: any) {
-                                                    return a + (b['netto']) *
-                                                        parseInt(machinesData.filter((machine: any) =>
-                                                            machine.machine_id == b['machine_id'])[0]
-                                                            // @ts-ignore
-                                                            .price_list.prices[moment().year()]
-                                                            [monthsList[moment().month()]])/1000
-                                                }, 0))
-                                    },
                                 ]
                             };
 
@@ -279,37 +289,52 @@ const MonthlyEvaluation = () => {
                             ]
 
                             for (let dataset in datasetsIndex) {
-                                data.datasets.push(
-                                    {
-                                        label: datasetsIndex[dataset],
-                                        // @ts-ignore
-                                        backgroundColor: colors[dataset],
-                                        // @ts-ignore
-                                        borderColor: colors[dataset],
-                                        data: labels.map((day: any) =>
-                                            controlDocuments
-                                                .filter((document: any) => {
-                                                    if (selectedMachine != '- Alle -') {
-                                                        return document.machine_id == selectedMachine
-                                                    } else {
-                                                        return true
-                                                    }
-                                                })
-                                                .filter((document: any) =>
-                                                    moment(document.endOfCycle).month() ==
-                                                    monthsList.indexOf(selectedMonth))
-                                                .filter((document: any) => moment(document.endOfCycle).date() == day)
-                                                .filter((document: any) => document.waretype == datasetsIndex[dataset])
-                                                .reduce(function (a: any, b: any) {
-                                                    return a + (b['netto']) *
-                                                        parseInt(machinesData.filter((machine: any) =>
-                                                            machine.machine_id == b['machine_id'])[0]
-                                                            // @ts-ignore
-                                                            .price_list.prices
-                                                            [moment().year()][monthsList[moment().month()]])/1000
-                                                }, 0))
-                                    }
-                                )
+                                if (datasetsIndex[dataset].includes('Index')) {
+                                    data.datasets.push(
+                                        {
+                                            label: datasetsIndex[dataset],
+                                            // @ts-ignore
+                                            backgroundColor: colors[dataset],
+                                            // @ts-ignore
+                                            borderColor: colors[dataset],
+                                            data:
+                                                [parseFloat((priceMatrices.filter((matrix: any) =>
+                                                matrix.indexgroup_name ==
+                                                (sorts.filter((sort: any) =>
+                                                        sort.description ==
+                                                        machinesData
+                                                            .filter((machine: any) =>
+                                                                machine.index != "" &&
+                                                                datasetsIndex[dataset].includes(machine.index)
+                                                            )[0].waretype)[0].indexgroup_name
+                                                ) &&
+                                                matrix.price_matrix ==
+                                                (sorts.filter((sort: any) =>
+                                                        sort.description ==
+                                                        machinesData
+                                                            .filter((machine: any) =>
+                                                                machine.index != "" &&
+                                                                datasetsIndex[dataset].includes(machine.index)
+                                                            )[0].waretype)[0].sort_name
+                                                ))[0].prices[selectedMonth][datasetsIndex[dataset]
+                                                .replace("Index: ", "")]).replace(',','.'))]
+                                        })
+                                } else {
+                                    data.datasets.push(
+                                        {
+                                            label: datasetsIndex[dataset],
+                                            // @ts-ignore
+                                            backgroundColor: colors[dataset],
+                                            // @ts-ignore
+                                            borderColor: colors[dataset],
+                                            data: [parseInt(machinesData
+                                                .filter((machine: any) => machine.waretype == datasetsIndex[dataset])
+                                                .map((machine: any) =>
+                                                        machine.price_list.prices[selectedYear][selectedMonth]
+                                                ))]
+                                        }
+                                    )
+                                }
                             }
 
                             const config = {
@@ -333,9 +358,13 @@ const MonthlyEvaluation = () => {
                                                     }
                                                     if (context.parsed.y !== null) {
                                                         label += new Intl.NumberFormat('de-DE', {
-                                                            style: 'currency',
-                                                            currency: 'EUR'
-                                                        }).format(context.parsed.y);
+                                                                style: 'currency',
+                                                                currency: 'EUR'
+                                                            }
+                                                        ).format(context.parsed.y);
+                                                    }
+                                                    if (label) {
+                                                        label += ' / t';
                                                     }
                                                     return label;
                                                 }
@@ -366,9 +395,13 @@ const MonthlyEvaluation = () => {
                                                     }
                                                     if (context.parsed.y !== null) {
                                                         label += new Intl.NumberFormat('de-DE', {
-                                                            style: 'currency',
-                                                            currency: 'EUR'
-                                                        }).format(context.parsed.y);
+                                                                style: 'currency',
+                                                                currency: 'EUR'
+                                                            }
+                                                        ).format(context.parsed.y);
+                                                    }
+                                                    if (label) {
+                                                        label += ' / t';
                                                     }
                                                     return label;
                                                 }

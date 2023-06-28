@@ -70,7 +70,6 @@ const PriceMatrix = () => {
 
     }, []);
 
-    console.log(prices)
     const monthsList = [
         'Januar',
         'Februar',
@@ -121,7 +120,7 @@ const PriceMatrix = () => {
                 console.log(error);
             });
     }
-    console.log(priceMatrix)
+
     return(
         <div id="content-page" className="px-24 h-full overflow-auto">
             <div className="h-max overflow-auto">
@@ -140,7 +139,7 @@ const PriceMatrix = () => {
                         <thead>
                         <tr className="text-xs text-gray-500 border-b text-left">
                             <th className="font-normal">Monat</th>
-                            { priceMatrix
+                            { priceMatrix && priceMatrix.indeces
                                 ? priceMatrix.indeces
                                     .sort(function (a: any, b: any){
                                         if (a < b) {
@@ -163,7 +162,7 @@ const PriceMatrix = () => {
                             {monthsList.map((month: any) => (
                                 <tr key={month} className="text-xs text-gray-500 border-b">
                                     <td>{month}</td>
-                                    {   priceMatrix.price_matrix != "" &&
+                                    {   priceMatrix && priceMatrix.indeces && priceMatrix.price_matrix != "" &&
                                         months[currentTime.month()] == month
                                             ? priceMatrix.indeces
                                                 .sort(function (a: any, b: any){
@@ -183,10 +182,10 @@ const PriceMatrix = () => {
                                                      (e)=>
                                                          setNewPrices({...prices,
                                                              [month]: {...prices[month],
-                                                                 [index]: parseInt(e.target.value)}
+                                                                 [index]: e.target.value}
                                                          })}/>
                                                     </td>)
-                                            : priceMatrix.indeces
+                                            : priceMatrix && priceMatrix.indeces ? priceMatrix.indeces
                                             .sort(function (a: any, b: any){
                                                 if (a < b) {
                                                     return -1;
@@ -200,7 +199,7 @@ const PriceMatrix = () => {
                                                 <td key={index}>
                                                     <p>{}</p>
                                                 </td>)
-                                        }
+                                        : ''}
                                 </tr>
                                 ))}
                         </tbody>
