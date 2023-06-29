@@ -384,18 +384,18 @@ const MasterDataSummary = () => {
                     <tbody className="bg-gray-50">
                     <tr className="text-xs text-gray-500 border-b text-left">
                         <td>
-                            {emailTexts[1].text_name}
+                            {emailTexts ? emailTexts[1].text_name : ""}
                         </td>
                         <td>
-                            {emailTexts[1].text_body}
+                            {emailTexts ? emailTexts[1].text_body : ""}
                         </td>
                     </tr>
                     <tr className="text-xs text-gray-500 border-b text-left">
                         <td>
-                            {emailTexts[0].text_name}
+                            {emailTexts ? emailTexts[0].text_name : ""}
                         </td>
                         <td>
-                            {emailTexts[0].text_body}
+                            {emailTexts ? emailTexts[0].text_body : ""}
                         </td>
                     </tr>
                     </tbody>

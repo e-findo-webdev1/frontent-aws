@@ -25,6 +25,7 @@ const StorageSystemDashboard = () => {
     const [isDatePicked, setIsDatePicked] = useState<any>(false);
     const [defaultContractor, setDefaultContractor] = useState<any>();
     const [selectedContractor, setSelectedContractor] = useState<any>();
+    const [pageReload, setPageReload] = useState<any>({set: false});
 
     useEffect(() => {
         let apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines';
@@ -48,6 +49,7 @@ const StorageSystemDashboard = () => {
                     .catch((error) => {
                         console.log(error.response);
                     });
+                setPageReload(true)
             })
             .catch((error) => {
                 console.log(error); //
@@ -75,7 +77,7 @@ const StorageSystemDashboard = () => {
                 console.log(error.response);
             });
 
-    }, [pickupDates]);
+    }, [pickupDates, pageReload]);
 
     let SHIFT_CALENDAR = {
         'Sunday': {
