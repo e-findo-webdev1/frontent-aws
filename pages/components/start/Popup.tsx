@@ -5,7 +5,7 @@ import {useState} from "react";
 
 const Popup = ({machineID, pickupDate, setPickupDates, setMachineID, setPickupDate, pickupDates, machinesData,
                   areDatesConfirmed, setAreDatesConfirmed, setNewPickupDates, newPickupDates, radioConfirmed,
-                   setRadioConfirmed, popup, setPopup}: any) => {
+                   setRadioConfirmed, popup, setPopup, isDatePicked}: any) => {
 
     const [displayedDate, setDisplayedDate] = useState<any>()
 
@@ -20,7 +20,7 @@ const Popup = ({machineID, pickupDate, setPickupDates, setMachineID, setPickupDa
                 console.log(error);
             });
     }
-    const updatePickupDates = (date: any) => {
+    const updatePickupDates = async (date: any) => {
        // pickupDates = pickupDates.filter((obj:any) =>
        // {return obj.machineID!=machineID})
       //  pickupDates.push({machineID: machineID, taskEnd: date})
@@ -53,6 +53,8 @@ const Popup = ({machineID, pickupDate, setPickupDates, setMachineID, setPickupDa
             lastIndicate: machineData.lastIndicate,
             lastTara: machineData.lastTara,
             price_list: machineData.price_list,
+            isDatePicked: true,
+            selectedContractor: machineData.selectedContractor
         }
 
         let newDates = newPickupDates.filter((obj:any) =>
@@ -63,7 +65,7 @@ const Popup = ({machineID, pickupDate, setPickupDates, setMachineID, setPickupDa
         {return obj.machine_id!=machineID})
         newDatesConfirmed.push([{machine_id: machineID, date_confirmed: radioConfirmed}])
         setAreDatesConfirmed(newDatesConfirmed.flat())
-        sendData(newMachineData)
+        await sendData(newMachineData)
         setMachineID("")
         setPickupDate("")
         setRadioConfirmed("")
@@ -85,13 +87,6 @@ const Popup = ({machineID, pickupDate, setPickupDates, setMachineID, setPickupDa
             // @ts-ignore
             return days[day]
             }
-            // @ts-ignore
-          //  else if ( pickupDates.length != 0) {
-          //      const day = pickupDates.filter((obj:any) =>
-           //         {return obj.machineID==machineID})[0].taskEnd.toDate().getDay()
-            // @ts-ignore
-          //      return days[day]
-          //  }
     }
 
     return(
@@ -157,7 +152,7 @@ const Popup = ({machineID, pickupDate, setPickupDates, setMachineID, setPickupDa
                         onClick={() => {updatePickupDates(pickupDate)}}>
                     Speichern</button>
                 <button className="sm:rounded-lg shadow-md border p-1"
-                        onClick={() => {setMachineID("");setPickupDate("");setRadioConfirmed("")}}>
+                        onClick={() => {setMachineID("");setPickupDate("");setRadioConfirmed("");setPopup(false)}}>
                     Abbrechen</button>
             </div>
         </div>

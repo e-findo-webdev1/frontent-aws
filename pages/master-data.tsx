@@ -10,6 +10,7 @@ const MasterDataSummary = () => {
     const [machineTypes, setMachineTypes] = useState<any>();
     const [priceMatrices, setPriceMatrices] = useState<any>();
     const [contractors, setContractors] = useState<any>();
+    const [emailTexts, setEmailTexts] = useState<any>();
 
 
     useEffect(() => {
@@ -63,8 +64,17 @@ const MasterDataSummary = () => {
                 console.log(error); //
             });
 
+        API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/email-texts')
+            .then((response) => {
+                setEmailTexts(response.data.Items)
+            })
+            .catch((error) => {
+                console.log(error); //
+            });
+
     }, []);
 
+    console.log(emailTexts)
     const monthsList = [
         "Januar",
         "Februar",
@@ -225,7 +235,7 @@ const MasterDataSummary = () => {
                                                                     priceMatrix.prices ?
                                                                             priceMatrix.prices
                                                                                 [monthsList[moment().month()]]
-                                                                                [index].toFixed(2) + " €"
+                                                                                [index] + " €"
                                                                         : "0.00 €"
                                                                 }
                                                             </td>
@@ -362,7 +372,37 @@ const MasterDataSummary = () => {
                         </div>
                     </div>
                 </div>
+            <p className="text-2xl mt-7 font-bold mb-5">Texte</p>
+            <div className="sm:rounded-lg border overflow-auto">
+                <table className="flex-row table-auto w-full">
+                    <thead>
+                    <tr className="text-xs text-gray-500 border-b text-left">
+                        <th className="font-normal">Name</th>
+                        <th className="font-normal">Text</th>
+                    </tr>
+                    </thead>
+                    <tbody className="bg-gray-50">
+                    <tr className="text-xs text-gray-500 border-b text-left">
+                        <td>
+                            {emailTexts[1].text_name}
+                        </td>
+                        <td>
+                            {emailTexts[1].text_body}
+                        </td>
+                    </tr>
+                    <tr className="text-xs text-gray-500 border-b text-left">
+                        <td>
+                            {emailTexts[0].text_name}
+                        </td>
+                        <td>
+                            {emailTexts[0].text_body}
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
+            </div>
+
         )
 }
 

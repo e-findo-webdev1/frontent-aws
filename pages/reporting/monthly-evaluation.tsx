@@ -692,11 +692,6 @@ const MonthlyEvaluation = () => {
                     }
                 }}>&gt;</button>
             </div>
-            <Link href="/reporting/annual-evaluation">
-                <button className="border mx-auto p-1.5 px-3.5 font-bold border-accent-color-1 bg-accent-color-4
-                        hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs flex">zur Jahresentwicklung wechseln
-                </button>
-            </Link>
             <div className="flex mt-5">
                 <div className="flex m-auto space-x-1">
                     <button className="border mx-auto p-1.5 px-3.5 font-bold border-accent-color-1 bg-accent-color-4

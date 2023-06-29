@@ -22,6 +22,9 @@ const StorageSystemDashboard = () => {
     const [popupFilling, setPopupFilling] = useState<any>(false);
     const [popup, setPopup] = useState<any>(false);
     const [contractors, setContractors] = useState<any>();
+    const [isDatePicked, setIsDatePicked] = useState<any>(false);
+    const [defaultContractor, setDefaultContractor] = useState<any>();
+    const [selectedContractor, setSelectedContractor] = useState<any>();
 
     useEffect(() => {
         let apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines';
@@ -422,6 +425,7 @@ const StorageSystemDashboard = () => {
                                                 : "pointer-events-none flex"}
                                                onClick={()=>
                                                {
+                                                   setSelectedContractor(machine.selectedContractor)
                                                    setPopupFilling(true)
                                                    setMachineID(machine.machine_id)
                                                    if (machinesData && machinesData.filter((obj: any) =>
@@ -481,7 +485,7 @@ const StorageSystemDashboard = () => {
                                                                 </a>)
                                                         : "-"
                                                     }<br/>
-                                                    <a className={ machine.total_working_time != 0
+                                                    <a className={ machine.isDatePicked && machine.total_working_time != 0
                                                         ? "underline cursor-pointer flex"
                                                         : "underline pointer-events-none flex"}
                                                     onClick={()=>
@@ -509,7 +513,7 @@ const StorageSystemDashboard = () => {
                                                             .isDateConfirmed)}
 
                                                     }>
-                                                    {   newPickupDates && newPickupDates.filter((obj:any) =>
+                                                    { machine.isDatePicked == true && newPickupDates && newPickupDates.filter((obj:any) =>
                                                         {return obj.machine_id == machine.machine_id}).length != 0
                                                         ? moment(newPickupDates.filter((obj:any) =>
                                                             // @ts-ignore
@@ -529,7 +533,7 @@ const StorageSystemDashboard = () => {
                                                                         {pickupDate.taskEnd.format('DD.MM.YYYY HH:mm')}
                                                                     </span>
                                                                 )
-                                                            : machine.total_working_time !=0
+                                                            : machine.isDatePicked && machine.total_working_time !=0
                                                             && machinesData.filter((obj: any) =>
                                                             {return obj.machine_id == machine.machine_id})[0]
                                                             .pickup_date != ""
@@ -538,25 +542,25 @@ const StorageSystemDashboard = () => {
                                                                 .pickup_date).format('DD.MM.yyyy HH:mm')
                                                             : "-"
                                                     }
-                                                        {   areDatesConfirmed.filter((obj:any)=>
+                                                        {  machine.isDatePicked && areDatesConfirmed.filter((obj:any)=>
                                                         {return obj.machine_id == machine.machine_id}).length != 0
                                                             && areDatesConfirmed.filter((obj:any)=>
                                                         {return obj.machine_id == machine.machine_id})
                                                             // @ts-ignore
                                                             .date_confirmed == false
                                                             ? <img className="ml-1" src="/icon_fragezeichen 1.svg"/>
-                                                            : machine.total_working_time !=0
+                                                            : machine.isDatePicked && machine.total_working_time !=0
                                                             && machine.isDateConfirmed == false
                                                                     ? <img className="ml-1" src="/icon_fragezeichen 1.svg"/>
                                                                     :""}
-                                                        {   areDatesConfirmed.filter((obj:any)=>
+                                                        {   machine.isDatePicked && areDatesConfirmed.filter((obj:any)=>
                                                         {return obj.machine_id == machine.machine_id}).length != 0
                                                         && areDatesConfirmed.filter((obj:any)=>
                                                         {return obj.machine_id == machine.machine_id})
                                                             // @ts-ignore
                                                             .date_confirmed == true
                                                             ? <img className="ml-1" src="/icon_fragezeichen 1.svg"/>
-                                                            : machine.total_working_time !=0
+                                                            : machine.isDatePicked && machine.total_working_time !=0
                                                             && machine.isDateConfirmed == true
                                                                 ? <img className="ml-1" src="/icon_haken 1.svg"/>
                                                                 :""}
@@ -602,6 +606,11 @@ const StorageSystemDashboard = () => {
                         popupFilling={popupFilling}
                         setPopupFilling={setPopupFilling}
                         contractors = {contractors}
+                        isDatePicked = {isDatePicked}
+                        setIsDatePicked = {setIsDatePicked}
+                        defaultContractor = {defaultContractor}
+                        selectedContractor = {selectedContractor}
+                        setSelectedContractor = {setSelectedContractor}
                     />
                     <Popup
                         machineID={machineID}
@@ -621,6 +630,7 @@ const StorageSystemDashboard = () => {
                         setRadioConfirmed={setRadioConfirmed}
                         popup={popup}
                         setPopup={setPopup}
+                        isDatePicked={isDatePicked}
                     />
                 </div>
             </div>

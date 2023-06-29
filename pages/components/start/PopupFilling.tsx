@@ -1,14 +1,14 @@
 import DatePicker from "react-datepicker";
 import moment from "moment";
 import API from "axios";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 
 const PopupFilling = ({machineID, pickupDate, setPickupDates, setMachineID, setPickupDate, pickupDates, machinesData,
                    areDatesConfirmed, setAreDatesConfirmed, setNewPickupDates, newPickupDates, radioConfirmed,
-                   setRadioConfirmed, popupFilling, setPopupFilling, contractors}: any) => {
+                   setRadioConfirmed, popupFilling, setPopupFilling, contractors, setIsDatePicked, isDatePicked,
+                   defaultContractor, selectedContractor, setSelectedContractor}: any) => {
 
     const [displayedDate, setDisplayedDate] = useState<any>();
-
 
     const sendData = (responseBody: any) => {
 
@@ -55,6 +55,8 @@ const PopupFilling = ({machineID, pickupDate, setPickupDates, setMachineID, setP
             lastIndicate: machineData.lastIndicate,
             lastTara: machineData.lastTara,
             price_list: machineData.price_list,
+            isDatePicked: true,
+            selectedContractor: selectedContractor
         }
 
         let newDates = newPickupDates.filter((obj:any) =>
@@ -70,6 +72,7 @@ const PopupFilling = ({machineID, pickupDate, setPickupDates, setMachineID, setP
         setPickupDate("")
         setRadioConfirmed("")
     }
+
 
     const checkDay = () => {
         const days =
@@ -87,15 +90,8 @@ const PopupFilling = ({machineID, pickupDate, setPickupDates, setMachineID, setP
             // @ts-ignore
             return days[day]
         }
-        // @ts-ignore
-        //  else if ( pickupDates.length != 0) {
-        //      const day = pickupDates.filter((obj:any) =>
-        //         {return obj.machineID==machineID})[0].taskEnd.toDate().getDay()
-        // @ts-ignore
-        //      return days[day]
-        //  }
     }
-    console.log(contractors)
+
     return(
         <div id="popup-filling"
              className={ machineID != "" && popupFilling
@@ -133,7 +129,10 @@ const PopupFilling = ({machineID, pickupDate, setPickupDates, setMachineID, setP
                                 border rounded
                                     ml-16 w-1/2 bg-[url('https://www.svgrepo.com/show/80156/down-arrow.svg')]
                                     bg-no-repeat bg-[length:15px] [background-position-x:95%]
-                                    [background-position-y:5px]">
+                                    [background-position-y:5px]"
+                                    value={selectedContractor}
+                                    onChange={(e)=>setSelectedContractor(e.target.value)}
+                            >
                                 {contractors
                                 .sort(function (a: any, b: any) {
                                 if (a.contractor_name < b.contractor_name) {
@@ -182,10 +181,13 @@ const PopupFilling = ({machineID, pickupDate, setPickupDates, setMachineID, setP
             </div>
             <div id="popup-buttons" className="space-x-5">
                 <button className="sm:rounded-lg shadow-md border p-1"
-                        onClick={() => {}}>
+                        onClick={() => updatePickupDates(pickupDate)}>
                     Annehmen</button>
                 <button className="sm:rounded-lg shadow-md border p-1"
-                        onClick={() => {}}>
+                        onClick={() => {
+                            setMachineID("")
+                            setPopupFilling(false)
+                        }}>
                     Ablehnen</button>
                 <button className="sm:rounded-lg shadow-md border p-1 float-right"
                         onClick={() => {

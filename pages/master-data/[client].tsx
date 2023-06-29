@@ -26,18 +26,32 @@ const MasterData = () => {
     const [shiftsReady, setShiftsReady] = useState<any>(false);
 
     const [clientId, setClientId] = useState<any>();
-    const [clients, setClients] = useState<any>();
+    const [clients, setClients] = useState<any>({set: false});
 
     useEffect(() => {
+        API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/clients')
+            .then((response) => {
+                setData(
+                    response.data.Items
+                        .filter( (client: any) => client.client_id == pid.client)
+                );
+            })
+            .catch((error) => {
+                console.log(error.response);
+            });
+
         let apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines';
 
         API.get(apiName)
             .then((response) => {
                 setMachinesData(response.data.Items
                     .filter((machine: { client: string; }) =>
-                        machine.client == "e-findo GmbH"))
+                        machine.client == data[0].client_name))
                 if (sessionStorage.getItem('company')) {
                     setClientId(JSON.parse(sessionStorage.getItem("company") as string).client_id)
+                }
+                if (clients.set == false) {
+                    setClients(true)
                 }
             })
             .catch((error) => {
@@ -68,17 +82,6 @@ const MasterData = () => {
                 console.log(error.response);
             });
 
-        API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/clients')
-            .then((response) => {
-                setData(
-                    response.data.Items
-                        .filter( (client: any) => client.client_id == pid.client)
-                );
-            })
-            .catch((error) => {
-                console.log(error.response);
-            });
-
         API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/lands')
             .then((response) => {
                 setLands(
@@ -103,9 +106,7 @@ const MasterData = () => {
             calculatePlannedDate( '2023/02/14', '10:00')
         }
 
-    },[pid, clientId] );
-
-
+    },[pid, clientId, clients] );
 
     const monthsList = {
         0: "Januar",
@@ -299,7 +300,7 @@ const MasterData = () => {
                             let timeTillTaskEnd = taskEnd.diff(taskStart) / 3600000 * 60
 
                             if (timeTillTaskEnd <= timeTillShiftEnd) {
-                                console.log('Task end:', taskEnd.format())
+                                //console.log('Task end:', taskEnd.format())
                                 setPlannedDate(taskEnd)
                                 setPickupDate(taskEnd)
                                 return taskEnd
@@ -421,10 +422,7 @@ const MasterData = () => {
             <div className="mb-10">
                 {data ? data.map((data: any) =>
                     <div key={data.client_id} className="text-xs space-y-2.5">
-                        <p><span className="font-bold">KundenNr.:</span> {clients ?
-                            clients.filter((client: any) => client.client_id ==
-                                JSON.parse(sessionStorage.getItem('company') as string).client_id)[0].client_number
-                             : ""}</p>
+                        <p><span className="font-bold">KundenNr.:</span> {data.client_number}</p>
                         <p><span className="font-bold">Firma:</span> {data.client_name}<br/></p>
                         <p><span className="font-bold">PLZ:</span> {data.zip_code}<br/></p>
                         <p><span className="font-bold">Stadt:</span> {data.city}<br/></p>
