@@ -34,7 +34,7 @@ const StorageSystemDashboard = () => {
             .then((response) => {
                 setMachinesData(response.data.Items
                     .filter((machine: { client: string; }) =>
-                        machine.client == "e-findo GmbH"));
+                        machine.client == JSON.parse(sessionStorage.getItem('company') as string).client_name));
                 API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/control-documents')
                     .then((response) => {
                         setControlDocuments(
@@ -389,11 +389,11 @@ const StorageSystemDashboard = () => {
     }
 
     return (
-        <div id="storage-system" className="mt-5">
+        <div id="storage-system" className="mt-5 mr-10">
               <span className="text-xs uppercase font-bold text-gray-500">
                   Lagersysteme
               </span>
-            <div className="sm:rounded-lg shadow-md  overflow-auto w-2/3">
+            <div className="sm:rounded-lg shadow-md  overflow-auto">
                 <div className="sm:rounded-lg shadow-md border overflow-auto">
                     <table className="flex-row table-auto w-full">
                         <thead>
@@ -637,7 +637,8 @@ const StorageSystemDashboard = () => {
                 </div>
             </div>
             <div id="statistics"
-                 className="mt-8 overflow-auto sm:rounded-lg shadow-md border flex-row text-center py-7 mt-1 text-xs w-2/3">
+                 className="mt-8 overflow-auto sm:rounded-lg shadow-md border flex-row text-center
+                 py-7 mt-1 text-xs">
                 <div className="flex">
                     <p className="flex-grow flex-1">
                         <span className="font-bold">Aktuell</span><br/>
@@ -651,7 +652,7 @@ const StorageSystemDashboard = () => {
                             moment().format("DD/MM/YYYY")).
                         reduce( function(a: any, b: any){
                             return a + (b['netto']);
-                        }, 0) + " kg": ""}
+                        }, 0) + " kg": "0 kg"}
                     </p>
                     <p className="flex-grow flex-1">
                         <span className="font-bold">Erlös<br/></span>
@@ -669,7 +670,7 @@ const StorageSystemDashboard = () => {
                                     machine.machine_id == b['machine_id']
                                     // @ts-ignore
                                 )[0].price_list.prices[moment().year()][monthsList[moment().month()]]) / 1000);
-                        }, 0)).toFixed(2).replace(".", ",") + " €": ""}
+                        }, 0)).toFixed(2).replace(".", ",") + " €": "0 €"}
                     </p>
                 </div>
                 <hr className="my-5 mx-10"/>
@@ -691,7 +692,7 @@ const StorageSystemDashboard = () => {
                             moment().format("DD/MM/YYYY")).
                         reduce( function(a: any, b: any){
                             return a + (b['netto']);
-                        }, 0) + " kg" : ""}</p>
+                        }, 0) + " kg" : "0 kg"}</p>
                     <p className="flex-grow flex-1">
                         <span className="font-bold">Gesamterlöse<br/></span>
                         {controlDocuments ? (controlDocuments.
@@ -714,7 +715,7 @@ const StorageSystemDashboard = () => {
                                         machine.machine_id == b['machine_id']
                                     // @ts-ignore
                                 )[0].price_list.prices[moment().year()][monthsList[moment().month()]]) / 1000);
-                        }, 0))).toFixed(2).replace(".", ",") + " €" : ""}
+                        }, 0))).toFixed(2).replace(".", ",") + " €" : "0 €"}
                         </p>
                 </div>
             </div>
