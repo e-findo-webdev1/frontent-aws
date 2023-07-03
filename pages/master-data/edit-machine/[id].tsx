@@ -194,7 +194,7 @@ const EditMachine = () => {
                                 bg-[url('https://www.svgrepo.com/show/80156/down-arrow.svg')]
                                 bg-no-repeat bg-[length:15px] [background-position-x:95%]
                                 [background-position-y:5px]"
-                                        defaultValue={data?data.machineType:'esb'}
+                                        value={data?data.machineType:'esb'}
                                         onChange={(e)=>
                                             setData({...data, machineType: e.target.value})}>
                                     <option>esb</option>
@@ -251,7 +251,7 @@ const EditMachine = () => {
                                 bg-[url('https://www.svgrepo.com/show/80156/down-arrow.svg')]
                                 bg-no-repeat bg-[length:15px] [background-position-x:95%]
                                 [background-position-y:5px]"
-                                        defaultValue={data ? data.waretype : ''}
+                                        value={data ? data.waretype : ''}
                                         onChange={(e)=>
                                             setData({...data, waretype: e.target.value})}>
                                     {waretypes ?
@@ -286,7 +286,7 @@ const EditMachine = () => {
                                 bg-[url('https://www.svgrepo.com/show/80156/down-arrow.svg')]
                                 bg-no-repeat bg-[length:15px] [background-position-x:95%]
                                 [background-position-y:5px]"
-                                        defaultValue={data ? data.quality : ''}
+                                        value={data ? data.quality : ''}
                                         onChange={(e)=>
                                             setData({...data, quality: e.target.value})}>
                                     <option>normal</option>
@@ -300,7 +300,7 @@ const EditMachine = () => {
                                 bg-[url('https://www.svgrepo.com/show/80156/down-arrow.svg')]
                                 bg-no-repeat bg-[length:15px] [background-position-x:95%]
                                 [background-position-y:5px]"
-                                        defaultValue={data ? data.fillingType : ''}
+                                        value={data ? data.fillingType : ''}
                                         onChange={(e)=>
                                             setData({...data, fillingType: e.target.value})}>
                                     <option>Automatisch</option>
@@ -385,7 +385,7 @@ const EditMachine = () => {
                                 bg-[url('https://www.svgrepo.com/show/80156/down-arrow.svg')]
                                 bg-no-repeat bg-[length:15px] [background-position-x:95%]
                                 [background-position-y:5px]"
-                                        defaultValue={data ? data.client : ''}
+                                        value={data ? data.client : ''}
                                         onChange={(e)=>
                                             setData({...data, client: e.target.value})}>
                                     {clients ? clients.map((item: any)=>
