@@ -202,7 +202,7 @@ const MachineStorageHistory = () => {
                     : ""}</button>
             <button className="my-3 mr-3 p-1 px-3.5 border-accent-color-1 bg-accent-color-4 hover:bg-accent-color-5
                     sm:rounded-lg shadow-md border text-xs font-semibold">
-                Zeit seit Füllstart: { machinesData.length != 0 && machinesData[0].firstFilling != 0
+                Zeit seit Füllstart: { machinesData.length != 0 && machinesData[0].firstFilling != 0 && machinesData[0].firstFilling
                     //TO-DO translate time outputs to german
                     ? "ca. " + moment(machinesData[0].firstFilling).fromNow() + " (" +
                                 moment(machinesData[0].firstFilling).format('DD.MM.YYYY, HH:mm') + ")"

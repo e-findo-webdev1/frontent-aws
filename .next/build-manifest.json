@@ -25,10 +25,10 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/master-data/edit-machine/[id]": [
+    "/machines/[id]": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/master-data/edit-machine/[id].js"
+      "static/chunks/pages/machines/[id].js"
     ]
   },
   "ampFirstPages": []
