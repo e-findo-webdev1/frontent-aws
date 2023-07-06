@@ -173,7 +173,7 @@ const MachineStorageHistory = () => {
             <button className="my-3 mr-3 p-1 px-3.5 border-accent-color-1 bg-accent-color-4 hover:bg-accent-color-5
                     sm:rounded-lg shadow-md border text-xs font-semibold">
                 Füllzeit seit Stellung: {
-                machinesData.length != 0 && machinesData[0].timeOfFillingStart != 0
+                machinesData.length != 0 && machinesData[0].timeOfFillingStart != 0 && machinesData[0].timeOfFillingStart
                     //TO-DO translate time outputs to german
                 ?  machinesData[0].totalFillingTime < 60
                     ? machinesData[0].totalFillingTime + " Minuten"
