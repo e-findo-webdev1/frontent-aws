@@ -29,7 +29,7 @@ const NewMachine = () => {
     const responseBody = {machine_id: 0, machineType: "", machineName: "", group: "", waretype: "", quality: "",
     index: "", maxNetto: 0, minContainer: 0, maxContainer: 0, averageThroughput: 0, manualTara: "", minForFullStart: 0,
     newFT111: "", automaticTara: "", fillingType: "", plandateCalculation: "", status: "", client: "",
-    total_working_time: 0, total_working_weight: 0, price_list: {
+    total_working_time: 0, lastIndicate: 0, total_working_weight: 0, price_list: {
             prices: {
                 2023: {
                     Januar: '0,00',
@@ -85,6 +85,7 @@ const NewMachine = () => {
         responseBody.total_working_time = total_working_time
         responseBody.total_working_time = total_working_weight
         responseBody.price_list
+        responseBody.lastIndicate = 0
         sendData(responseBody)
     }
 
