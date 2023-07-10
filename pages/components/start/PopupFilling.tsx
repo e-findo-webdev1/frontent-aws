@@ -9,6 +9,9 @@ const PopupFilling = ({machineID, pickupDate, setPickupDates, setMachineID, setP
                    defaultContractor, selectedContractor, setSelectedContractor}: any) => {
 
     const [displayedDate, setDisplayedDate] = useState<any>();
+    const [userPermissions] = useState(
+        JSON.parse(sessionStorage.getItem('user') as string));
+
 
     const sendData = (responseBody: any) => {
 
@@ -94,7 +97,7 @@ const PopupFilling = ({machineID, pickupDate, setPickupDates, setMachineID, setP
 
     return(
         <div id="popup-filling"
-             className={ machineID != "" && popupFilling
+             className={ machineID != "" && popupFilling && userPermissions.abholdatumPopupPermission
                  ? "text-xs bg-white w-1/3 sm:rounded-lg shadow-md border p-5 space-y-4 " +
                  "fixed left-0 right-64 m-auto top-72"
                  : "hidden" }>

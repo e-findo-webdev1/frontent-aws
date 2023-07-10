@@ -871,10 +871,12 @@ const MonthlyEvaluation = () => {
                                             .toFixed(2) + ' €' : ''}
                                 </td>
                                 <td className="text-right">
-                                    <button className="underline"
+                                    <button className={JSON.parse(sessionStorage.getItem('user') as string)
+                                        .enterAmountReceivedPermission ? "underline" : "pointer-events-none"}
                                             onClick={()=>setPopupCertificate(document.document_id)}>
                                         {certificates && certificates.filter((certificate: any)=>
-                                            certificate.document_id == document.document_id)[0].income ? certificates.filter((certificate: any)=>
+                                            certificate.document_id == document.document_id)[0].income ? certificates
+                                            .filter((certificate: any)=>
                                         certificate.document_id == document.document_id)[0].income : '0.00'} €</button>
                                 </td>
                                 <td className="text-right">

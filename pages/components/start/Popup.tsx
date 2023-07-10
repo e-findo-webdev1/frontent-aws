@@ -8,6 +8,8 @@ const Popup = ({machineID, pickupDate, setPickupDates, setMachineID, setPickupDa
                    setRadioConfirmed, popup, setPopup, isDatePicked}: any) => {
 
     const [displayedDate, setDisplayedDate] = useState<any>()
+    const [userPermissions] = useState(
+        JSON.parse(sessionStorage.getItem('user') as string));
 
 
     const sendData = (responseBody: any) => {
@@ -91,7 +93,7 @@ const Popup = ({machineID, pickupDate, setPickupDates, setMachineID, setPickupDa
 
     return(
         <div id="popup"
-             className={ machineID != "" && popup
+             className={ machineID != "" && popup && userPermissions.abholdatumPopupPermission
                  ? "text-sm bg-white w-1/3 sm:rounded-lg shadow-md border p-5 space-y-4 " +
                  "fixed -mt-64 left-0 right-0 m-auto"
                  : "hidden" }>

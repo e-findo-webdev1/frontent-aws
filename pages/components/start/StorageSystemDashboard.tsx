@@ -26,6 +26,9 @@ const StorageSystemDashboard = () => {
     const [defaultContractor, setDefaultContractor] = useState<any>();
     const [selectedContractor, setSelectedContractor] = useState<any>();
     const [pageReload, setPageReload] = useState<any>({set: false});
+    const [userPermissions] = useState(
+        JSON.parse(sessionStorage.getItem('user') as string));
+
 
     useEffect(() => {
         let apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines';
@@ -422,7 +425,8 @@ const StorageSystemDashboard = () => {
                                             <span>{machine.maxNetto} kg</span></td>
                                         <td>{machine.waretype}</td>
                                         <td className="flex py-4">
-                                            <a className={ machine.total_working_time != 0
+                                            <a className={ machine.total_working_time != 0 &&
+                                            userPermissions.abholdatumPopupPermission
                                                 ? "cursor-pointer flex"
                                                 : "pointer-events-none flex"}
                                                onClick={()=>
@@ -488,6 +492,7 @@ const StorageSystemDashboard = () => {
                                                         : "-"
                                                     }<br/>
                                                     <a className={ machine.isDatePicked && machine.total_working_time != 0
+                                                        && userPermissions.abholdatumPopupPermission
                                                         ? "underline cursor-pointer flex"
                                                         : "underline pointer-events-none flex"}
                                                     onClick={()=>

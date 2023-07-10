@@ -29,7 +29,25 @@ const NewMachine = () => {
     const responseBody = {machine_id: 0, machineType: "", machineName: "", group: "", waretype: "", quality: "",
     index: "", maxNetto: 0, minContainer: 0, maxContainer: 0, averageThroughput: 0, manualTara: "", minForFullStart: 0,
     newFT111: "", automaticTara: "", fillingType: "", plandateCalculation: "", status: "", client: "",
-    total_working_time: 0, total_working_weight: 0}
+    total_working_time: 0, total_working_weight: 0, price_list: {
+            prices: {
+                2023: {
+                    Januar: '0,00',
+                    Februar: '0,00',
+                    März: '0,00',
+                    April: '0,00',
+                    Mai: '0,00',
+                    Juni: '0,00',
+                    Juli: '0,00',
+                    August: '0,00',
+                    September: '0,00',
+                    Oktober: '0,00',
+                    November: '0,00',
+                    Dezember: '0,00'
+                }
+            }
+        }
+    }
 
     useEffect(() => {
         const apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/waretypes';
@@ -66,6 +84,7 @@ const NewMachine = () => {
         responseBody.client = client
         responseBody.total_working_time = total_working_time
         responseBody.total_working_time = total_working_weight
+        responseBody.price_list
         sendData(responseBody)
     }
 

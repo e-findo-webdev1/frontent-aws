@@ -11,6 +11,7 @@ import user from "./master-data/edit-worker/[user]";
 function MyApp({ Component, pageProps }: AppProps) {
     const [loggedIn, setLoggedIn] = useState(false);
     const [userToken, setUserToken] = useState('');
+
     useEffect(() => {
         if (sessionStorage.getItem('company')) {
             setLoggedIn(true)

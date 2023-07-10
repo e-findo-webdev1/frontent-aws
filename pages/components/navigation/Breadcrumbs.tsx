@@ -67,7 +67,9 @@ const Breadcrumbs = () => {
                                     { pid ?
                                         route
                                             .replace("-", " ")
+                                            .replace("-", " ")
                                             .replace("/", "")
+                                            .replace("user data", "Master Data")
                                             .replace("[client]", "")
                                             .replace("[id]", pid.id as string)
                                             .replace("[client_id]", pid.client_id as string)
