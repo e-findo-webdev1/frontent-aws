@@ -273,7 +273,7 @@ const NewMachine = () => {
                         <tr>
                             <td className="p-1 pl-0">Min Container Gewicht</td>
                             <td className="p-1 pl-0"><input className="border rounded w-full pl-2.5 py-0.5"
-                                                            defaultValue="0"
+                                                            defaultValue={0}
                             onChange={(e)=>setMinContainer(e.target.value)}/></td>
                             <td className="p-1 pl-3">Kunde</td>
                             <td className="p-1 pl-0"><select className="w-full pl-2.5 py-0.5
@@ -289,7 +289,7 @@ const NewMachine = () => {
                         <tr>
                             <td className="p-1 pl-0">Max Container Gewicht</td>
                             <td className="p-1 pl-0"><input className="border rounded w-full pl-2.5 py-0.5"
-                                                            defaultValue="0"
+                                                            defaultValue={0}
                                                             onChange={(e)=>
                                                                 setMaxContainer(e.target.value)}/>
                             </td>

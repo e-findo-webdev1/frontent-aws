@@ -2,9 +2,5 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/": "pages/index.js",
-  "/master-data/new-machine": "pages/master-data/new-machine.js",
-  "/machines/[id]": "pages/machines/[id].js",
-  "/master-data": "pages/master-data.js",
-  "/master-data/[client]": "pages/master-data/[client].js"
+  "/master-data/edit-machine/[id]": "pages/master-data/edit-machine/[id].js"
 }

@@ -385,7 +385,7 @@ const EditMachine = () => {
                                 bg-[url('https://www.svgrepo.com/show/80156/down-arrow.svg')]
                                 bg-no-repeat bg-[length:15px] [background-position-x:95%]
                                 [background-position-y:5px]"
-                                        value={data ? data.client : ''}
+                                        defaultValue={data ? data.client : ''}
                                         onChange={(e)=>
                                             setData({...data, client: e.target.value})}>
                                     {clients ? clients.map((item: any)=>
