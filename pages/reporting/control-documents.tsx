@@ -99,7 +99,8 @@ const ControlDocuments = () => {
                             <td>{document.brutto}</td>
                             <td>{document.tara}</td>
                             <td>{document.netto}</td>
-                            <td>{(document.totalStandstill/3600000).toFixed(2)}h</td>
+                            <td>{((moment(document.endOfCycle).unix()-moment(document.startOfCycle).unix())
+                                /3600).toFixed(2)}h</td>
                             <td>{(document.totalProductionTime/3600000).toFixed(2)}h</td>
                             <td>{controlDocuments ? (document.averageThroughput).toFixed(2) : ''}</td>
                             <td>{}</td>

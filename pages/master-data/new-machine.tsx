@@ -89,8 +89,8 @@ const NewMachine = () => {
         sendData(responseBody)
     }
 
-    const sendData = (responseBody: any) => {
-        API.put('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines',
+    const sendData = async (responseBody: any) => {
+        await API.put('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines',
             responseBody)
             .then(function (response) {
                 console.log(response);
@@ -98,6 +98,7 @@ const NewMachine = () => {
             .catch(function (error) {
                 console.log(error);
             });
+        window.location.replace('/');
     }
 
 

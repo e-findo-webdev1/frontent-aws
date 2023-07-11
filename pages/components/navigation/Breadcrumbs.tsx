@@ -52,8 +52,10 @@ const Breadcrumbs = () => {
                                 .replace("new-machine", "master-data/new-machine")
                                 .replace("shift-manager", "master-data/shift-manager")
                                 .replace("edit-machine", "master-data/edit-machine/" + pid.id)
+                                .replace("price-matrix", "/kalkulation")
                                 .replace("[client]", "")
                                 .replace("[document_id]", "")
+                                .replace("index-management", "/kalkulation/index-management")
                                 .replace("monthly-evaluation", "reporting/monthly-evaluation")
                             }>
                                 <a className={

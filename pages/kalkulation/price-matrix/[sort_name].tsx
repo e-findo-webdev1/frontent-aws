@@ -177,7 +177,8 @@ const PriceMatrix = () => {
                                                 .map((index: any) =>
                                                     <td key={index}>
                                                     <input  className="border rounded pl-2.5 py-0.5 w-full"
-                                                     defaultValue={priceMatrix ? priceMatrix.prices[month][index]: ""}
+                                                     defaultValue={priceMatrix.prices[month][index]
+                                                         ? priceMatrix.prices[month][index] : 0}
                                                  onChange={
                                                      (e)=>
                                                          setNewPrices({...prices,
@@ -196,8 +197,9 @@ const PriceMatrix = () => {
                                                 return 0;
                                             })
                                             .map((index: any) =>
-                                                <td key={index}>
-                                                    <p>{}</p>
+                                                <td key={index} className="text-right">
+                                                    <p>{priceMatrix.prices[month][index] ?
+                                                        priceMatrix.prices[month][index] : 0}</p>
                                                 </td>)
                                         : ''}
                                 </tr>

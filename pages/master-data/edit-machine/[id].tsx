@@ -2,6 +2,7 @@ import API from "axios";
 import React, {useEffect, useState} from "react";
 import {useRouter} from "next/router";
 import Link from "next/link";
+import fromHex from "../../components/helpers/fromHex";
 
 const EditMachine = () => {
     const router = useRouter()
@@ -75,7 +76,7 @@ const EditMachine = () => {
         setCompany(sessionStorage.getItem("company"))
 
 
-    }, [data.index] );
+    }, [] );
 
     const responseBody = {
         automaticTara: false,
@@ -145,8 +146,8 @@ const EditMachine = () => {
         sendData(responseBody)
     }
 
-    const sendData = (responseBody: any) => {
-        API.put('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines',
+    const sendData = async (responseBody: any) => {
+        await API.put('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines',
             responseBody)
             .then(function (response) {
                 console.log(response);
@@ -154,9 +155,21 @@ const EditMachine = () => {
             .catch(function (error) {
                 console.log(error);
             });
+        window.location.replace('/');
     }
 
-    console.log(data)
+    const deleteMachine = async () => {
+        await API.delete('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines',
+            { data: { machine_id: data.machine_id } })
+            .then(function (response) {
+                console.log(response);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        window.location.replace('/');
+    }
+
     return(
         <div id="content-page" className="mx-20 overflow-auto h-full">
             <Link href={company ? "/master-data/"+company.company_id : ""}>
@@ -419,11 +432,13 @@ const EditMachine = () => {
                         </tr>
                         </tbody>
                     </table>
-                    <button className="mt-9 border p-1.5 px-3.5 font-bold border-accent-color-1 bg-accent-color-4
-                                       hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs">
-                        Maschine entfernen
-                    </button>
                 </form>
+                <button className="mt-9 border p-1.5 px-3.5 font-bold border-accent-color-1 bg-accent-color-4
+                                       hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs"
+                        onClick={()=>deleteMachine()}
+                >
+                    Maschine entfernen
+                </button>
             </div>
         </div>
     )
