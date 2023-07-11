@@ -47,7 +47,6 @@ const Breadcrumbs = () => {
                                 .replace("[id]", pid.id as string)
                                 .replace("[client_id]", pid.id as string)
                                 .replace("shift-calendar", "master-data/shift-calendar")
-                                .replace("master-data", "master-data/" + clientId)
                                 .replace("edit-client", "master-data/edit-client/" + clientId)
                                 .replace("new-machine", "master-data/new-machine")
                                 .replace("shift-manager", "master-data/shift-manager")

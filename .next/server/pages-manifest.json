@@ -2,5 +2,8 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/kalkulation/price-matrix/[sort_name]": "pages/kalkulation/price-matrix/[sort_name].js"
+  "/master-data/edit-client/[client]": "pages/master-data/edit-client/[client].js",
+  "/": "pages/index.js",
+  "/master-data": "pages/master-data.js",
+  "/master-data/[client]": "pages/master-data/[client].js"
 }

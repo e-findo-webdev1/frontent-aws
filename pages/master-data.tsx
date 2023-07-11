@@ -93,8 +93,9 @@ const MasterDataSummary = () => {
         return (
             <div id="content-page" className="px-24 h-full overflow-auto">
                 <div className="mt-10">
-                    <Link href="/">
-                        <button className="border float-right p-1.5 px-3.5 font-bold border-accent-color-1 bg-accent-color-4
+                    <Link href="/new-client">
+                        <button className="border float-right p-1.5 px-3.5 font-bold border-accent-color-1
+                        bg-accent-color-4
                     hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs ml-2">+ Neuer Kunde</button>
                     </Link>
                     <p className="mt-5 text-2xl font-bold mb-5">Stammdaten</p>

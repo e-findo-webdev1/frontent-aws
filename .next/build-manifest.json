@@ -15,6 +15,11 @@
   ],
   "rootMainFiles": [],
   "pages": {
+    "/": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/index.js"
+    ],
     "/_app": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
@@ -25,10 +30,20 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/kalkulation/price-matrix/[sort_name]": [
+    "/master-data": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/kalkulation/price-matrix/[sort_name].js"
+      "static/chunks/pages/master-data.js"
+    ],
+    "/master-data/[client]": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/master-data/[client].js"
+    ],
+    "/master-data/edit-client/[client]": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/master-data/edit-client/[client].js"
     ]
   },
   "ampFirstPages": []

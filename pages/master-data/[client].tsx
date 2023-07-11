@@ -62,11 +62,11 @@ const MasterData = () => {
             .then((response) => {
                 setShift(
                     response.data.Items
-                        .filter( (shift: any) => shift.client_id == clientId )[0].shifts
+                        .filter( (shift: any) => shift.client_id == pid.client )[0].shifts
                 );
                 setShiftHours(
                     response.data.Items
-                        .filter( (shift: any) => shift.client_id == clientId )[0].shiftHours
+                        .filter( (shift: any) => shift.client_id == pid.client )[0].shiftHours
                 );
             })
             .catch((error) => {
@@ -76,7 +76,7 @@ const MasterData = () => {
         API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/users')
             .then((response) => {
                 setWorkers(
-                    response.data.Items);
+                    response.data.Items.filter((obj: any) => obj.client_id == pid.id));
             })
             .catch((error) => {
                 console.log(error.response);
@@ -504,7 +504,8 @@ const MasterData = () => {
                                             </button>
                                         </Link>
                                     </td>
-                                    <td className="text-right">{machine.price_list ? (machine.lastIndicate * parseInt(machine.price_list.prices
+                                    <td className="text-right">{machine.price_list ? (machine.lastIndicate *
+                                        parseInt(machine.price_list.prices
                                         // @ts-ignore
                                         [moment().year()][monthsList[moment().month()]]) /1000).toFixed(2)
                                         .replace(".",",") : "0,00"} €</td>

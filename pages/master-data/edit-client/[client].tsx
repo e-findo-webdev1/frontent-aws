@@ -78,8 +78,8 @@ const EditClient= () => {
         sendData(responseBody)
     }
 
-    const sendData = (responseBody: any) => {
-        API.put('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/clients',
+    const sendData = async (responseBody: any) => {
+        await API.put('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/clients',
             responseBody)
             .then(function (response) {
                 console.log(response);
@@ -87,9 +87,9 @@ const EditClient= () => {
             .catch(function (error) {
                 console.log(error);
             });
-    }
 
-    console.log()
+        window.location.replace('/');
+    }
 
     return(
         <div id="content-page" className="px-20 h-full overflow-auto">
