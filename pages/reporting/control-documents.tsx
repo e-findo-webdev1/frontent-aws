@@ -68,7 +68,7 @@ const ControlDocuments = () => {
                     <tbody className="bg-gray-50">
                     {controlDocuments.sort(function(a: any, b: any){
                         // @ts-ignore
-                        return b.document_id - a.document_id})
+                        return moment(b.endOfCycle).unix() - moment(a.endOfCycle).unix()})
                         .map((document: any) =>
                         <tr key={document.document_id} className="text-xs border-t">
                             <td>{document.machine_id}</td>

@@ -426,7 +426,7 @@ const StorageSystemDashboard = () => {
                                         <td>{machine.waretype}</td>
                                         <td className="flex py-4">
                                             <a className={ machine.total_working_time != 0 &&
-                                            userPermissions.abholdatumPopupPermission
+                                            userPermissions.abholdatumPopupPermission && machine.averageThroughput
                                                 ? "cursor-pointer flex"
                                                 : "pointer-events-none flex"}
                                                onClick={()=>
