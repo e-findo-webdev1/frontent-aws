@@ -30,20 +30,10 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/master-data": [
+    "/master-data/price-list/[id]": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/master-data.js"
-    ],
-    "/master-data/[client]": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/master-data/[client].js"
-    ],
-    "/master-data/edit-client/[client]": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/master-data/edit-client/[client].js"
+      "static/chunks/pages/master-data/price-list/[id].js"
     ]
   },
   "ampFirstPages": []

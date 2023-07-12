@@ -2,8 +2,7 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/master-data/edit-client/[client]": "pages/master-data/edit-client/[client].js",
+  "/master-data/price-list/[id]": "pages/master-data/price-list/[id].js",
   "/": "pages/index.js",
-  "/master-data": "pages/master-data.js",
   "/master-data/[client]": "pages/master-data/[client].js"
 }
