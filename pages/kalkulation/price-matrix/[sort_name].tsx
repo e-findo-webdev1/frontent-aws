@@ -67,7 +67,6 @@ const PriceMatrix = () => {
                 console.log(error.response);
             });
 
-
     }, []);
 
     const monthsList = [
@@ -106,12 +105,12 @@ const PriceMatrix = () => {
         responseBody.price_matrix = priceMatrix.price_matrix
         responseBody.indexgroup_name = priceMatrix.indexgroup_name
         responseBody.indeces = priceMatrix.indeces
-        responseBody.prices = prices
+        responseBody.prices = priceMatrix.prices
         sendData(responseBody)
     }
 
-    const sendData = (responseBody: any) => {
-        API.put('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/price-matrices',
+    const sendData = async (responseBody: any) => {
+        await API.put('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/price-matrices',
             responseBody)
             .then(function (response) {
                 console.log(response);
@@ -119,6 +118,8 @@ const PriceMatrix = () => {
             .catch(function (error) {
                 console.log(error);
             });
+
+        window.location.replace('/kalkulation/index-management');
     }
 
     return(
@@ -181,10 +182,17 @@ const PriceMatrix = () => {
                                                          ? priceMatrix.prices[month][index] : 0}
                                                  onChange={
                                                      (e)=>
-                                                         setNewPrices({...prices,
-                                                             [month]: {...prices[month],
-                                                                 [index]: e.target.value}
-                                                         })}/>
+                                                         setPriceMatrix({
+                                                                ...priceMatrix,
+                                                                prices: {
+                                                                    ...priceMatrix.prices,
+                                                                    [month]: {...priceMatrix.prices[month],
+                                                                    [index]: e.target.value}
+                                                                    }
+                                                             }
+                                                         )
+                                                    }
+                                                    />
                                                     </td>)
                                             : priceMatrix && priceMatrix.indeces ? priceMatrix.indeces
                                             .sort(function (a: any, b: any){

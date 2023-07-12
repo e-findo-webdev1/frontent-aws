@@ -706,15 +706,6 @@ const StorageSystemDashboard = () => {
                             return a + (b['lastIndicate'] *
                                 // @ts-ignore
                                 parseInt(b.price_list.prices[moment().year()][monthsList[moment().month()]]) / 1000);
-                        }, 0) + controlDocuments.
-                        filter((document: any)=>moment(document.timestamp).format("DD/MM/YYYY") ==
-                            moment().format("DD/MM/YYYY")).
-                        reduce( function(a: any, b: any){
-                            return a + (b['netto'] *
-                                parseInt(machinesData.filter((machine: any) =>
-                                        machine.machine_id == b['machine_id']
-                                    // @ts-ignore
-                                )[0].price_list.prices[moment().year()][monthsList[moment().month()]]) / 1000);
                         }, 0))).toFixed(2).replace(".", ",") + " €" : "0 €"}
                         </p>
                 </div>

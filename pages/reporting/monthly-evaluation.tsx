@@ -49,8 +49,6 @@ const MonthlyEvaluation = () => {
                 console.log(error.response);
             });
 
-        console.log(sorts)
-
         API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/price-matrices')
             .then((response) => {
                 setPriceMatrices(
@@ -268,8 +266,6 @@ const MonthlyEvaluation = () => {
                             datasetsIndex.push(datasetExtra[dataset])
                         }
 
-
-
                         if (selectedCategory == 'Monatspreis') {
                             const data: any = {
                                 labels: [monthsList[monthsList.indexOf(selectedMonth)]],
@@ -318,7 +314,7 @@ const MonthlyEvaluation = () => {
                                                             )[0].waretype)[0].sort_name
                                                 ))[0].prices[selectedMonth][datasetsIndex[dataset]
                                                 .replace("Index: ", "")]).replace(',','.'))]
-                                        })
+                                        });
                                 } else {
                                     data.datasets.push(
                                         {
@@ -612,6 +608,8 @@ const MonthlyEvaluation = () => {
             .catch((error) => {
                 console.log(error); //
             });
+
+        console.log(controlDocuments)
 
         API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/waretypes')
             .then((response) => {
@@ -912,7 +910,10 @@ const MonthlyEvaluation = () => {
                                 <td>
                                     <Link href={"/reporting/monthly-evaluation/" + document.document_id}>
                                         <button className="m-auto flex">
-                                            <img className="h-5" src="/upload-svgrepo-com.svg"/></button>
+                                            <img className="h-5" src={certificates &&
+                                                certificates.filter((certificate: any) =>
+                                                    certificate.document_id == document.document_id).pdf_data
+                                                ? "/upload-svgrepo-com.svg" : "/document.png"}/></button>
                                     </Link>
                                 </td>
                                 <td>

@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {useRouter} from "next/router";
 import API from "axios";
+import {machine} from "os";
 
 const PriceList = () => {
     const currentYear = 2023
@@ -47,22 +48,20 @@ const PriceList = () => {
 
     }, [pid.id]);
 
-    const sendData = (responseBody: any) => {
-        API.put('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines',
-            responseBody)
+
+    const sendData = async () => {
+        await API.put('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines',
+            machineData)
             .then(function (response) {
                 console.log(response);
             })
             .catch(function (error) {
                 console.log(error);
             });
+
+        window.location.replace('/');
     }
 
-    const updatePriceList = (prices: any) => {
-        let responseBody = machineData
-        responseBody.price_list = newPriceList
-        sendData(responseBody)
-    }
 
     return(
         <div id="content-page" className="mx-20 overflow-auto h-full">
@@ -84,11 +83,14 @@ const PriceList = () => {
                                    : newPriceList.prices[currentYear][month]
                         }
                                onChange={(e)=>
-                                setNewPriceList({...newPriceList, prices: {...newPriceList.prices,
-                                        2023:
-                                            {...newPriceList.prices[currentYear],
-                                                [month]: e.target.value
-                                            }
+                                setMachineData({
+                                    ...machineData, price_list: {...machineData.price_list,
+                                        prices: {...machineData.price_list.prices,
+                                            2023:
+                                                {...machineData.price_list.prices[currentYear],
+                                                    [month]: e.target.value
+                                                }
+                                    }
                                     }})
                         }
                         />
@@ -100,7 +102,7 @@ const PriceList = () => {
             <button className="ml-20 p-1.5 mt-7 font-bold text-xs border-accent-color-1
                             bg-accent-color-4 hover:bg-accent-color-5
                             sm:rounded-lg shadow-md border"
-                    onClick={()=>updatePriceList(newPriceList)}>
+                    onClick={()=>sendData()}>
                 Speichern</button>
         </div>
     )
