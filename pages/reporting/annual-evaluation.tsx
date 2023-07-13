@@ -74,73 +74,76 @@ const AnnualEvaluation = () => {
                             'Dez'
                         ];
 
-                        const dataset = []
-                        for (let month in labels) {
-                            if (controlDocuments.filter((document: any)=>
-                                moment(document.endOfCycle).month() == parseInt(month)
-                            ).length == 0) {
-                                dataset.push([labels[month], 0])
-                            } else {
-                                dataset.push([labels[month], controlDocuments.filter((document: any) =>
-                                moment(document.endOfCycle).month() == parseInt(month))
-                                    .reduce(function (a: any, b: any) {
-                                    return a + (parseInt((b['netto'])) - parseInt((b['tara'])));
-                                }, 0)])
+
+                        if (selectedCategory == 'Gewichtentwicklung') {
+                            const dataset = []
+                            for (let month in labels) {
+                                if (controlDocuments.filter((document: any) =>
+                                    moment(document.endOfCycle).month() == parseInt(month)
+                                ).length == 0) {
+                                    dataset.push([labels[month], 0])
+                                } else {
+                                    dataset.push([labels[month], controlDocuments.filter((document: any) =>
+                                        moment(document.endOfCycle).month() == parseInt(month))
+                                        .reduce(function (a: any, b: any) {
+                                            return a + (parseInt((b['netto'])) - parseInt((b['tara'])));
+                                        }, 0)])
+                                }
                             }
-                        }
 
-                        const data = {
-                            labels: labels,
-                            datasets: [{
-                                label: 'Gesamt-Werksgewicht',
-                                backgroundColor: 'rgb(218,0,44)',
-                                borderColor: 'rgb(218,0,44)',
-                                data: dataset,
-                            }]
-                        };
+                            const data = {
+                                labels: labels,
+                                datasets: [{
+                                    label: 'Gesamt-Werksgewicht',
+                                    backgroundColor: 'rgb(218,0,44)',
+                                    borderColor: 'rgb(218,0,44)',
+                                    data: dataset,
+                                }]
+                            };
 
-                        const config = {
-                            type: 'line',
-                            data: data,
-                            options: {
-                                scales: {
-                                    y: {}
-                                },
-                                plugins: {
-                                    legend: {
-                                        position: 'right'
+                            const config = {
+                                type: 'line',
+                                data: data,
+                                options: {
+                                    scales: {
+                                        y: {}
                                     },
-                                    tooltip: {
-                                        callbacks: {
-                                            label: function (context: any) {
-                                                let label = context.dataset.label || '';
+                                    plugins: {
+                                        legend: {
+                                            position: 'right'
+                                        },
+                                        tooltip: {
+                                            callbacks: {
+                                                label: function (context: any) {
+                                                    let label = context.dataset.label || '';
 
-                                                if (label) {
-                                                    label += ': ';
+                                                    if (label) {
+                                                        label += ': ';
+                                                    }
+                                                    if (context.parsed.y !== null) {
+                                                        label += new Intl.NumberFormat('de-DE', {
+                                                            style: 'unit',
+                                                            unit: 'kilogram'
+                                                        }).format(context.parsed.y);
+                                                    }
+                                                    return label;
                                                 }
-                                                if (context.parsed.y !== null) {
-                                                    label += new Intl.NumberFormat('de-DE', {
-                                                        style: 'unit',
-                                                        unit: 'kilogram'
-                                                    }).format(context.parsed.y);
-                                                }
-                                                return label;
                                             }
                                         }
-                                    }
+                                    },
                                 },
-                            },
-                        };
+                            };
 
-                        // @ts-ignore
-                        document.getElementById("line-chart").innerHTML =
-                            "<canvas id=\"myChart\"></canvas>"
-
-                        setMyChart(  new Chart(
                             // @ts-ignore
-                            document.getElementById('myChart'),
-                            config
-                        ));
+                            document.getElementById("line-chart").innerHTML =
+                                "<canvas id=\"myChart\"></canvas>"
+
+                            setMyChart(new Chart(
+                                // @ts-ignore
+                                document.getElementById('myChart'),
+                                config
+                            ));
+                        }
 
                     })
                     .catch((error) => {
@@ -151,7 +154,8 @@ const AnnualEvaluation = () => {
                 console.log(error); //
             });
 
-    },[currentYear, myChart.set, controlDocuments.set])
+
+    },[currentYear, selectedMachine, myChart.set, controlDocuments.set, selectedCategory])
 
     return(
         <div id="content-page" className="overflow-auto h-full px-20">

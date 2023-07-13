@@ -114,7 +114,7 @@ const MonthlyEvaluation = () => {
                                                     monthsList.indexOf(selectedMonth))
                                                 .filter((document: any) => moment(document.endOfCycle).date() == day)
                                                 .reduce(function (a: any, b: any) {
-                                                    return a + (b['netto']);
+                                                    return a + ((b['netto']) - b.tara);
                                                 }, 0))
                                     },
                                 ]
@@ -152,7 +152,7 @@ const MonthlyEvaluation = () => {
                                                     moment(document.endOfCycle).month() == monthsList.indexOf(selectedMonth))
                                                 .filter((document: any) => moment(document.endOfCycle).date() == day)
                                                 .reduce(function (a: any, b: any) {
-                                                    return a + (b['netto']);
+                                                    return a + ((b['netto']) -b.tara);
                                                 }, 0))
                                     }
                                 )
@@ -458,7 +458,7 @@ const MonthlyEvaluation = () => {
                                                     monthsList.indexOf(selectedMonth))
                                                 .filter((document: any) => moment(document.endOfCycle).date() == day)
                                                 .reduce(function (a: any, b: any) {
-                                                    return a + (b['netto']) *
+                                                    return a + ((b['netto']) -b.tara)*
                                                         parseInt(machinesData.filter((machine: any) =>
                                                             machine.machine_id == b['machine_id'])[0]
                                                             // @ts-ignore
@@ -503,7 +503,7 @@ const MonthlyEvaluation = () => {
                                                 .filter((document: any) => moment(document.endOfCycle).date() == day)
                                                 .filter((document: any) => document.waretype == datasetsPrices[dataset])
                                                 .reduce(function (a: any, b: any) {
-                                                    return a + (b['netto']) *
+                                                    return a + ((b['netto']) -b.tara)*
                                                         parseInt(machinesData.filter((machine: any) =>
                                                             machine.machine_id == b['machine_id'])[0]
                                                             // @ts-ignore
@@ -609,7 +609,6 @@ const MonthlyEvaluation = () => {
                 console.log(error); //
             });
 
-        console.log(controlDocuments)
 
         API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/waretypes')
             .then((response) => {
@@ -800,7 +799,7 @@ const MonthlyEvaluation = () => {
                                         company = {JSON.parse(sessionStorage.getItem('company') as string)}
                                         waretype = {document.waretype}
                                         sort = {
-                                            waretypes.filter((ware: any) =>
+                                        waretypes.filter((ware: any) =>
                                                 ware.name_waretype == document.waretype)[0].waretype_number
                                         }
                                     />
@@ -830,7 +829,7 @@ const MonthlyEvaluation = () => {
                                     )[0].internal_number}
                                 </td>
                                 <td className="text-right">
-                                    {document.netto}
+                                    {document.netto - document.tara}
                                 </td>
                                 <td className="text-right">
                                     {certificates && certificates.filter((certificate: any) =>
@@ -842,7 +841,7 @@ const MonthlyEvaluation = () => {
                                 <td className="text-right">
                                     {certificates &&  certificates.filter((certificate: any) =>
                                             certificate.document_id == document.document_id)[0].workingWeight
-                                        ? document.netto - certificates.filter((certificate: any) =>
+                                        ? (document.netto -document.tara)- certificates.filter((certificate: any) =>
                                             certificate.document_id == document.document_id)[0].workingWeight
                                         : ''}
                                 </td>
@@ -856,7 +855,7 @@ const MonthlyEvaluation = () => {
                                 <td className="text-right">
                                     { machinesData.filter((machine:any)=>
                                         machine.machine_id==document.machine_id)[0].price_list
-                                        ?   (document.netto / 1000 *
+                                        ?   ((document.netto - document.tara) / 1000 *
                                             parseInt(machinesData.filter((machine:any)=>
                                                 machine.machine_id==document.machine_id)[0].price_list.prices
                                                 [moment().year()][monthsList[moment().month()]]))

@@ -4,6 +4,7 @@ import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts'
 import {useEffect, useState} from "react";
 import moment from "moment";
+import API from "axios";
 pdfMake.vfs = pdfFonts.pdfMake.vfs
 pdfMake.fonts = {
     Poppins: {
@@ -20,10 +21,43 @@ pdfMake.fonts = {
     },
 }
 const Proforma = ({document_id, brutto, netto, timestamp, tara, machine_id, company, waretype, sort}: any) => {
+    const monthsList = [
+        "Januar",
+        "Februar",
+        "März",
+        "April",
+        "Mai",
+        "Juni",
+        "Juli",
+        "August",
+        "September",
+        "Oktober",
+        "November",
+        "Dezember"
+    ]
+
     const [image, setImage] = useState('');
     const [url, setUrl] = useState(null)
+    const [controlDocument, setControlDocument] = useState<any>();
+    const [machineData, setMachineData] = useState<any>();
 
     useEffect(() => {
+        API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/control-documents')
+            .then((response) => {
+                setControlDocument(response.data.Items.filter((document: any) => document.document_id == document_id));
+            })
+            .catch((error) => {
+                console.log(error.response);
+            });
+
+        API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines')
+            .then((response) => {
+                setMachineData(response.data.Items.filter((machine: any) => machine.machine_id == machine_id));
+            })
+            .catch((error) => {
+                console.log(error.response);
+            });
+
         const object = async () => {
             const myobj = {
                 image: await getBase64ImageFromURL(
@@ -97,15 +131,17 @@ const Proforma = ({document_id, brutto, netto, timestamp, tara, machine_id, comp
 
                     body: [
                         ['Monatpreis:', {
-                            text: `€`,
+                            text: `${machineData[0].price_list.prices[moment(controlDocument.endOfCycle).year()]
+                                [monthsList[moment(controlDocument.endOfCycle).month()]]} €`,
                             alignment: 'right'
                         }],
                         ['Abgangsgewicht:', {
-                            text: ``,
+                            text: `${netto - tara}`,
                             alignment: 'right'
                         }],
                         ['Betrag:', {
-                            text: `€`,
+                            text: `${((netto - tara) * machineData[0].price_list.prices[moment(controlDocument.endOfCycle).year()]
+                                [monthsList[moment(controlDocument.endOfCycle).month()]] / 1000).toFixed(2)}€`,
                             alignment: 'right'
                         }]
                      ]
