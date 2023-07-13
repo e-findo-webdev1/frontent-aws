@@ -86,7 +86,8 @@ const MonthlyComment = () => {
     }
 
     const responseBody = {
-        formData: '', document_id: pid.document_id, workingWeight: 0, comment: '', income: 0
+        formData: '', document_id: pid.document_id, workingWeight: 0, comment: '', income: 0,
+        client_id: 0, machine_id: 0, endOfCycle: ''
     }
 
     const handleSubmission = async () => {
@@ -95,6 +96,9 @@ const MonthlyComment = () => {
         responseBody.workingWeight = workingWeight
         responseBody.comment = comment
         responseBody.income = certificate.income
+        responseBody.client_id = JSON.parse(sessionStorage.getItem('company') as string).client_id
+        responseBody.machine_id = controlDocument.machine_id
+        responseBody.endOfCycle = controlDocument.endOfCycle
 
         function getBase64(file: any) {
             let reader = new FileReader();
@@ -119,12 +123,12 @@ const MonthlyComment = () => {
         }
         if (isFilePicked) {
             let file = selectedFile
-            getBase64(file);
+            await getBase64(file);
         } else {
             if (certificate.pdf_data != '') {
                 responseBody.formData = certificate.pdf_data
             }
-            API.put('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/certificates',
+           await API.put('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/certificates',
                 responseBody)
                 .then(function (response) {
                     console.log(response);
@@ -134,6 +138,7 @@ const MonthlyComment = () => {
                     console.log(error);
                 });
         }
+        window.location.replace('/reporting/monthly-evaluation')
     }
 
     return (

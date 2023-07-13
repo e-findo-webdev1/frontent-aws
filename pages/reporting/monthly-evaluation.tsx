@@ -629,17 +629,20 @@ const MonthlyEvaluation = () => {
 
     }, [controlDocuments.set, selectedMonth, myChart.set, selectedMachine, selectedCategory]);
 
-    const handlePopupSend = () => {
+    const handlePopupSend = async () => {
         let certificate = certificates.filter((certificate: any)=> certificate.document_id == popupCertificate)[0]
         let responseBody = {
             workingWeight: certificate.workingWeight,
             comment: certificate.comment,
             document_id: certificate.document_id,
             formData: certificate.pdf_data,
-            income: receivedIncome
+            income: receivedIncome,
+            endOfCycle: certificate.endOfCycle,
+            machine_id: certificate.machine_id,
+            client_id: certificate.client_id
         }
 
-        API.put('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/certificates',
+        await API.put('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/certificates',
             responseBody)
             .then(function (response) {
                 console.log(response);
@@ -647,6 +650,8 @@ const MonthlyEvaluation = () => {
             .catch(function (error) {
                 console.log(error);
             });
+
+        window.location.reload()
     }
 
     return(
@@ -785,6 +790,7 @@ const MonthlyEvaluation = () => {
                                 </td>
                                 <td>
                                     <PDFLink
+                                        endOfCycle = {document.endOfCycle}
                                         document_id = {document.document_id}
                                         brutto = {document.brutto}
                                         netto = {document.netto}
@@ -802,6 +808,7 @@ const MonthlyEvaluation = () => {
                                 </td>
                                 <td>
                                     <PDF
+                                        endOfCycle = {document.endOfCycle}
                                         document_id = {document.document_id}
                                         brutto = {document.brutto}
                                         netto = {document.netto}

@@ -20,7 +20,7 @@ pdfMake.fonts = {
         bolditalics: 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-MediumItalic.ttf'
     },
 }
-const PDFLink = ({document_id, brutto, netto, timestamp, tara, machine_id, company, waretype, sort}: any) => {
+const PDFLink = ({document_id, brutto, netto, timestamp, tara, machine_id, company, waretype, sort, endOfCycle}: any) => {
     const [image, setImage] = useState('');
     const [url, setUrl] = useState(null)
 
@@ -99,7 +99,7 @@ const PDFLink = ({document_id, brutto, netto, timestamp, tara, machine_id, compa
                                         },
                                         {
                                             width: '*',
-                                            text: `${brutto}`,
+                                            text: `${netto}`,
                                             alignment: 'right'
                                         },
                                     ]},
@@ -121,7 +121,7 @@ const PDFLink = ({document_id, brutto, netto, timestamp, tara, machine_id, compa
                                         },
                                         {
                                             width: '*',
-                                            text: `${netto}`,
+                                            text: `${netto - tara}`,
                                             alignment: 'right'
                                         },
                                     ]},
@@ -156,7 +156,7 @@ const PDFLink = ({document_id, brutto, netto, timestamp, tara, machine_id, compa
                     },
                     {
                         width: '*',
-                        text: `Ware übernommen: ${moment().format('DD.MM.YYYY')}`,
+                        text: `Ware übernommen: ${moment(endOfCycle).format('DD.MM.YYYY')}`,
                         alignment: 'left'
                     },
                 ]},
