@@ -131,8 +131,8 @@ const Proforma = ({document_id, brutto, netto, timestamp, tara, machine_id, comp
 
                     body: [
                         ['Monatpreis:', {
-                            text: `${machineData[0].price_list.prices[moment(controlDocument.endOfCycle).year()]
-                                [monthsList[moment(controlDocument.endOfCycle).month()]]} €`,
+                            text: `${machineData && controlDocument ? machineData[0].price_list.prices[moment(controlDocument.endOfCycle).year()]
+                                [monthsList[moment(controlDocument.endOfCycle).month()]] : ''} €`,
                             alignment: 'right'
                         }],
                         ['Abgangsgewicht:', {
@@ -140,8 +140,8 @@ const Proforma = ({document_id, brutto, netto, timestamp, tara, machine_id, comp
                             alignment: 'right'
                         }],
                         ['Betrag:', {
-                            text: `${((netto - tara) * machineData[0].price_list.prices[moment(controlDocument.endOfCycle).year()]
-                                [monthsList[moment(controlDocument.endOfCycle).month()]] / 1000).toFixed(2)}€`,
+                            text: `${machineData && controlDocument ? ((netto - tara) * machineData[0].price_list.prices[moment(controlDocument.endOfCycle).year()]
+                                [monthsList[moment(controlDocument.endOfCycle).month()]] / 1000).toFixed(2) : ''}€`,
                             alignment: 'right'
                         }]
                      ]
