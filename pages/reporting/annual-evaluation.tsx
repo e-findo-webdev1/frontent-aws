@@ -2,6 +2,7 @@ import {useEffect, useState} from "react";
 import Chart from 'chart.js/auto';
 import moment from "moment";
 import API from "axios";
+import {machine} from "os";
 
 const AnnualEvaluation = () => {
     const monthsList = [
@@ -25,6 +26,7 @@ const AnnualEvaluation = () => {
     const [selectedMachine, setSelectedMachine] = useState<any>('- Alle -');
     const [myChart, setMyChart] = useState<any>({set: false});
     const [weighingCertificates, setWeighingCertificates] = useState<any>();
+    const [selectedCategory, setSelectedCategory] = useState<any>('Gewichtentwicklung');
 
     useEffect(()=>{
 
@@ -82,7 +84,7 @@ const AnnualEvaluation = () => {
                                 dataset.push([labels[month], controlDocuments.filter((document: any) =>
                                 moment(document.endOfCycle).month() == parseInt(month))
                                     .reduce(function (a: any, b: any) {
-                                    return a + (b['netto']);
+                                    return a + (parseInt((b['netto'])) - parseInt((b['tara'])));
                                 }, 0)])
                             }
                         }
@@ -151,8 +153,6 @@ const AnnualEvaluation = () => {
 
     },[currentYear, myChart.set, controlDocuments.set])
 
-    console.log(machinesData)
-
     return(
         <div id="content-page" className="overflow-auto h-full px-20">
             <p className="mt-9 text-3xl font-bold mb-5">Jahresauswertung</p>
@@ -173,8 +173,34 @@ const AnnualEvaluation = () => {
                 <button
                 >&gt;</button>
             </div>
-            <span className="text-xs uppercase font-bold text-gray-500">Gewichtentwicklung</span>
-            <div className="mb-10 mt-5" id="line-chart"/>
+            <div className="flex mt-5">
+                <div className="flex m-auto space-x-1">
+                    <button className="border mx-auto p-1.5 px-3.5 font-bold border-accent-color-1 bg-accent-color-4
+                        hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs flex"
+                            onClick={()=>setSelectedCategory('Gewichtentwicklung')}
+                    >Gewichtentwicklung
+                    </button>
+                    <button className="border mx-auto p-1.5 px-3.5 font-bold border-accent-color-1 bg-accent-color-4
+                        hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs flex"
+                            onClick={()=>setSelectedCategory('Monatspreis')}
+                    >Monatspreis
+                    </button>
+                    <button className="border mx-auto p-1.5 px-3.5 font-bold border-accent-color-1 bg-accent-color-4
+                        hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs flex"
+                            onClick={()=>setSelectedCategory('Erlösentwicklung')}
+                    >Erlösentwicklung
+                    </button>
+                </div>
+            </div>
+            <div>
+                <p className="mt-5 text-xs uppercase font-bold text-gray-500">
+                    {selectedCategory == 'Gewichtentwicklung' ? 'Gewichtentwicklung'
+                        : selectedCategory == 'Monatspreis' ? 'Indexpreis-Verlauf'
+                            : selectedCategory == 'Erlösentwicklung' ? 'Erlösentwicklung' : ''}
+                </p>
+                <div className="mb-10 mt-5 w-10/12" id="line-chart"/>
+            </div>
+
             <div className="sm:rounded-lg shadow-md border">
                 <table className="flex-row w-full table-auto">
                     <thead>
@@ -196,7 +222,7 @@ const AnnualEvaluation = () => {
                                     {controlDocuments.set != false ? controlDocuments.filter((document: any) =>
                                         moment(document.endOfCycle).month() == monthsList.indexOf(month))
                                         .reduce(function (a: any, b: any) {
-                                            return a + parseInt((b['netto']));
+                                            return a + (parseInt((b['netto'])) - parseInt((b['tara'])));
                                         }, 0): ''}
                                 </td>
                                 <td className="text-right">
@@ -241,11 +267,22 @@ const AnnualEvaluation = () => {
                         <td>
                             {controlDocuments.set != false ? controlDocuments
                                 .reduce(function (a: any, b: any) {
-                                    return a + parseInt((b['netto']));
+                                    return a + (parseInt((b['netto'])) - parseInt((b['tara'])));
                                 }, 0): ''}
                         </td>
                         <td>
-                            {}
+                            { weighingCertificates && machinesData ?
+                                monthsList.map((month: any) =>
+                                weighingCertificates.filter((certificate: any) =>
+                                    moment(certificate.endOfCycle).month() == monthsList.indexOf(month))
+                                    .reduce(function (a: any, b: any) {
+                                        return a + parseInt((b['workingWeight'])) * machinesData.filter(
+                                            (machine: any) => machine.machine_id == b.machine_id)[0]
+                                            .price_list.prices[currentYear][month] / 1000
+                                    }, 0) + ' €'
+                            ).reduce(function (a: any, b: any) {
+                                    return a + parseInt(b)
+                                }, 0) + ' €' : ''}
                         </td>
                         <td>
                             {weighingCertificates ? weighingCertificates
@@ -254,7 +291,22 @@ const AnnualEvaluation = () => {
                                 }, 0) + ' €' : ''}
                         </td>
                         <td>
-                            {}
+                            {weighingCertificates && machinesData ?
+                                weighingCertificates
+                                .reduce(function (a: any, b: any) {
+                                    return a + parseInt((b['income']));
+                                }, 0)  -
+                                monthsList.map((month: any) =>
+                                    weighingCertificates.filter((certificate: any) =>
+                                        moment(certificate.endOfCycle).month() == monthsList.indexOf(month))
+                                        .reduce(function (a: any, b: any) {
+                                            return a + parseInt((b['workingWeight'])) * machinesData.filter(
+                                                (machine: any) => machine.machine_id == b.machine_id)[0]
+                                                .price_list.prices[currentYear][month] / 1000
+                                        }, 0) + ' €'
+                                ).reduce(function (a: any, b: any) {
+                                    return a + parseInt(b)
+                                }, 0) + ' €' : ''}
                         </td>
                     </tr>
                     </tbody>
