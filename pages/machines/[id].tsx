@@ -282,9 +282,9 @@ const MachineStorageHistory = () => {
                                     {moment.unix(item.published_at).utc().format('DD.MM.YYYY')},
                                     {moment.unix(item.published_at).utc().format(' HH:mm')}
                                 </td>
-                                <td>{data && item.isPositiveWeight == "true" ?
+                                <td>{data && item.isNetWeight == "true" ?
                                     parseInt(item.indicateWeight) + parseInt(item.tareWeight)
-                                    : parseInt(item.indicateWeight) - parseInt(item.tareWeight)} kg</td>
+                                    : parseInt(item.indicateWeight)} kg</td>
                                 <td>{parseInt(item.tareWeight)} kg</td>
                                 <td>{parseInt(item.tareWeight)} kg</td>
                                 <td className={data && item.isPositiveWeight == "true" ? "" : "text-red-500"}>
