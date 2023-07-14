@@ -798,10 +798,10 @@ const MonthlyEvaluation = () => {
                                         machine_id = {document.machine_id}
                                         company = {JSON.parse(sessionStorage.getItem('company') as string)}
                                         waretype = {document.waretype}
-                                        sort = {
+                                        sort = { waretypes ?
                                         waretypes.filter((ware: any) =>
                                                 ware.name_waretype == document.waretype)[0].waretype_number
-                                        }
+                                        : ''}
                                     />
                                     {document.machine_id}
                                 </td>
@@ -921,10 +921,12 @@ const MonthlyEvaluation = () => {
                                 <td>
                                     <Link href={"/reporting/monthly-evaluation/" + document.document_id}>
                                         <button className="m-auto flex">
-                                            <img className="h-5" src={certificates &&
-                                                certificates.filter((certificate: any) =>
-                                                    certificate.document_id == document.document_id).pdf_data
-                                                ? "/upload-svgrepo-com.svg" : "/document.png"}/></button>
+                                            <img className="h-5" src={
+                                                certificates && certificates.filter((certificate: any) =>
+                                                certificate.document_id == document.document_id).length == 0
+                                                    || certificates.filter((certificate: any) =>
+                                                        certificate.document_id == document.document_id).pdf_data == '' ?
+                                                "/upload-svgrepo-com.svg" : '/document.png'}/></button>
                                     </Link>
                                 </td>
                                 <td>
