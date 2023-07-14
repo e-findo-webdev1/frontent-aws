@@ -833,19 +833,21 @@ const MonthlyEvaluation = () => {
                                 </td>
                                 <td className="text-right">
                                     {certificates && certificates.filter((certificate: any) =>
-                                       certificate.document_id == document.document_id).workingWeight
+                                        certificate.document_id == document.document_id).length != 0 &&
+                                    certificates.filter((certificate: any) =>
+                                       certificate.document_id == document.document_id)[0].workingWeight
                                         ? certificates.filter((certificate: any) =>
-                                        certificate.document_id == document.document_id).workingWeight
+                                        certificate.document_id == document.document_id)[0].workingWeight
                                        : ''}
                                 </td>
                                 <td className="text-right">
-                                    {certificates &&  certificates.filter((certificate: any) =>
-                                            certificate.document_id == document.document_id).workingWeight
-                                        ? (document.netto -document.tara)- certificates.filter((certificate: any) =>
-                                            certificate.document_id == document.document_id).workingWeight
-                                        : ''
-
-                                        }
+                                    {certificates && certificates.filter((certificate: any) =>
+                                        certificate.document_id == document.document_id).length != 0 &&
+                                    certificates.filter((certificate: any) =>
+                                        certificate.document_id == document.document_id)[0].workingWeight
+                                        ? (document.netto - document.tara) - certificates.filter((certificate: any) =>
+                                        certificate.document_id == document.document_id)[0].workingWeight
+                                        : ''}
                                 </td>
                                 <td className="text-right">
                                         {machinesData.filter((machine:any)=>machine.machine_id==document.machine_id)[0].price_list ?
@@ -866,13 +868,15 @@ const MonthlyEvaluation = () => {
                                 </td>
                                 <td className="text-right">
                                     { certificates && machinesData.filter((machine:any)=>
-                                        machine.machine_id==document.machine_id).price_list
+                                        machine.machine_id==document.machine_id)[0].price_list &&
+                                    certificates.filter((certificate: any) =>
+                                        certificate.document_id == document.document_id).length != 0
                                         && certificates.filter((certificate: any) =>
-                                        certificate.document_id == document.document_id).workingWeight
+                                        certificate.document_id == document.document_id)[0].workingWeight
                                         ?   (certificates.filter((certificate: any) =>
-                                               certificate.document_id == document.document_id).workingWeight / 1000 *
+                                               certificate.document_id == document.document_id)[0].workingWeight / 1000 *
                                             parseInt(machinesData.filter((machine:any)=>
-                                                machine.machine_id==document.machine_id).price_list.prices
+                                                machine.machine_id==document.machine_id)[0].price_list.prices
                                                 [moment().year()][monthsList[moment().month()]]))
                                             .toFixed(2) + ' €' : ''
                                         }
@@ -882,23 +886,27 @@ const MonthlyEvaluation = () => {
                                         .enterAmountReceivedPermission ? "underline" : "pointer-events-none"}
                                             onClick={()=>setPopupCertificate(document.document_id)}>
                                         {certificates && certificates.filter((certificate: any)=>
-                                            certificate.document_id == document.document_id).income ? certificates
+                                            certificate.document_id == document.document_id).length != 0
+                                        && certificates.filter((certificate: any)=>
+                                            certificate.document_id == document.document_id)[0].income ? certificates
                                             .filter((certificate: any)=>
-                                        certificate.document_id == document.document_id).income : '0.00'
+                                        certificate.document_id == document.document_id)[0].income : '0.00'
                                             } €</button>
                                 </td>
                                 <td className="text-right">
                                     {certificates && machinesData.filter((machine:any)=>
-                                        machine.machine_id==document.machine_id).price_list
+                                        machine.machine_id==document.machine_id)[0].price_list
+                                        && certificates.filter((certificate: any) =>
+                                        certificate.document_id == document.document_id).length != 0
                                     && certificates.filter((certificate: any) =>
-                                        certificate.document_id == document.document_id).workingWeight
+                                        certificate.document_id == document.document_id)[0].workingWeight
                                         ?   (certificates.filter((certificate: any) =>
-                                               certificate.document_id == document.document_id).workingWeight / 1000 *
+                                               certificate.document_id == document.document_id)[0].workingWeight / 1000 *
                                             parseInt(machinesData.filter((machine:any)=>
-                                                machine.machine_id==document.machine_id).price_list.prices
+                                                machine.machine_id==document.machine_id)[0].price_list.prices
                                                [moment().year()][monthsList[moment().month()]])
                                             - certificates.filter((certificate: any)=>
-                                        certificate.document_id == document.document_id).income)
+                                        certificate.document_id == document.document_id)[0].income)
                                         .toFixed(2) + ' €': ''
                                         }
                                 </td>
