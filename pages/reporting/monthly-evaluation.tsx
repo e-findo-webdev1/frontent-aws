@@ -628,6 +628,8 @@ const MonthlyEvaluation = () => {
 
     }, [controlDocuments.set, selectedMonth, myChart.set, selectedMachine, selectedCategory]);
 
+    console.log(certificates)
+
     const handlePopupSend = async () => {
         let certificate = certificates.filter((certificate: any)=> certificate.document_id == popupCertificate)[0]
         let responseBody = {
@@ -833,17 +835,19 @@ const MonthlyEvaluation = () => {
                                 </td>
                                 <td className="text-right">
                                     {certificates && certificates.filter((certificate: any) =>
-                                        certificate.document_id == document.document_id)[0].workingWeight
+                                       certificate.document_id == document.document_id).workingWeight
                                         ? certificates.filter((certificate: any) =>
-                                        certificate.document_id == document.document_id)[0].workingWeight
-                                        : ''}
+                                        certificate.document_id == document.document_id).workingWeight
+                                       : ''}
                                 </td>
                                 <td className="text-right">
                                     {certificates &&  certificates.filter((certificate: any) =>
-                                            certificate.document_id == document.document_id)[0].workingWeight
+                                            certificate.document_id == document.document_id).workingWeight
                                         ? (document.netto -document.tara)- certificates.filter((certificate: any) =>
-                                            certificate.document_id == document.document_id)[0].workingWeight
-                                        : ''}
+                                            certificate.document_id == document.document_id).workingWeight
+                                        : ''
+
+                                        }
                                 </td>
                                 <td className="text-right">
                                         {machinesData.filter((machine:any)=>machine.machine_id==document.machine_id)[0].price_list ?
@@ -864,38 +868,41 @@ const MonthlyEvaluation = () => {
                                 </td>
                                 <td className="text-right">
                                     { certificates && machinesData.filter((machine:any)=>
-                                        machine.machine_id==document.machine_id)[0].price_list
+                                        machine.machine_id==document.machine_id).price_list
                                         && certificates.filter((certificate: any) =>
-                                        certificate.document_id == document.document_id)[0].workingWeight
+                                        certificate.document_id == document.document_id).workingWeight
                                         ?   (certificates.filter((certificate: any) =>
-                                                certificate.document_id == document.document_id)[0].workingWeight / 1000 *
+                                               certificate.document_id == document.document_id).workingWeight / 1000 *
                                             parseInt(machinesData.filter((machine:any)=>
-                                                machine.machine_id==document.machine_id)[0].price_list.prices
+                                                machine.machine_id==document.machine_id).price_list.prices
                                                 [moment().year()][monthsList[moment().month()]]))
-                                            .toFixed(2) + ' €' : ''}
+                                            .toFixed(2) + ' €' : ''
+                                        }
                                 </td>
                                 <td className="text-right">
                                     <button className={JSON.parse(sessionStorage.getItem('user') as string)
                                         .enterAmountReceivedPermission ? "underline" : "pointer-events-none"}
                                             onClick={()=>setPopupCertificate(document.document_id)}>
                                         {certificates && certificates.filter((certificate: any)=>
-                                            certificate.document_id == document.document_id)[0].income ? certificates
+                                            certificate.document_id == document.document_id).income ? certificates
                                             .filter((certificate: any)=>
-                                        certificate.document_id == document.document_id)[0].income : '0.00'} €</button>
+                                        certificate.document_id == document.document_id).income : '0.00'
+                                            } €</button>
                                 </td>
                                 <td className="text-right">
                                     {certificates && machinesData.filter((machine:any)=>
-                                        machine.machine_id==document.machine_id)[0].price_list
+                                        machine.machine_id==document.machine_id).price_list
                                     && certificates.filter((certificate: any) =>
-                                        certificate.document_id == document.document_id)[0].workingWeight
+                                        certificate.document_id == document.document_id).workingWeight
                                         ?   (certificates.filter((certificate: any) =>
-                                                certificate.document_id == document.document_id)[0].workingWeight / 1000 *
+                                               certificate.document_id == document.document_id).workingWeight / 1000 *
                                             parseInt(machinesData.filter((machine:any)=>
-                                                machine.machine_id==document.machine_id)[0].price_list.prices
-                                                [moment().year()][monthsList[moment().month()]])
+                                                machine.machine_id==document.machine_id).price_list.prices
+                                               [moment().year()][monthsList[moment().month()]])
                                             - certificates.filter((certificate: any)=>
-                                        certificate.document_id == document.document_id)[0].income)
-                                        .toFixed(2) + ' €': ''}
+                                        certificate.document_id == document.document_id).income)
+                                        .toFixed(2) + ' €': ''
+                                        }
                                 </td>
                                 <td>
                                     <Proforma
@@ -924,7 +931,7 @@ const MonthlyEvaluation = () => {
                                 </td>
                                 <td>
                                     {certificates ? certificates.filter((certificate: any) =>
-                                        certificate.document_id == document.document_id)[0].comment : '' }
+                                        certificate.document_id == document.document_id).comment : '' }
                                 </td>
 
                             </tr>
