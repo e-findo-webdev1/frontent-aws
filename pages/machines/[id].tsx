@@ -137,6 +137,7 @@ const MachineStorageHistory = () => {
         }
     }
 
+    console.log(data)
     return(
         <div id="content-page" className="mx-10 p-10">
             <p className="text-3xl font-bold">Übersicht</p>
@@ -287,9 +288,11 @@ const MachineStorageHistory = () => {
                                 <td>{parseInt(item.tareWeight)} kg</td>
                                 <td>{parseInt(item.tareWeight)} kg</td>
                                 <td className={data && item.isPositiveWeight == "true" ? "" : "text-red-500"}>
-                                    {data && item.isPositiveWeight == "true" ? parseInt(item.indicateWeight) : -parseInt(item.indicateWeight)} kg</td>
+                                    {data && item.isNetWeight == "true" ? parseInt(item.indicateWeight) :
+                                        parseInt(item.indicateWeight) - parseInt(item.tareWeight)} kg</td>
                                 <td className={data && item.isPositiveWeight == "true" ? "" : "text-red-500"}>
-                                    {data && item.isPositiveWeight == "true" ? parseInt(item.indicateWeight) : -parseInt(item.indicateWeight)} kg</td>
+                                    {data && item.isNetWeight == "true" ? parseInt(item.indicateWeight) :
+                                        parseInt(item.indicateWeight) - parseInt(item.tareWeight)} kg</td>
                                 <td>{item.averageThroughput ? item.averageThroughput.toFixed(2) : "0"}</td>
                                 <td>{machinesData ? machinesData[0].waretype : ''}</td>
                                 <td>
