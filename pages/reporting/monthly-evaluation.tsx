@@ -694,19 +694,25 @@ const MonthlyEvaluation = () => {
                     }
                 }}>&gt;</button>
             </div>
-            <div className="flex mt-5">
-                <div className="flex m-auto space-x-1">
-                    <button className="border mx-auto p-1.5 px-3.5 font-bold border-accent-color-1 bg-accent-color-4
+            <div className="flex-row mt-5">
+                    <Link href="/reporting/annual-evaluation">
+                        <button className="border mx-auto p-1.5 px-3.5 font-bold border-accent-color-1 bg-accent-color-4
+                        hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs flex"
+                        >zur Jahresentwicklung wechseln
+                        </button>
+                    </Link>
+                <div className="flex justify-center space-x-1 mt-5">
+                    <button className="border p-1.5 px-3.5 font-bold border-accent-color-1 bg-accent-color-4
                         hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs flex"
                             onClick={()=>setSelectedCategory('Gewichtentwicklung')}
                     >Gewichtentwicklung
                     </button>
-                    <button className="border mx-auto p-1.5 px-3.5 font-bold border-accent-color-1 bg-accent-color-4
+                    <button className="border p-1.5 px-3.5 font-bold border-accent-color-1 bg-accent-color-4
                         hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs flex"
                             onClick={()=>setSelectedCategory('Monatspreis')}
                     >Monatspreis
                     </button>
-                    <button className="border mx-auto p-1.5 px-3.5 font-bold border-accent-color-1 bg-accent-color-4
+                    <button className="border p-1.5 px-3.5 font-bold border-accent-color-1 bg-accent-color-4
                         hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs flex"
                             onClick={()=>setSelectedCategory('Erlösentwicklung')}
                     >Erlösentwicklung
