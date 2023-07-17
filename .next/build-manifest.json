@@ -25,6 +25,11 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
+    "/reporting/annual-evaluation": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/reporting/annual-evaluation.js"
+    ],
     "/reporting/monthly-evaluation": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",

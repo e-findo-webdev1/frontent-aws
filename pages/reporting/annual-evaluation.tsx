@@ -2,7 +2,6 @@ import {useEffect, useState} from "react";
 import Chart from 'chart.js/auto';
 import moment from "moment";
 import API from "axios";
-import {machine} from "os";
 
 const AnnualEvaluation = () => {
     const monthsList = [
@@ -229,14 +228,11 @@ const AnnualEvaluation = () => {
                         for (let dataset in datasetExtra) {
                             datasetsIndex.push(datasetExtra[dataset])
                         }
-
                         if (selectedCategory == 'Monatspreis') {
 
                             const data = {
                                 labels: labels,
-                                datasets: [
-
-                                ]
+                                datasets: []
                             };
 
 
@@ -262,31 +258,59 @@ const AnnualEvaluation = () => {
                                             backgroundColor: colors[dataset],
                                             // @ts-ignore
                                             borderColor: colors[dataset],
-                                            data: [
+                                            data:
                                                 monthsList.map((month: any) =>
-                                                    parseFloat((priceMatrices.filter((matrix: any) =>
-                                                        matrix.indexgroup_name ==
-                                                        (sorts.filter((sort: any) =>
-                                                                sort.description ==
-                                                                machinesData
-                                                                    .filter((machine: any) =>
-                                                                        machine.index != "" &&
-                                                                        datasetsIndex[dataset].includes(machine.index)
-                                                                    )[0].waretype)[0].indexgroup_name
-                                                        ) &&
-                                                        matrix.price_matrix ==
-                                                        (sorts.filter((sort: any) =>
-                                                                sort.description ==
-                                                                machinesData
-                                                                    .filter((machine: any) =>
-                                                                        machine.index != "" &&
-                                                                        datasetsIndex[dataset].includes(machine.index)
-                                                                    )[0].waretype)[0].sort_name
-                                                        ))[0].prices[month][datasetsIndex[dataset]
-                                                        .replace("Index: ", "")]).replace(',','.')))
-                                        ]
+                                                    isNaN(parseFloat(
+                                                        priceMatrices
+                                                            .filter((matrix: any) =>
+                                                                matrix.indexgroup_name ==
+                                                                (sorts.filter((sort: any) =>
+                                                                        sort.description ==
+                                                                        machinesData
+                                                                            .filter((machine: any) =>
+                                                                                machine.index != "" &&
+                                                                                datasetsIndex[dataset]
+                                                                                    .includes(machine.index)
+                                                                            )[0].waretype)[0].indexgroup_name
+                                                                ) &&
+                                                                matrix.price_matrix ==
+                                                                (sorts.filter((sort: any) =>
+                                                                        sort.description ==
+                                                                        machinesData
+                                                                            .filter((machine: any) =>
+                                                                                machine.index != "" &&
+                                                                                datasetsIndex[dataset]
+                                                                                    .includes(machine.index)
+                                                                            )[0].waretype)[0].sort_name
+                                                                ))[0].prices[month][datasetsIndex[dataset]
+                                                            .replace("Index: ", "").replace('.', ',')]
+                                                    )) == true ? 0 : parseFloat(
+                                                        priceMatrices
+                                                            .filter((matrix: any) =>
+                                                                matrix.indexgroup_name ==
+                                                                (sorts.filter((sort: any) =>
+                                                                        sort.description ==
+                                                                        machinesData
+                                                                            .filter((machine: any) =>
+                                                                                machine.index != "" &&
+                                                                                datasetsIndex[dataset]
+                                                                                    .includes(machine.index)
+                                                                            )[0].waretype)[0].indexgroup_name
+                                                                ) &&
+                                                                matrix.price_matrix ==
+                                                                (sorts.filter((sort: any) =>
+                                                                        sort.description ==
+                                                                        machinesData
+                                                                            .filter((machine: any) =>
+                                                                                machine.index != "" &&
+                                                                                datasetsIndex[dataset]
+                                                                                    .includes(machine.index)
+                                                                            )[0].waretype)[0].sort_name
+                                                                ))[0].prices[month][datasetsIndex[dataset]
+                                                            .replace("Index: ", "").replace('.', ',')]
+                                                    )
+                                                )
                                         }
-
                                     );
                                 } else {
                                     data.datasets.push(
@@ -297,13 +321,17 @@ const AnnualEvaluation = () => {
                                             backgroundColor: colors[dataset],
                                             // @ts-ignore
                                             borderColor: colors[dataset],
-                                            data: []
+                                            data: monthsList.map((month: any) =>
+                                                parseInt(machinesData
+                                                    .filter((machine: any) => machine.waretype ==
+                                                        datasetsIndex[dataset])
+                                                    .map((machine: any) =>
+                                                        machine.price_list.prices[currentYear][month]
+                                                    )))
                                         }
                                     )
                                 }
                             }
-
-                            console.log(data)//
 
                             const config = {
                                 type: 'bar',
@@ -326,9 +354,13 @@ const AnnualEvaluation = () => {
                                                     }
                                                     if (context.parsed.y !== null) {
                                                         label += new Intl.NumberFormat('de-DE', {
-                                                            style: 'unit',
-                                                            unit: 'kilogram'
-                                                        }).format(context.parsed.y);
+                                                                style: 'currency',
+                                                                currency: 'EUR'
+                                                            }
+                                                        ).format(context.parsed.y);
+                                                    }
+                                                    if (label) {
+                                                        label += ' / t';
                                                     }
                                                     return label;
                                                 }
@@ -337,6 +369,7 @@ const AnnualEvaluation = () => {
                                     },
                                 },
                             };
+
 
                             // @ts-ignore
                             document.getElementById("line-chart").innerHTML =
@@ -348,6 +381,137 @@ const AnnualEvaluation = () => {
                                 config
                             ));
                         }
+                            const datasetsPrices = controlDocuments.reduce(function (a: any, b: any) {
+                                if (a && a.includes(b['waretype']) == false) {
+                                    return [...a, (b['waretype'])];
+                                } else {
+                                    return a
+                                }
+                            }, [])
+
+                            if (selectedCategory == 'Erlösentwicklung') {
+                                console.log('s')
+                                const data: any = {
+                                    labels: labels,
+                                    datasets: [
+                                        {
+                                            label: 'Gesamt-Erlöse',
+                                            backgroundColor: 'rgb(218,0,44)',
+                                            borderColor: 'rgb(218,0,44)',
+                                            data: monthsList.map((month: any) =>
+                                                controlDocuments
+                                                    .filter((document: any) => {
+                                                        if (selectedMachine != '- Alle -') {
+                                                            return document.machine_id == selectedMachine
+                                                        } else {
+                                                            return true
+                                                        }
+                                                    })
+                                                    .filter((document: any) =>
+                                                        moment(document.endOfCycle).month() ==
+                                                        monthsList.indexOf(month))
+                                                    .reduce(function (a: any, b: any) {
+                                                        return a + ((b['netto']) -b.tara)*
+                                                            parseInt(machinesData.filter((machine: any) =>
+                                                                machine.machine_id == b['machine_id'])[0]
+                                                                // @ts-ignore
+                                                                .price_list.prices[moment().year()]
+                                                                [monthsList[moment().month()]])/1000
+                                                    }, 0))
+                                        },
+                                    ]
+                                };
+
+                                const colors = [
+                                    'rgb(232,188,83)',
+                                    'rgb(88,206,48)',
+                                    'rgb(99,217,213)',
+                                    'rgb(56,97,201)',
+                                    'rgb(161,68,192)',
+                                    'rgb(194,100,41)',
+                                    'rgb(166,220,150)',
+                                    'rgb(69,203,142)',
+                                ]
+
+                                for (let dataset in datasetsPrices) {
+                                    data.datasets.push(
+                                        {
+                                            label: datasetsPrices[dataset],
+                                            // @ts-ignore
+                                            backgroundColor: colors[dataset],
+                                            // @ts-ignore
+                                            borderColor: colors[dataset],
+                                            data: monthsList.map((month: any) =>
+                                                controlDocuments
+                                                    .filter((document: any) => {
+                                                        if (selectedMachine != '- Alle -') {
+                                                            return document.machine_id == selectedMachine
+                                                        } else {
+                                                            return true
+                                                        }
+                                                    })
+                                                    .filter((document: any) =>
+                                                        moment(document.endOfCycle).month() ==
+                                                        monthsList.indexOf(month))
+                                                    .filter((document: any) => document.waretype ==
+                                                        datasetsPrices[dataset])
+                                                    .reduce(function (a: any, b: any) {
+                                                        return a + ((b['netto']) -b.tara)*
+                                                            parseInt(machinesData.filter((machine: any) =>
+                                                                machine.machine_id == b['machine_id'])[0]
+                                                                // @ts-ignore
+                                                                .price_list.prices
+                                                                [moment().year()][monthsList[moment().month()]])/1000
+                                                    }, 0))
+                                        }
+                                    )
+                                }
+
+                                const config = {
+                                    type: 'bar',
+                                    data: data,
+                                    options: {
+                                        scales: {
+                                            y: {}
+                                        },
+                                        plugins: {
+                                            legend: {
+                                                position: 'right'
+                                            },
+                                            tooltip: {
+                                                callbacks: {
+                                                    label: function (context: any) {
+                                                        let label = context.dataset.label || '';
+
+                                                        if (label) {
+                                                            label += ': ';
+                                                        }
+                                                        if (context.parsed.y !== null) {
+                                                            label += new Intl.NumberFormat('de-DE', {
+                                                                style: 'currency',
+                                                                currency: 'EUR'
+                                                            }).format(context.parsed.y);
+                                                        }
+                                                        return label;
+                                                    }
+                                                }
+                                            }
+                                        },
+                                    },
+                                };
+
+                                // @ts-ignore
+                                document.getElementById("line-chart").innerHTML =
+                                    "<canvas id=\"myChart\"></canvas>"
+
+                                setMyChart(new Chart(
+                                    // @ts-ignore
+                                    document.getElementById('myChart'),
+                                    config
+                                ));
+                        }
+
+
                     })
                     .catch((error) => {
                         console.log(error.response);
@@ -359,19 +523,6 @@ const AnnualEvaluation = () => {
 
 
     },[currentYear, selectedMachine, myChart.set, controlDocuments.set, selectedCategory])
-
-
-    console.log(priceMatrices)
-
-    console.log(
-        [
-            monthsList.map((month: any) =>
-                {
-
-                }
-            )
-        ]
-    )
 
     return(
         <div id="content-page" className="overflow-auto h-full px-20">

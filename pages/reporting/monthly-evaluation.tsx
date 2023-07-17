@@ -798,7 +798,8 @@ const MonthlyEvaluation = () => {
                                         machine_id = {document.machine_id}
                                         company = {JSON.parse(sessionStorage.getItem('company') as string)}
                                         waretype = {document.waretype}
-                                        sort = { waretypes ?
+                                        sort = { waretypes && waretypes.filter((ware: any) =>
+                                            ware.name_waretype == document.waretype)[0].waretype_number ?
                                         waretypes.filter((ware: any) =>
                                                 ware.name_waretype == document.waretype)[0].waretype_number
                                         : ''}
