@@ -756,8 +756,8 @@ const MonthlyEvaluation = () => {
                 </div>
             </div>
             <div className="sm:rounded-lg shadow-md overflow-auto mb-10">
-            <div className="rounded-lg shadow-md border overflow-auto w-max">
-                <table className="table-auto w-full">
+            <div className="rounded-lg shadow-md border overflow-auto">
+                <table className="flex-row w-full table-auto">
                     <thead>
                     <tr className="text-xs text-gray-500 text-right border-b">
                         <th className="font-normal text-left">Datum</th>
@@ -941,7 +941,7 @@ const MonthlyEvaluation = () => {
                                             <img className="h-5" src={
                                                 certificates && certificates.filter((certificate: any) =>
                                                 certificate.document_id == document.document_id).length == 0
-                                                    || certificates.filter((certificate: any) =>
+                                                    || certificates && certificates.filter((certificate: any) =>
                                                         certificate.document_id == document.document_id).pdf_data == '' ?
                                                 "/upload-svgrepo-com.svg" : '/document.png'}/></button>
                                     </Link>
