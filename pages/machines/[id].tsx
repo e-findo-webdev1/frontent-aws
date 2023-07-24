@@ -17,8 +17,10 @@ const MachineStorageHistory = () => {
     const [page, setPage] = useState<any>(1);
     const [listLength, setListLength] = useState<any>();
     const [pageList, setPageList] = useState<any[]>([]);
+    const [intervalCount, setIntervalCount] = useState(0);
 
     useEffect(() => {
+
         const newEndDate = new Date();
         startDate.setDate(startDate.getDate())
         setStartDate(startDate)
@@ -55,8 +57,13 @@ const MachineStorageHistory = () => {
             .catch((error) => {
                 console.log(error.response);
             });
+        // wait 5 s before cause a re-render
+        setTimeout(() => {
+            setIntervalCount(count => count + 1);
+        }, 1000 * 140);
+    },[startDate,pageList, endDate, page, machinesData[0].machine_id, intervalCount]);
 
-    },[startDate,pageList, endDate, page, machinesData[0].machine_id]);
+    console.log('s')
 
     const router = useRouter()
     const pid = router.query
@@ -183,8 +190,6 @@ const MachineStorageHistory = () => {
                                     selected={endDate}
                                     onChange={(date:Date) => setEndDate(date)}/>
                     </div>
-                    <button className="p-1 px-3.5 border-accent-color-1 bg-accent-color-4 hover:bg-accent-color-5
-                    sm:rounded-lg shadow-md border text-xs font-semibold" onClick={()=>{refreshList()}}>Refresh</button>
                 </div>
 
             </div>
