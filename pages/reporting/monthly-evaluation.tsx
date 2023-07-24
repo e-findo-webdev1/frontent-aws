@@ -39,593 +39,595 @@ const MonthlyEvaluation = () => {
     const [sorts, setSorts] = useState<any>();
 
     useEffect(() => {
-        API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/sorts')
-            .then((response) => {
-                setSorts(
-                    response.data.Items
-                );
-            })
-            .catch((error) => {
-                console.log(error.response);
-            });
+        const fetchData = async () => {
+            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/sorts')
+                .then((response) => {
+                    setSorts(
+                        response.data.Items
+                    );
+                })
+                .catch((error) => {
+                    console.log(error.response);
+                });
 
-        API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/price-matrices')
-            .then((response) => {
-                setPriceMatrices(
-                    response.data.Items
-                );
-            })
-            .catch((error) => {
-                console.log(error.response);
-            });
+            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/price-matrices')
+                .then((response) => {
+                    setPriceMatrices(
+                        response.data.Items
+                    );
+                })
+                .catch((error) => {
+                    console.log(error.response);
+                });
 
-        let apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines';
+            let apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines';
 
-        API.get(apiName)
-            .then((response) => {
-                setMachinesData(response.data.Items.filter((machine: any)=>
-                    machine.client == JSON.parse(sessionStorage.getItem('company') as string).client_name));
-                API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/control-documents')
-                    .then((response) => {
-                        setControlDocuments(
-                            response.data.Items
-                                .filter((document: any) => moment(document.endOfCycle).year() == selectedYear
-                                    && moment(document.endOfCycle).month() == monthsList.indexOf(selectedMonth))
-                                .filter((document: any) =>
-                                    machinesData.reduce(function (a: any, b: any) {
-                                        return a + (b['machine_id']);
-                                    }, []).includes(document.machine_id)
-                                )
-                        );
-                        const labels: any = [];
-                        for (let day = 1; day <= moment(`${selectedYear}-${monthsList.indexOf(selectedMonth) + 1}`,
-                            "YYYY-MM")
-                            .daysInMonth(); day++) {
-                            labels.push(day)
-                        }
-
-                        const datasets = controlDocuments.reduce(function (a: any, b: any) {
-                            if (a && a.includes(b['waretype']) == false) {
-                                return [...a, (b['waretype'])];
-                            } else {
-                                return a
-                            }
-                        }, [])
-
-                        if (selectedCategory == 'Gewichtentwicklung') {
-                            const data = {
-                                labels: labels,
-                                datasets: [
-                                    {
-                                        label: 'Gesamt-Werksgewicht',
-                                        backgroundColor: 'rgb(218,0,44)',
-                                        borderColor: 'rgb(218,0,44)',
-                                        data: labels.map((day: any) =>
-                                            controlDocuments
-                                                .filter((document: any) => {
-                                                    if (selectedMachine != '- Alle -') {
-                                                        return document.machine_id == selectedMachine
-                                                    } else {
-                                                        return true
-                                                    }
-                                                })
-                                                .filter((document: any) =>
-                                                    moment(document.endOfCycle).month() ==
-                                                    monthsList.indexOf(selectedMonth))
-                                                .filter((document: any) => moment(document.endOfCycle).date() == day)
-                                                .reduce(function (a: any, b: any) {
-                                                    return a + ((b['netto']) - b.tara);
-                                                }, 0))
-                                    },
-                                ]
-                            };
-
-                            const colors = [
-                                'rgb(232,188,83)',
-                                'rgb(88,206,48)',
-                                'rgb(99,217,213)',
-                                'rgb(56,97,201)',
-                                'rgb(161,68,192)',
-                                'rgb(194,100,41)',
-                                'rgb(166,220,150)',
-                                'rgb(69,203,142)',
-                            ]
-
-                            for (let dataset in datasets) {
-                                data.datasets.push(
-                                    {
-                                        label: datasets[dataset],
-                                        // @ts-ignore
-                                        backgroundColor: colors[dataset],
-                                        // @ts-ignore
-                                        borderColor: colors[dataset],
-                                        data: labels.map((day: any) =>
-                                            controlDocuments
-                                                .filter((document: any) => {
-                                                    if (selectedMachine != '- Alle -') {
-                                                        return document.machine_id == selectedMachine
-                                                    } else {
-                                                        return true
-                                                    }
-                                                })
-                                                .filter((document: any) =>
-                                                    moment(document.endOfCycle).month() == monthsList.indexOf(selectedMonth))
-                                                .filter((document: any) => moment(document.endOfCycle).date() == day)
-                                                .reduce(function (a: any, b: any) {
-                                                    return a + ((b['netto']) -b.tara);
-                                                }, 0))
-                                    }
-                                )
+            await API.get(apiName)
+                .then((response) => {
+                    setMachinesData(response.data.Items.filter((machine: any) =>
+                        machine.client == JSON.parse(sessionStorage.getItem('company') as string).client_name));
+                    API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/control-documents')
+                        .then((response) => {
+                            setControlDocuments(
+                                response.data.Items
+                                    .filter((document: any) => moment(document.endOfCycle).year() == selectedYear
+                                        && moment(document.endOfCycle).month() == monthsList.indexOf(selectedMonth))
+                                    .filter((document: any) =>
+                                        machinesData.reduce(function (a: any, b: any) {
+                                            return a + (b['machine_id']);
+                                        }, []).includes(document.machine_id)
+                                    )
+                            );
+                            const labels: any = [];
+                            for (let day = 1; day <= moment(`${selectedYear}-${monthsList.indexOf(selectedMonth) + 1}`,
+                                "YYYY-MM")
+                                .daysInMonth(); day++) {
+                                labels.push(day)
                             }
 
-                            const config = {
-                                type: 'bar',
-                                data: data,
-                                options: {
-                                    scales: {
-                                        y: {}
-                                    },
-                                    plugins: {
-                                        legend: {
-                                            position: 'right'
-                                        },
-                                        tooltip: {
-                                            callbacks: {
-                                                label: function (context: any) {
-                                                    let label = context.dataset.label || '';
-
-                                                    if (label) {
-                                                        label += ': ';
-                                                    }
-                                                    if (context.parsed.y !== null) {
-                                                        label += new Intl.NumberFormat('de-DE', {
-                                                            style: 'unit',
-                                                            unit: 'kilogram'
-                                                        }).format(context.parsed.y);
-                                                    }
-                                                    return label;
-                                                }
-                                            }
-                                        }
-                                    },
-                                },
-                            };
-
-                            const config2 = {
-                                type: 'line',
-                                data: data,
-                                options: {
-                                    scales: {
-                                        y: {}
-                                    },
-                                    plugins: {
-                                        legend: {
-                                            position: 'right'
-                                        },
-                                        tooltip: {
-                                            callbacks: {
-                                                label: function (context: any) {
-                                                    let label = context.dataset.label || '';
-
-                                                    if (label) {
-                                                        label += ': ';
-                                                    }
-                                                    if (context.parsed.y !== null) {
-                                                        label += new Intl.NumberFormat('de-DE', {
-                                                            style: 'unit',
-                                                            unit: 'kilogram'
-                                                        }).format(context.parsed.y);
-                                                    }
-                                                    return label;
-                                                }
-                                            }
-                                        }
-                                    },
-                                },
-                            };
-
-
-                            // @ts-ignore
-                            document.getElementById("line-chart").innerHTML =
-                                "<canvas id=\"myChart\"></canvas>"
-                            // @ts-ignore
-                            document.getElementById("line-chart2").innerHTML =
-                                "<canvas id=\"myChart2\"></canvas>"
-
-
-                            setMyChart(new Chart(
-                                // @ts-ignore
-                                document.getElementById('myChart'),
-                                config
-                            ));
-
-                            setMyChart2(new Chart(
-                                // @ts-ignore
-                                document.getElementById('myChart2'),
-                                config2
-                            ));
-                        }
-
-                        const datasetsIndex = controlDocuments.reduce(function (a: any, b: any) {
-                            if (a && a.includes(b['waretype']) == false) {
-                                return [...a, (b['waretype'])];
-                            } else {
-                                return a
-                            }
-                        }, [])
-
-                        const datasetExtra = machinesData.reduce(function (a: any, b: any) {
-                            if (a && a.includes(b['index']) == false && b['index'] != '') {
-                                return [...a, 'Index: ' + b['index']];
-                            } else {
-                                return a
-                            }
-                        }, [])
-
-                        for (let dataset in datasetExtra) {
-                            datasetsIndex.push(datasetExtra[dataset])
-                        }
-
-                        if (selectedCategory == 'Monatspreis') {
-                            const data: any = {
-                                labels: [monthsList[monthsList.indexOf(selectedMonth)]],
-                                datasets: [
-                                ]
-                            };
-
-                            const colors = [
-                                'rgb(232,188,83)',
-                                'rgb(88,206,48)',
-                                'rgb(99,217,213)',
-                                'rgb(56,97,201)',
-                                'rgb(161,68,192)',
-                                'rgb(194,100,41)',
-                                'rgb(166,220,150)',
-                                'rgb(69,203,142)',
-                            ]
-
-                            for (let dataset in datasetsIndex) {
-                                if (datasetsIndex[dataset].includes('Index')) {
-                                    data.datasets.push(
-                                        {
-                                            label: datasetsIndex[dataset],
-                                            // @ts-ignore
-                                            backgroundColor: colors[dataset],
-                                            // @ts-ignore
-                                            borderColor: colors[dataset],
-                                            data:
-                                                [parseFloat((priceMatrices.filter((matrix: any) =>
-                                                matrix.indexgroup_name ==
-                                                (sorts.filter((sort: any) =>
-                                                        sort.description ==
-                                                        machinesData
-                                                            .filter((machine: any) =>
-                                                                machine.index != "" &&
-                                                                datasetsIndex[dataset].includes(machine.index)
-                                                            )[0].waretype)[0].indexgroup_name
-                                                ) &&
-                                                matrix.price_matrix ==
-                                                (sorts.filter((sort: any) =>
-                                                        sort.description ==
-                                                        machinesData
-                                                            .filter((machine: any) =>
-                                                                machine.index != "" &&
-                                                                datasetsIndex[dataset].includes(machine.index)
-                                                            )[0].waretype)[0].sort_name
-                                                ))[0].prices[selectedMonth][datasetsIndex[dataset]
-                                                .replace("Index: ", "")]).replace(',','.'))]
-                                        });
+                            const datasets = controlDocuments.reduce(function (a: any, b: any) {
+                                if (a && a.includes(b['waretype']) == false) {
+                                    return [...a, (b['waretype'])];
                                 } else {
+                                    return a
+                                }
+                            }, [])
+
+                            if (selectedCategory == 'Gewichtentwicklung') {
+                                const data = {
+                                    labels: labels,
+                                    datasets: [
+                                        {
+                                            label: 'Gesamt-Werksgewicht',
+                                            backgroundColor: 'rgb(218,0,44)',
+                                            borderColor: 'rgb(218,0,44)',
+                                            data: labels.map((day: any) =>
+                                                controlDocuments
+                                                    .filter((document: any) => {
+                                                        if (selectedMachine != '- Alle -') {
+                                                            return document.machine_id == selectedMachine
+                                                        } else {
+                                                            return true
+                                                        }
+                                                    })
+                                                    .filter((document: any) =>
+                                                        moment(document.endOfCycle).month() ==
+                                                        monthsList.indexOf(selectedMonth))
+                                                    .filter((document: any) => moment(document.endOfCycle).date() == day)
+                                                    .reduce(function (a: any, b: any) {
+                                                        return a + ((b['netto']) - b.tara);
+                                                    }, 0))
+                                        },
+                                    ]
+                                };
+
+                                const colors = [
+                                    'rgb(232,188,83)',
+                                    'rgb(88,206,48)',
+                                    'rgb(99,217,213)',
+                                    'rgb(56,97,201)',
+                                    'rgb(161,68,192)',
+                                    'rgb(194,100,41)',
+                                    'rgb(166,220,150)',
+                                    'rgb(69,203,142)',
+                                ]
+
+                                for (let dataset in datasets) {
                                     data.datasets.push(
                                         {
-                                            label: datasetsIndex[dataset],
+                                            label: datasets[dataset],
                                             // @ts-ignore
                                             backgroundColor: colors[dataset],
                                             // @ts-ignore
                                             borderColor: colors[dataset],
-                                            data: [parseInt(machinesData
-                                                .filter((machine: any) => machine.waretype == datasetsIndex[dataset])
-                                                .map((machine: any) =>
-                                                        machine.price_list.prices[selectedYear][selectedMonth]
-                                                ))]
+                                            data: labels.map((day: any) =>
+                                                controlDocuments
+                                                    .filter((document: any) => {
+                                                        if (selectedMachine != '- Alle -') {
+                                                            return document.machine_id == selectedMachine
+                                                        } else {
+                                                            return true
+                                                        }
+                                                    })
+                                                    .filter((document: any) =>
+                                                        moment(document.endOfCycle).month() == monthsList.indexOf(selectedMonth))
+                                                    .filter((document: any) => moment(document.endOfCycle).date() == day)
+                                                    .reduce(function (a: any, b: any) {
+                                                        return a + ((b['netto']) - b.tara);
+                                                    }, 0))
                                         }
                                     )
                                 }
-                            }
 
-                            const config = {
-                                type: 'bar',
-                                data: data,
-                                options: {
-                                    scales: {
-                                        y: {}
-                                    },
-                                    plugins: {
-                                        legend: {
-                                            position: 'right'
+                                const config = {
+                                    type: 'bar',
+                                    data: data,
+                                    options: {
+                                        scales: {
+                                            y: {}
                                         },
-                                        tooltip: {
-                                            callbacks: {
-                                                label: function (context: any) {
-                                                    let label = context.dataset.label || '';
+                                        plugins: {
+                                            legend: {
+                                                position: 'right'
+                                            },
+                                            tooltip: {
+                                                callbacks: {
+                                                    label: function (context: any) {
+                                                        let label = context.dataset.label || '';
 
-                                                    if (label) {
-                                                        label += ': ';
+                                                        if (label) {
+                                                            label += ': ';
+                                                        }
+                                                        if (context.parsed.y !== null) {
+                                                            label += new Intl.NumberFormat('de-DE', {
+                                                                style: 'unit',
+                                                                unit: 'kilogram'
+                                                            }).format(context.parsed.y);
+                                                        }
+                                                        return label;
                                                     }
-                                                    if (context.parsed.y !== null) {
-                                                        label += new Intl.NumberFormat('de-DE', {
-                                                                style: 'currency',
-                                                                currency: 'EUR'
-                                                            }
-                                                        ).format(context.parsed.y);
-                                                    }
-                                                    if (label) {
-                                                        label += ' / t';
-                                                    }
-                                                    return label;
                                                 }
                                             }
-                                        }
-                                    },
-                                },
-                            };
-
-                            const config2 = {
-                                type: 'line',
-                                data: data,
-                                options: {
-                                    scales: {
-                                        y: {}
-                                    },
-                                    plugins: {
-                                        legend: {
-                                            position: 'right'
                                         },
-                                        tooltip: {
-                                            callbacks: {
-                                                label: function (context: any) {
-                                                    let label = context.dataset.label || '';
+                                    },
+                                };
 
-                                                    if (label) {
-                                                        label += ': ';
+                                const config2 = {
+                                    type: 'line',
+                                    data: data,
+                                    options: {
+                                        scales: {
+                                            y: {}
+                                        },
+                                        plugins: {
+                                            legend: {
+                                                position: 'right'
+                                            },
+                                            tooltip: {
+                                                callbacks: {
+                                                    label: function (context: any) {
+                                                        let label = context.dataset.label || '';
+
+                                                        if (label) {
+                                                            label += ': ';
+                                                        }
+                                                        if (context.parsed.y !== null) {
+                                                            label += new Intl.NumberFormat('de-DE', {
+                                                                style: 'unit',
+                                                                unit: 'kilogram'
+                                                            }).format(context.parsed.y);
+                                                        }
+                                                        return label;
                                                     }
-                                                    if (context.parsed.y !== null) {
-                                                        label += new Intl.NumberFormat('de-DE', {
-                                                                style: 'currency',
-                                                                currency: 'EUR'
-                                                            }
-                                                        ).format(context.parsed.y);
-                                                    }
-                                                    if (label) {
-                                                        label += ' / t';
-                                                    }
-                                                    return label;
                                                 }
                                             }
-                                        }
+                                        },
                                     },
-                                },
-                            };
-
-                            // @ts-ignore
-                            document.getElementById("line-chart").innerHTML =
-                                "<canvas id=\"myChart\"></canvas>"
-                            // @ts-ignore
-                            document.getElementById("line-chart2").innerHTML =
-                                "<canvas id=\"myChart2\"></canvas>"
+                                };
 
 
-                            setMyChart(new Chart(
                                 // @ts-ignore
-                                document.getElementById('myChart'),
-                                config
-                            ));
-
-                            setMyChart2(new Chart(
+                                document.getElementById("line-chart").innerHTML =
+                                    "<canvas id=\"myChart\"></canvas>"
                                 // @ts-ignore
-                                document.getElementById('myChart2'),
-                                config2
-                            ));
-                        }
+                                document.getElementById("line-chart2").innerHTML =
+                                    "<canvas id=\"myChart2\"></canvas>"
 
-                        const datasetsPrices = controlDocuments.reduce(function (a: any, b: any) {
-                            if (a && a.includes(b['waretype']) == false) {
-                                return [...a, (b['waretype'])];
-                            } else {
-                                return a
+
+                                setMyChart(new Chart(
+                                    // @ts-ignore
+                                    document.getElementById('myChart'),
+                                    config
+                                ));
+
+                                setMyChart2(new Chart(
+                                    // @ts-ignore
+                                    document.getElementById('myChart2'),
+                                    config2
+                                ));
                             }
-                        }, [])
 
-                        if (selectedCategory == 'Erlösentwicklung') {
-                            const data: any = {
-                                labels: labels,
-                                datasets: [
-                                    {
-                                        label: 'Gesamt-Erlöse',
-                                        backgroundColor: 'rgb(218,0,44)',
-                                        borderColor: 'rgb(218,0,44)',
-                                        data: labels.map((day: any) =>
-                                            controlDocuments
-                                                .filter((document: any) => {
-                                                    if (selectedMachine != '- Alle -') {
-                                                        return document.machine_id == selectedMachine
-                                                    } else {
-                                                        return true
-                                                    }
-                                                })
-                                                .filter((document: any) =>
-                                                    moment(document.endOfCycle).month() ==
-                                                    monthsList.indexOf(selectedMonth))
-                                                .filter((document: any) => moment(document.endOfCycle).date() == day)
-                                                .reduce(function (a: any, b: any) {
-                                                    return a + ((b['netto']) -b.tara)*
-                                                        parseInt(machinesData.filter((machine: any) =>
-                                                            machine.machine_id == b['machine_id'])[0]
-                                                            // @ts-ignore
-                                                            .price_list.prices[moment().year()]
-                                                            [monthsList[moment().month()]])/1000
-                                                }, 0))
-                                    },
+                            const datasetsIndex = controlDocuments.reduce(function (a: any, b: any) {
+                                if (a && a.includes(b['waretype']) == false) {
+                                    return [...a, (b['waretype'])];
+                                } else {
+                                    return a
+                                }
+                            }, [])
+
+                            const datasetExtra = machinesData.reduce(function (a: any, b: any) {
+                                if (a && a.includes(b['index']) == false && b['index'] != '') {
+                                    return [...a, 'Index: ' + b['index']];
+                                } else {
+                                    return a
+                                }
+                            }, [])
+
+                            for (let dataset in datasetExtra) {
+                                datasetsIndex.push(datasetExtra[dataset])
+                            }
+
+                            if (selectedCategory == 'Monatspreis') {
+                                const data: any = {
+                                    labels: [monthsList[monthsList.indexOf(selectedMonth)]],
+                                    datasets: []
+                                };
+
+                                const colors = [
+                                    'rgb(232,188,83)',
+                                    'rgb(88,206,48)',
+                                    'rgb(99,217,213)',
+                                    'rgb(56,97,201)',
+                                    'rgb(161,68,192)',
+                                    'rgb(194,100,41)',
+                                    'rgb(166,220,150)',
+                                    'rgb(69,203,142)',
                                 ]
-                            };
 
-                            const colors = [
-                                'rgb(232,188,83)',
-                                'rgb(88,206,48)',
-                                'rgb(99,217,213)',
-                                'rgb(56,97,201)',
-                                'rgb(161,68,192)',
-                                'rgb(194,100,41)',
-                                'rgb(166,220,150)',
-                                'rgb(69,203,142)',
-                            ]
-
-                            for (let dataset in datasetsPrices) {
-                                data.datasets.push(
-                                    {
-                                        label: datasetsPrices[dataset],
-                                        // @ts-ignore
-                                        backgroundColor: colors[dataset],
-                                        // @ts-ignore
-                                        borderColor: colors[dataset],
-                                        data: labels.map((day: any) =>
-                                            controlDocuments
-                                                .filter((document: any) => {
-                                                    if (selectedMachine != '- Alle -') {
-                                                        return document.machine_id == selectedMachine
-                                                    } else {
-                                                        return true
-                                                    }
-                                                })
-                                                .filter((document: any) =>
-                                                    moment(document.endOfCycle).month() ==
-                                                    monthsList.indexOf(selectedMonth))
-                                                .filter((document: any) => moment(document.endOfCycle).date() == day)
-                                                .filter((document: any) => document.waretype == datasetsPrices[dataset])
-                                                .reduce(function (a: any, b: any) {
-                                                    return a + ((b['netto']) -b.tara)*
-                                                        parseInt(machinesData.filter((machine: any) =>
-                                                            machine.machine_id == b['machine_id'])[0]
-                                                            // @ts-ignore
-                                                            .price_list.prices
-                                                            [moment().year()][monthsList[moment().month()]])/1000
-                                                }, 0))
+                                for (let dataset in datasetsIndex) {
+                                    if (datasetsIndex[dataset].includes('Index')) {
+                                        data.datasets.push(
+                                            {
+                                                label: datasetsIndex[dataset],
+                                                // @ts-ignore
+                                                backgroundColor: colors[dataset],
+                                                // @ts-ignore
+                                                borderColor: colors[dataset],
+                                                data:
+                                                    [parseFloat((priceMatrices.filter((matrix: any) =>
+                                                        matrix.indexgroup_name ==
+                                                        (sorts.filter((sort: any) =>
+                                                                sort.description ==
+                                                                machinesData
+                                                                    .filter((machine: any) =>
+                                                                        machine.index != "" &&
+                                                                        datasetsIndex[dataset].includes(machine.index)
+                                                                    )[0].waretype)[0].indexgroup_name
+                                                        ) &&
+                                                        matrix.price_matrix ==
+                                                        (sorts.filter((sort: any) =>
+                                                                sort.description ==
+                                                                machinesData
+                                                                    .filter((machine: any) =>
+                                                                        machine.index != "" &&
+                                                                        datasetsIndex[dataset].includes(machine.index)
+                                                                    )[0].waretype)[0].sort_name
+                                                        ))[0].prices[selectedMonth][datasetsIndex[dataset]
+                                                        .replace("Index: ", "")]).replace(',', '.'))]
+                                            });
+                                    } else {
+                                        data.datasets.push(
+                                            {
+                                                label: datasetsIndex[dataset],
+                                                // @ts-ignore
+                                                backgroundColor: colors[dataset],
+                                                // @ts-ignore
+                                                borderColor: colors[dataset],
+                                                data: [parseInt(machinesData
+                                                    .filter((machine: any) => machine.waretype == datasetsIndex[dataset])
+                                                    .map((machine: any) =>
+                                                        machine.price_list.prices[selectedYear][selectedMonth]
+                                                    ))]
+                                            }
+                                        )
                                     }
-                                )
+                                }
+
+                                const config = {
+                                    type: 'bar',
+                                    data: data,
+                                    options: {
+                                        scales: {
+                                            y: {}
+                                        },
+                                        plugins: {
+                                            legend: {
+                                                position: 'right'
+                                            },
+                                            tooltip: {
+                                                callbacks: {
+                                                    label: function (context: any) {
+                                                        let label = context.dataset.label || '';
+
+                                                        if (label) {
+                                                            label += ': ';
+                                                        }
+                                                        if (context.parsed.y !== null) {
+                                                            label += new Intl.NumberFormat('de-DE', {
+                                                                    style: 'currency',
+                                                                    currency: 'EUR'
+                                                                }
+                                                            ).format(context.parsed.y);
+                                                        }
+                                                        if (label) {
+                                                            label += ' / t';
+                                                        }
+                                                        return label;
+                                                    }
+                                                }
+                                            }
+                                        },
+                                    },
+                                };
+
+                                const config2 = {
+                                    type: 'line',
+                                    data: data,
+                                    options: {
+                                        scales: {
+                                            y: {}
+                                        },
+                                        plugins: {
+                                            legend: {
+                                                position: 'right'
+                                            },
+                                            tooltip: {
+                                                callbacks: {
+                                                    label: function (context: any) {
+                                                        let label = context.dataset.label || '';
+
+                                                        if (label) {
+                                                            label += ': ';
+                                                        }
+                                                        if (context.parsed.y !== null) {
+                                                            label += new Intl.NumberFormat('de-DE', {
+                                                                    style: 'currency',
+                                                                    currency: 'EUR'
+                                                                }
+                                                            ).format(context.parsed.y);
+                                                        }
+                                                        if (label) {
+                                                            label += ' / t';
+                                                        }
+                                                        return label;
+                                                    }
+                                                }
+                                            }
+                                        },
+                                    },
+                                };
+
+                                // @ts-ignore
+                                document.getElementById("line-chart").innerHTML =
+                                    "<canvas id=\"myChart\"></canvas>"
+                                // @ts-ignore
+                                document.getElementById("line-chart2").innerHTML =
+                                    "<canvas id=\"myChart2\"></canvas>"
+
+
+                                setMyChart(new Chart(
+                                    // @ts-ignore
+                                    document.getElementById('myChart'),
+                                    config
+                                ));
+
+                                setMyChart2(new Chart(
+                                    // @ts-ignore
+                                    document.getElementById('myChart2'),
+                                    config2
+                                ));
                             }
 
-                            const config = {
-                                type: 'bar',
-                                data: data,
-                                options: {
-                                    scales: {
-                                        y: {}
-                                    },
-                                    plugins: {
-                                        legend: {
-                                            position: 'right'
-                                        },
-                                        tooltip: {
-                                            callbacks: {
-                                                label: function (context: any) {
-                                                    let label = context.dataset.label || '';
+                            const datasetsPrices = controlDocuments.reduce(function (a: any, b: any) {
+                                if (a && a.includes(b['waretype']) == false) {
+                                    return [...a, (b['waretype'])];
+                                } else {
+                                    return a
+                                }
+                            }, [])
 
-                                                    if (label) {
-                                                        label += ': ';
+                            if (selectedCategory == 'Erlösentwicklung') {
+                                const data: any = {
+                                    labels: labels,
+                                    datasets: [
+                                        {
+                                            label: 'Gesamt-Erlöse',
+                                            backgroundColor: 'rgb(218,0,44)',
+                                            borderColor: 'rgb(218,0,44)',
+                                            data: labels.map((day: any) =>
+                                                controlDocuments
+                                                    .filter((document: any) => {
+                                                        if (selectedMachine != '- Alle -') {
+                                                            return document.machine_id == selectedMachine
+                                                        } else {
+                                                            return true
+                                                        }
+                                                    })
+                                                    .filter((document: any) =>
+                                                        moment(document.endOfCycle).month() ==
+                                                        monthsList.indexOf(selectedMonth))
+                                                    .filter((document: any) => moment(document.endOfCycle).date() == day)
+                                                    .reduce(function (a: any, b: any) {
+                                                        return a + ((b['netto']) - b.tara) *
+                                                            parseInt(machinesData.filter((machine: any) =>
+                                                                machine.machine_id == b['machine_id'])[0]
+                                                                // @ts-ignore
+                                                                .price_list.prices[moment().year()]
+                                                                [monthsList[moment().month()]]) / 1000
+                                                    }, 0))
+                                        },
+                                    ]
+                                };
+
+                                const colors = [
+                                    'rgb(232,188,83)',
+                                    'rgb(88,206,48)',
+                                    'rgb(99,217,213)',
+                                    'rgb(56,97,201)',
+                                    'rgb(161,68,192)',
+                                    'rgb(194,100,41)',
+                                    'rgb(166,220,150)',
+                                    'rgb(69,203,142)',
+                                ]
+
+                                for (let dataset in datasetsPrices) {
+                                    data.datasets.push(
+                                        {
+                                            label: datasetsPrices[dataset],
+                                            // @ts-ignore
+                                            backgroundColor: colors[dataset],
+                                            // @ts-ignore
+                                            borderColor: colors[dataset],
+                                            data: labels.map((day: any) =>
+                                                controlDocuments
+                                                    .filter((document: any) => {
+                                                        if (selectedMachine != '- Alle -') {
+                                                            return document.machine_id == selectedMachine
+                                                        } else {
+                                                            return true
+                                                        }
+                                                    })
+                                                    .filter((document: any) =>
+                                                        moment(document.endOfCycle).month() ==
+                                                        monthsList.indexOf(selectedMonth))
+                                                    .filter((document: any) => moment(document.endOfCycle).date() == day)
+                                                    .filter((document: any) => document.waretype == datasetsPrices[dataset])
+                                                    .reduce(function (a: any, b: any) {
+                                                        return a + ((b['netto']) - b.tara) *
+                                                            parseInt(machinesData.filter((machine: any) =>
+                                                                machine.machine_id == b['machine_id'])[0]
+                                                                // @ts-ignore
+                                                                .price_list.prices
+                                                                [moment().year()][monthsList[moment().month()]]) / 1000
+                                                    }, 0))
+                                        }
+                                    )
+                                }
+
+                                const config = {
+                                    type: 'bar',
+                                    data: data,
+                                    options: {
+                                        scales: {
+                                            y: {}
+                                        },
+                                        plugins: {
+                                            legend: {
+                                                position: 'right'
+                                            },
+                                            tooltip: {
+                                                callbacks: {
+                                                    label: function (context: any) {
+                                                        let label = context.dataset.label || '';
+
+                                                        if (label) {
+                                                            label += ': ';
+                                                        }
+                                                        if (context.parsed.y !== null) {
+                                                            label += new Intl.NumberFormat('de-DE', {
+                                                                style: 'currency',
+                                                                currency: 'EUR'
+                                                            }).format(context.parsed.y);
+                                                        }
+                                                        return label;
                                                     }
-                                                    if (context.parsed.y !== null) {
-                                                        label += new Intl.NumberFormat('de-DE', {
-                                                            style: 'currency',
-                                                            currency: 'EUR'
-                                                        }).format(context.parsed.y);
-                                                    }
-                                                    return label;
                                                 }
                                             }
-                                        }
-                                    },
-                                },
-                            };
-
-                            const config2 = {
-                                type: 'line',
-                                data: data,
-                                options: {
-                                    scales: {
-                                        y: {}
-                                    },
-                                    plugins: {
-                                        legend: {
-                                            position: 'right'
                                         },
-                                        tooltip: {
-                                            callbacks: {
-                                                label: function (context: any) {
-                                                    let label = context.dataset.label || '';
+                                    },
+                                };
 
-                                                    if (label) {
-                                                        label += ': ';
+                                const config2 = {
+                                    type: 'line',
+                                    data: data,
+                                    options: {
+                                        scales: {
+                                            y: {}
+                                        },
+                                        plugins: {
+                                            legend: {
+                                                position: 'right'
+                                            },
+                                            tooltip: {
+                                                callbacks: {
+                                                    label: function (context: any) {
+                                                        let label = context.dataset.label || '';
+
+                                                        if (label) {
+                                                            label += ': ';
+                                                        }
+                                                        if (context.parsed.y !== null) {
+                                                            label += new Intl.NumberFormat('de-DE', {
+                                                                style: 'currency',
+                                                                currency: 'EUR'
+                                                            }).format(context.parsed.y);
+                                                        }
+                                                        return label;
                                                     }
-                                                    if (context.parsed.y !== null) {
-                                                        label += new Intl.NumberFormat('de-DE', {
-                                                            style: 'currency',
-                                                            currency: 'EUR'
-                                                        }).format(context.parsed.y);
-                                                    }
-                                                    return label;
                                                 }
                                             }
-                                        }
+                                        },
                                     },
-                                },
-                            };
+                                };
 
-                            // @ts-ignore
-                            document.getElementById("line-chart").innerHTML =
-                                "<canvas id=\"myChart\"></canvas>"
-                            // @ts-ignore
-                            document.getElementById("line-chart2").innerHTML =
-                                "<canvas id=\"myChart2\"></canvas>"
-
-
-                            setMyChart(new Chart(
                                 // @ts-ignore
-                                document.getElementById('myChart'),
-                                config
-                            ));
-
-                            setMyChart2(new Chart(
+                                document.getElementById("line-chart").innerHTML =
+                                    "<canvas id=\"myChart\"></canvas>"
                                 // @ts-ignore
-                                document.getElementById('myChart2'),
-                                config2
-                            ));
-                        }
-                    })
-                    .catch((error) => {
-                        console.log(error.response);
-                    });
-            })
-            .catch((error) => {
-                console.log(error); //
-            });
+                                document.getElementById("line-chart2").innerHTML =
+                                    "<canvas id=\"myChart2\"></canvas>"
 
 
-        API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/waretypes')
-            .then((response) => {
-                setWaretypes(response.data.Items);
-            })
-            .catch((error) => {
-                console.log(error.response);
-            });
+                                setMyChart(new Chart(
+                                    // @ts-ignore
+                                    document.getElementById('myChart'),
+                                    config
+                                ));
 
-        API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/certificates')
-            .then((response) => {
-                setCertificates(response.data.Items)
-            })
-            .catch((error) => {
-                console.log(error.response);
-            });
+                                setMyChart2(new Chart(
+                                    // @ts-ignore
+                                    document.getElementById('myChart2'),
+                                    config2
+                                ));
+                            }
+                        })
+                        .catch((error) => {
+                            console.log(error.response);
+                        });
+                })
+                .catch((error) => {
+                    console.log(error); //
+                });
 
+
+            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/waretypes')
+                .then((response) => {
+                    setWaretypes(response.data.Items);
+                })
+                .catch((error) => {
+                    console.log(error.response);
+                });
+
+            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/certificates')
+                .then((response) => {
+                    setCertificates(response.data.Items)
+                })
+                .catch((error) => {
+                    console.log(error.response);
+                });
+
+        }
+        fetchData()
     }, [controlDocuments.set, selectedMonth, myChart.set, selectedMachine, selectedCategory]);
 
     const handlePopupSend = async () => {

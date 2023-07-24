@@ -373,35 +373,6 @@ const MasterDataSummary = () => {
                         </div>
                     </div>
                 </div>
-                <p className="text-2xl mt-7 font-bold mb-5">Texte</p>
-                <div className="sm:rounded-lg border overflow-auto">
-                    <table className="flex-row table-auto w-full">
-                        <thead>
-                        <tr className="text-xs text-gray-500 border-b text-left">
-                            <th className="font-normal">Name</th>
-                            <th className="font-normal">Text</th>
-                        </tr>
-                        </thead>
-                        <tbody className="bg-gray-50">
-                        <tr className="text-xs text-gray-500 border-b text-left">
-                            <td>
-                                {emailTexts ? emailTexts[1].text_name : ""}
-                            </td>
-                            <td>
-                                {emailTexts ? emailTexts[1].text_body : ""}
-                            </td>
-                        </tr>
-                        <tr className="text-xs text-gray-500 border-b text-left">
-                            <td>
-                                {emailTexts ? emailTexts[0].text_name : ""}
-                            </td>
-                            <td>
-                                {emailTexts ? emailTexts[0].text_body : ""}
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
             </div>
         )
     } else {

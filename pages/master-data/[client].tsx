@@ -76,7 +76,7 @@ const MasterData = () => {
         API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/users')
             .then((response) => {
                 setWorkers(
-                    response.data.Items.filter((obj: any) => obj.client_id == pid.id));
+                    response.data.Items.filter((obj: any) => obj.client_id == pid.client));
             })
             .catch((error) => {
                 console.log(error.response);
@@ -106,7 +106,7 @@ const MasterData = () => {
             calculatePlannedDate( '2023/02/14', '10:00')
         }
 
-    },[pid, clientId, clients] );
+    },[pid, clientId, clients.set] );
 
     const monthsList = {
         0: "Januar",

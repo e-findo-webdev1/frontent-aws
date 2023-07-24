@@ -172,7 +172,8 @@ const EditMachine = () => {
 
     return(
         <div id="content-page" className="mx-20 overflow-auto h-full">
-            <Link href={company ? "/master-data/"+company.company_id : ""}>
+            <Link href={company ? "/master-data/" +
+                JSON.parse(sessionStorage.getItem('company') as string).client_id : ""}>
                 <button className="float-right border ml-auto p-1.5 px-3.5 font-bold border-accent-color-1 bg-accent-color-4
                         hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs">← Zurück
                 </button>
@@ -398,7 +399,7 @@ const EditMachine = () => {
                                 bg-[url('https://www.svgrepo.com/show/80156/down-arrow.svg')]
                                 bg-no-repeat bg-[length:15px] [background-position-x:95%]
                                 [background-position-y:5px]"
-                                        defaultValue={data ? data.client : ''}
+                                        value={data ? data.client : ''}
                                         onChange={(e)=>
                                             setData({...data, client: e.target.value})}>
                                     {clients ? clients.map((item: any)=>

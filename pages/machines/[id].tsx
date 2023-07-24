@@ -16,27 +16,37 @@ const MachineStorageHistory = () => {
     }]);
     const [page, setPage] = useState<any>(1);
     const [listLength, setListLength] = useState<any>();
-    const [pageList, setPageList] = useState<any[]>([1, 2, 3, 4, 5, 6]);
+    const [pageList, setPageList] = useState<any[]>([]);
 
     useEffect(() => {
+        const newEndDate = new Date();
+        startDate.setDate(startDate.getDate())
+        setStartDate(startDate)
+        newEndDate.setDate(endDate.getDate() + 1)
+        newEndDate.setHours(0,0,0,0);
+        setNewEndDate(newEndDate)
+        startDate.setHours(0,0,0,0)
+
         setData([])
         const apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/log-data/'
-            + machinesData[0].machine_id + "/" + moment(startDate).unix() + "/" + moment(endDate).unix() + "/" + page;
+            + machinesData[0].machine_id + "/" + moment(startDate.setHours(2,0,0,0) ).unix() + "/" + moment(newEndDate).unix() + "/" + page;
 
         API.get(apiName)
             .then((response) => {
                 setData(response.data[0])
                 setListLength(response.data[1])
+                const newPageList = []
+                if (pageList.length == 0) {
+                    for (let i = 1; i < Math.ceil(listLength/100) + 1; i++) {
+                        newPageList.push(i)
+                    }
+                    setPageList(newPageList)
+                }
             })
             .catch((error) => {
                 console.log(error.response);
             });
 
-        const newEndDate = new Date();
-        newEndDate.setDate(endDate.getDate() + 1)
-        newEndDate.setHours(0,0,0,0);
-        setNewEndDate(newEndDate)
-        startDate.setHours(0,0,0,0)
 
         API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines')
             .then((response) => {
@@ -46,7 +56,7 @@ const MachineStorageHistory = () => {
                 console.log(error.response);
             });
 
-    },[startDate, endDate, page, machinesData[0].machine_id]);
+    },[startDate,pageList, endDate, page, machinesData[0].machine_id]);
 
     const router = useRouter()
     const pid = router.query
@@ -123,21 +133,36 @@ const MachineStorageHistory = () => {
 
     const updatePageList = (page: number) => {
         const lastPage = Math.ceil(listLength/100)
-        if (page <= 4) {
-            setPageList([1, 2, 3, 4, 5, 6])
+        if (page < 5 && lastPage > 4) {
+            const newPageList = []
+            if (pageList.length == 0) {
+                for (let i = 1; i < Math.ceil(listLength/100) + 1; i++) {
+                    newPageList.push(i)
+                }
+                setPageList(newPageList)
+            }
         }
-        if (page > 4 && page + 2 < lastPage) {
-            setPageList([page - 2, page -1, page, page + 1, page +2])
+        if (page == 4 && lastPage > 4) {
+            const newPageList = []
+            if (pageList.length == 0) {
+                for (let i = 1; i < Math.ceil(listLength/100) + 1; i++) {
+                    newPageList.push(i)
+                }
+                setPageList(newPageList)
+            }
+        }
+
+        if (page > 3 && page + 2 < lastPage) {
+            setPageList([1, page - 2, page -1, page, page + 1, page +2])
         }
         if (page > 4 && page + 1 < lastPage) {
-            setPageList([page - 2, page -1, page, page + 1])
+            setPageList([page - 2, page -1, page, page + 1, page + 2])
         }
         if (page > 4 && page  == lastPage) {
             setPageList([lastPage - 3, lastPage -2, lastPage -1, lastPage])
         }
     }
 
-    console.log(data)
     return(
         <div id="content-page" className="mx-10 p-10">
             <p className="text-3xl font-bold">Übersicht</p>
@@ -220,7 +245,7 @@ const MachineStorageHistory = () => {
                 <p className="text-xs">Seite:
                     {page > 4
                     ? <><button className="underline mx-1"
-                        onClick={()=>changePage(1)}>
+                        onClick={()=>{changePage(1);}}>
                             1
                     </button>| ... </>
                         : ""}
@@ -232,10 +257,11 @@ const MachineStorageHistory = () => {
                         <span className="font-normal">{pages != 1 ? "|" : ""}</span><span className="mx-1">{pages}</span>
                     </button>)
                         : ""}
-                    {listLength>0 && page +1< Math.ceil(listLength/100) ? "| ... |" : ""} {listLength > 0 && page + 1< Math.ceil(listLength/100) ?
+                    {listLength>0 && page +2< Math.ceil(listLength/100) && Math.ceil(listLength/100) > 6
+                        ? "| ... |" : ""} {listLength > 0 && page + 1< Math.ceil(listLength/100) ?
                         <button className={ page == Math.ceil(listLength/100) ? "font-bold underline" :"underline"}
                         onClick={()=>changePage(Math.ceil(listLength/100))}>
-                            {Math.ceil(listLength/100)}
+                            {Math.ceil(listLength/100) > 6  && page +2< Math.ceil(listLength/100)? Math.ceil(listLength/100) : ''}
                         </button>
                         : ""}
                 </p>

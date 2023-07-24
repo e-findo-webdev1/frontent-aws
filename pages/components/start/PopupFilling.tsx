@@ -2,6 +2,7 @@ import DatePicker from "react-datepicker";
 import moment from "moment";
 import API from "axios";
 import React, {useEffect, useState} from "react";
+import emailjs, {send} from "@emailjs/browser";
 
 const PopupFilling = ({machineID, pickupDate, setPickupDates, setMachineID, setPickupDate, pickupDates, machinesData,
                    areDatesConfirmed, setAreDatesConfirmed, setNewPickupDates, newPickupDates, radioConfirmed,
@@ -11,6 +12,21 @@ const PopupFilling = ({machineID, pickupDate, setPickupDates, setMachineID, setP
     const [displayedDate, setDisplayedDate] = useState<any>();
     const [userPermissions] = useState(
         JSON.parse(sessionStorage.getItem('user') as string));
+
+
+    const sendEmail = (date: any) => {
+
+        emailjs.send('service_5mr7itc', 'template_6zkqrdi',
+            {client_name: JSON.parse(sessionStorage.getItem('company') as string).client_name,
+            abholdatum: date.format('YYYY-MM-DD HH:mm'),
+                user: JSON.parse(sessionStorage.getItem('user') as string).email},
+            'dN44ZN6V7IyivDtmA')
+            .then((result) => {
+                console.log(result.text);
+            }, (error) => {
+                console.log(error.text);
+            });
+    };
 
 
     const sendData = (responseBody: any) => {
@@ -25,6 +41,7 @@ const PopupFilling = ({machineID, pickupDate, setPickupDates, setMachineID, setP
             });
 
     }
+
     const updatePickupDates = (date: any) => {
         // pickupDates = pickupDates.filter((obj:any) =>
         // {return obj.machineID!=machineID})
@@ -74,6 +91,7 @@ const PopupFilling = ({machineID, pickupDate, setPickupDates, setMachineID, setP
         setMachineID("")
         setPickupDate("")
         setRadioConfirmed("")
+        sendEmail(date)
     }
 
 

@@ -31,7 +31,7 @@ const Breadcrumbs = () => {
                     <Link href="/">
                         <a className="inline-flex items-center text-sm font-medium text-gray-700
                                 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
-                            Home
+                            Start
                             <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20"
                                  xmlns="http://www.w3.org/2000/svg">
                                 <path d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4
@@ -67,6 +67,25 @@ const Breadcrumbs = () => {
                                     >
                                     { pid ?
                                         route
+                                            .replace("master-data", "Stammdaten")
+                                            .replace("edit-client", "Client Anpassung")
+                                            .replace("new-machine", "Neue Maschine")
+                                            .replace("new-client", "Neuer Client")
+                                            .replace("edit-machine", "Maschinen Anpassung")
+                                            .replace("shift-manager", "Schicht Anpassung")
+                                            .replace("new-worker", "Neuer Mitarbeiter")
+                                            .replace("edit-worker", "Mitarbeiter Anpassung")
+                                            .replace("shift-calendar", "Zeiten Anpassung")
+                                            .replace("control-documents", "Kontrollbelege")
+                                            .replace("monthly-evaluation", "Monatsauswertung")
+                                            .replace("annual-evaluation", "Jahresauswertung")
+                                            .replace("index-management", "Indexverwaltung")
+                                            .replace("new-indexgroup", "Neue Indexgrouppe")
+                                            .replace("edit-sort", "Sorten Anpassung")
+                                            .replace("new-sort", "Neue Sorte")
+                                            .replace("price-matrix", "Preismatrix")
+                                            .replace("indeces", "Indexe Anpassung")
+                                            .replace("new-index", "Neuer Index")
                                             .replace("-", " ")
                                             .replace("-", " ")
                                             .replace("/", "")
@@ -74,7 +93,7 @@ const Breadcrumbs = () => {
                                             .replace("[client]", "")
                                             .replace("[id]", pid.id as string)
                                             .replace("[client_id]", pid.client_id as string)
-                                            .replace("[user]", pid.user as string)
+                                            .replace("[user]", "")
                                             .replace("[indexgroup_name]", decodedName as string)
                                             .replace("[sort_name]", sortName as string)
                                             .replace("[document_id]", "")

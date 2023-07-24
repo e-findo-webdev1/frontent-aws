@@ -2,6 +2,7 @@ import {useEffect, useState} from "react";
 import API from "axios";
 import moment from "moment";
 import PDF from "../components/helpers/pdf";
+import Link from "next/link";
 
 const ControlDocuments = () => {
     const [company, setCompany] = useState({
@@ -13,34 +14,49 @@ const ControlDocuments = () => {
     const [controlDocuments, setControlDocuments] = useState([]);
     const [machines, setMachines] = useState<any>();
     const [waretypes, setWaretypes] = useState<any>();
+    const [certificates, setCertificates] = useState<any>({set:false});
 
     useEffect(() => {
         setCompany(JSON.parse(sessionStorage.getItem('company') as string));
 
-        API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/control-documents')
-            .then((response) => {
-                setControlDocuments(response.data.Items)
-                ;})
-            .catch((error) => {
-                console.log(error.response);
-            });
+        const fetchData = async () => {
 
-        API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines')
-            .then((response) => {
-                setMachines(response.data.Items)
-                ;})
-            .catch((error) => {
-                console.log(error.response);
-            });
+            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/certificates')
+                .then((response) => {
+                    setCertificates(response.data.Items)
+                })
+                .catch((error) => {
+                    console.log(error.response);
+                });
 
-        API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/waretypes')
-            .then((response) => {
-                setWaretypes(response.data.Items);
-            })
-            .catch((error) => {
-                console.log(error.response);
-            });
+            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/control-documents')
+                .then((response) => {
+                    setControlDocuments(response.data.Items)
+                    ;
+                })
+                .catch((error) => {
+                    console.log(error.response);
+                });
 
+            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines')
+                .then((response) => {
+                    setMachines(response.data.Items)
+                    ;
+                })
+                .catch((error) => {
+                    console.log(error.response);
+                });
+
+            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/waretypes')
+                .then((response) => {
+                    setWaretypes(response.data.Items);
+                })
+                .catch((error) => {
+                    console.log(error.response);
+                });
+        }
+
+        fetchData()
     }, []);
 
     return(
@@ -105,7 +121,17 @@ const ControlDocuments = () => {
                             <td>{(document.totalProductionTime/3600000).toFixed(2)}h</td>
                             <td>{controlDocuments ? (document.averageThroughput).toFixed(2) : ''}</td>
                             <td>{}</td>
-                            <td><img className="h-5" src="/upload-svgrepo-com.svg"/></td>
+                            <td>
+                                <Link href={"/reporting/control-documents/" + document.document_id}>
+                                    <button className="m-auto flex">
+                                        <img className="h-5" src={
+                                            certificates && certificates.filter((certificate: any) =>
+                                                certificate.document_id == document.document_id).length == 0
+                                            || certificates.filter((certificate: any) =>
+                                                certificate.document_id == document.document_id).pdf_data == '' ?
+                                                "/upload-svgrepo-com.svg" : '/document.png'}/></button>
+                                </Link>
+                            </td>
                         </tr>
                     )}
                     </tbody>

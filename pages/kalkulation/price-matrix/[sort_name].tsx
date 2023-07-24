@@ -46,26 +46,29 @@ const PriceMatrix = () => {
     const pid = router.query
 
     useEffect(() => {
-        let apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/price-matrices';
+        const fetchData = async () => {
+            let apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/price-matrices';
 
-        API.get(apiName)
-            .then((response) => {
-                setPriceMatrix({
-                    ...priceMatrix,
-                    price_matrix: response.data.Items.filter((matrix: any) =>
-                        matrix.price_matrix == fromHex(pid.sort_name))[0].price_matrix,
-                    indexgroup_name: response.data.Items.filter((matrix: any) =>
-                        matrix.price_matrix == fromHex(pid.sort_name))[0].indexgroup_name,
-                    prices: response.data.Items.filter((matrix: any) =>
-                        matrix.price_matrix == fromHex(pid.sort_name))[0].prices,
-                    indeces: response.data.Items.filter((matrix: any) =>
-                        matrix.price_matrix == fromHex(pid.sort_name))[0].indeces
-                    },
-                )
-            })
-            .catch((error) => {
-                console.log(error.response);
-            });
+            await API.get(apiName)
+                .then((response) => {
+                    setPriceMatrix({
+                            ...priceMatrix,
+                            price_matrix: response.data.Items.filter((matrix: any) =>
+                                matrix.price_matrix == fromHex(pid.sort_name))[0].price_matrix,
+                            indexgroup_name: response.data.Items.filter((matrix: any) =>
+                                matrix.price_matrix == fromHex(pid.sort_name))[0].indexgroup_name,
+                            prices: response.data.Items.filter((matrix: any) =>
+                                matrix.price_matrix == fromHex(pid.sort_name))[0].prices,
+                            indeces: response.data.Items.filter((matrix: any) =>
+                                matrix.price_matrix == fromHex(pid.sort_name))[0].indeces
+                        },
+                    )
+                })
+                .catch((error) => {
+                    console.log(error.response);
+                });
+        }
+        fetchData()
 
     }, []);
 
@@ -121,6 +124,8 @@ const PriceMatrix = () => {
 
         window.location.replace('/kalkulation/index-management');
     }
+
+    console.log(priceMatrix)
 
     return(
         <div id="content-page" className="px-24 h-full overflow-auto">
@@ -178,7 +183,8 @@ const PriceMatrix = () => {
                                                 .map((index: any) =>
                                                     <td key={index}>
                                                     <input  className="border rounded pl-2.5 py-0.5 w-full"
-                                                     defaultValue={priceMatrix.prices[month][index]
+                                                     defaultValue={priceMatrix.price_matrix != ""
+                                                     && priceMatrix.prices != undefined
                                                          ? priceMatrix.prices[month][index] : 0}
                                                  onChange={
                                                      (e)=>
@@ -206,8 +212,8 @@ const PriceMatrix = () => {
                                             })
                                             .map((index: any) =>
                                                 <td key={index} className="text-right">
-                                                    <p>{priceMatrix.prices[month][index] ?
-                                                        priceMatrix.prices[month][index] : 0}</p>
+                                                    <p>{priceMatrix.price_matrix != "" && priceMatrix.prices != undefined
+                                                        ? priceMatrix.prices[month][index] : 0}</p>
                                                 </td>)
                                         : ''}
                                 </tr>
