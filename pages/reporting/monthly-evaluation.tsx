@@ -941,14 +941,14 @@ const MonthlyEvaluation = () => {
                                             <img className="h-5" src={
                                                 certificates && certificates.filter((certificate: any) =>
                                                 certificate.document_id == document.document_id).length == 0
-                                                    || certificates && certificates.filter((certificate: any) =>
-                                                        certificate.document_id == document.document_id).pdf_data == '' ?
+                                                    || certificates && !certificates.filter((certificate: any) =>
+                                                        certificate.document_id == document.document_id)[0].pdf_data ?
                                                 "/upload-svgrepo-com.svg" : '/document.png'}/></button>
                                     </Link>
                                 </td>
                                 <td>
                                     {certificates ? certificates.filter((certificate: any) =>
-                                        certificate.document_id == document.document_id).comment : '' }
+                                        certificate.document_id == document.document_id)[0].comment : '' }
                                 </td>
 
                             </tr>

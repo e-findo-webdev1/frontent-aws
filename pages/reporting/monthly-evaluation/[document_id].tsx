@@ -76,8 +76,12 @@ const MonthlyComment = () => {
             .catch((error) => {
                 console.log(error.response);
             });
-
-    }, [controlDocument.set, isFileSent, certificate.set, comment.set]);
+        if (comment == '') {
+            setComment('')
+        } else {
+            setComment(certificate.comment)
+        }
+    }, [controlDocument.set, isFileSent, certificate.set]);
 
     const changeHandler = () => {
         // @ts-ignore
@@ -90,15 +94,15 @@ const MonthlyComment = () => {
         client_id: 0, machine_id: 0, endOfCycle: ''
     }
 
-    const handleSubmission = async () => {
+    const handleSubmission = async (e: any) => {
 
         responseBody.document_id = pid.document_id
         responseBody.workingWeight = workingWeight
         responseBody.comment = comment
         responseBody.income = certificate.income
         responseBody.client_id = JSON.parse(sessionStorage.getItem('company') as string).client_id
-        responseBody.machine_id = controlDocument.machine_id
-        responseBody.endOfCycle = controlDocument.endOfCycle
+        responseBody.machine_id = controlDocument[0].machine_id
+        responseBody.endOfCycle = controlDocument[0].endOfCycle
 
         function getBase64(file: any) {
             let reader = new FileReader();
@@ -138,7 +142,6 @@ const MonthlyComment = () => {
                     console.log(error);
                 });
         }
-        window.location.replace('/reporting/monthly-evaluation')
     }
 
     return (
