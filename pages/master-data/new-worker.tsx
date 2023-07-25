@@ -45,7 +45,7 @@ const NewWorker = () => {
         showPricesPermission: false, enterAmountReceivedPermission: false, client_id: 0,
     }
 
-    const onSubmitHandler = (event: React.FormEvent<HTMLFormElement>) => {
+    const onSubmitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         responseBody.userName = userName
         responseBody.initials = initials
@@ -71,7 +71,8 @@ const NewWorker = () => {
         responseBody.showPricesPermission = showPricesPermission
         responseBody.enterAmountReceivedPermission = enterAmountReceivedPermission
         responseBody.client_id = client_id
-        sendData(responseBody)
+        await sendData(responseBody)
+        window.location.replace('/master-data/' + JSON.parse(sessionStorage.getItem('company') as string).client_id)
     }
 
     const sendData = (responseBody: any) => {
