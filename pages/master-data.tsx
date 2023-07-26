@@ -241,8 +241,8 @@ const MasterDataSummary = () => {
                                 </thead>
                                 <tbody className="bg-gray-50">
                                 { priceMatrices ?
-                                    priceMatrices.map((priceMatrix: any) =>
-                                        priceMatrix.indeces ?
+                                    priceMatrices.filter((priceMatrix: any) => priceMatrix.indeces != undefined)
+                                        .map((priceMatrix: any) =>
                                             priceMatrix.indeces.map((index: any) =>
                                                 <tr key={priceMatrix.price_matrix + index}
                                                     className="text-xs text-gray-500 border-b text-left">
@@ -261,20 +261,6 @@ const MasterDataSummary = () => {
                                                     </td>
                                                 </tr>
                                             )
-                                            : <tr key={priceMatrix.indexgroup_name}
-                                                  className="text-xs text-gray-500 border-b text-left">
-                                                <td className="underline">
-                                                    {priceMatrix.indexgroup_name + " - " +
-                                                        priceMatrix.price_matrix}
-                                                </td>
-                                                <td>
-                                                    {
-                                                        priceMatrix.prices ?
-                                                            "0.01 €"
-                                                            : "0.00 €"
-                                                    }
-                                                </td>
-                                            </tr>
                                     )
                                     : ""}
                                 </tbody>

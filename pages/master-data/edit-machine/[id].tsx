@@ -2,7 +2,6 @@ import API from "axios";
 import React, {useEffect, useState} from "react";
 import {useRouter} from "next/router";
 import Link from "next/link";
-import fromHex from "../../components/helpers/fromHex";
 
 const EditMachine = () => {
     const router = useRouter()
@@ -22,6 +21,7 @@ const EditMachine = () => {
     const [priceMatrices, setPriceMatrices] = useState<any>();
     const [indeces, setIndeces] = useState<any>([]);
     const [company, setCompany] = useState<any>();
+    const [qualities, setQualities] = useState<any>();
 
     useEffect(() => {
 
@@ -72,11 +72,18 @@ const EditMachine = () => {
                 console.log(error.response);
             });
 
+        API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/qualities')
+            .then((response) => {
+                setQualities(response.data.Items)
+            })
+            .catch((error) => {
+                console.log(error.response);
+            });
 
         setCompany(sessionStorage.getItem("company"))
 
 
-    }, [] );
+    }, [pid] );
 
     const responseBody = {
         automaticTara: false,
@@ -111,7 +118,7 @@ const EditMachine = () => {
         waretype: ""
     }
 
-    const onSubmitHandler = (event: React.FormEvent<HTMLFormElement>) => {
+    const onSubmitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         responseBody.automaticTara = data.automaticTara
         responseBody.averageThroughput = data.averageThroughput
@@ -143,7 +150,9 @@ const EditMachine = () => {
         responseBody.totalFillingTime = data.totalFillingTime
         responseBody.totalStandstill = data.totalStandstill
         responseBody.waretype = data.waretype
-        sendData(responseBody)
+        await sendData(responseBody)
+
+        window.location.replace('/master-data/' + JSON.parse(sessionStorage.getItem('company') as string).client_id);//
     }
 
     const sendData = async (responseBody: any) => {
@@ -155,7 +164,6 @@ const EditMachine = () => {
             .catch(function (error) {
                 console.log(error);
             });
-        window.location.replace('/');
     }
 
     const deleteMachine = async () => {
@@ -303,8 +311,11 @@ const EditMachine = () => {
                                         value={data ? data.quality : ''}
                                         onChange={(e)=>
                                             setData({...data, quality: e.target.value})}>
-                                    <option>normal</option>
-                                    <option>gebrochen</option>
+                                    {qualities ? qualities.map((quality: any) =>
+                                        <option key={quality.quality_id}>
+                                            {quality.quality_name}
+                                        </option>
+                                    ) : ''}
                                 </select>
                             </td>
                             <td className="p-1 pl-3">Befüllart</td>
@@ -330,7 +341,7 @@ const EditMachine = () => {
                                 bg-[url('https://www.svgrepo.com/show/80156/down-arrow.svg')]
                                 bg-no-repeat bg-[length:15px] [background-position-x:95%]
                                 [background-position-y:5px]"
-                                        value={ data.index }
+                                        value={ data ? data.index : ''}
                                         onChange={(e) =>
                                             setData({...data, index: e.target.value})}>
                                     <option key={"noIndex"}>{"- kein Index -"}</option>
@@ -347,7 +358,7 @@ const EditMachine = () => {
                                 bg-[url('https://www.svgrepo.com/show/80156/down-arrow.svg')]
                                 bg-no-repeat bg-[length:15px] [background-position-x:95%]
                                 [background-position-y:5px]"
-                                        value={data.plandateCalculation}
+                                        value={data ? data.plandateCalculation : ''}
                                         onChange={(e)=>
                                             setData({...data, plandateCalculation: e.target.value})}>
                                     <option>Plandatum V.1</option>
