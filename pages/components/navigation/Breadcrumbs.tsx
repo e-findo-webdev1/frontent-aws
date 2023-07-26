@@ -58,7 +58,8 @@ const Breadcrumbs = () => {
                                 .replace("monthly-evaluation", "reporting/monthly-evaluation")
                             }>
                                 <a className={
-                                    route == "[id]"
+                                    route == "[id]" || route == "user-data" || route == "master-data"
+                                        || route == "master-data/"
                                         ? "inline-flex items-center text-sm font-medium text-gray-700" +
                                         "hover:text-gray-900 dark:text-gray-400 dark:hover:text-white" +
                                         "pointer-events-none"
@@ -86,10 +87,13 @@ const Breadcrumbs = () => {
                                             .replace("price-matrix", "Preismatrix")
                                             .replace("indeces", "Indexe Anpassung")
                                             .replace("new-index", "Neuer Index")
+                                            .replace("new-material", "Neues Material")
+                                            .replace("edit-material", "Material Anpassung")
+                                            .replace("[material_id]", "")
                                             .replace("-", " ")
                                             .replace("-", " ")
                                             .replace("/", "")
-                                            .replace("user data", "Master Data")
+                                            .replace("user data", "Stammdaten")
                                             .replace("[client]", "")
                                             .replace("[id]", pid.id as string)
                                             .replace("[client_id]", pid.client_id as string)

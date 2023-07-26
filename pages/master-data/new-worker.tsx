@@ -72,7 +72,8 @@ const NewWorker = () => {
         responseBody.enterAmountReceivedPermission = enterAmountReceivedPermission
         responseBody.client_id = client_id
         await sendData(responseBody)
-        window.location.replace('/master-data/' + JSON.parse(sessionStorage.getItem('company') as string).client_id)
+        window.location.replace('/master-data/' +
+            JSON.parse(sessionStorage.getItem('company') as string).client_id)
     }
 
     const sendData = (responseBody: any) => {

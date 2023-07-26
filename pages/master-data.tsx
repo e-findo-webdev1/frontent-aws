@@ -145,7 +145,7 @@ const MasterDataSummary = () => {
                 <div className="columns-2 h-max mt-7 space-x-5">
                     <div>
                         <div>
-                            <Link href="/">
+                            <Link href="/master-data/new-material">
                                 <button className="border float-right p-1.5 px-3.5 font-bold border-accent-color-1
                             bg-accent-color-4
                     hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs ml-2">+ Neues Material</button>
@@ -169,7 +169,8 @@ const MasterDataSummary = () => {
                                                 .map((material: any) =>
                                                     <tr key={material.waretype_id}
                                                         className="text-xs text-gray-500 border-b text-left">
-                                                        <Link href="/">
+                                                        <Link href={"/master-data/edit-material/" +
+                                                            material.waretype_id}>
                                                             <a><td className="underline">{material.name_waretype}</td></a>
                                                         </Link>
                                                         <td>{material.waretype_number}</td>
