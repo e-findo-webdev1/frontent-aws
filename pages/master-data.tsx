@@ -11,6 +11,7 @@ const MasterDataSummary = () => {
     const [priceMatrices, setPriceMatrices] = useState<any>();
     const [contractors, setContractors] = useState<any>();
     const [emailTexts, setEmailTexts] = useState<any>();
+    const [qualities, setQualities] = useState<any>();
 
 
     useEffect(() => {
@@ -72,6 +73,15 @@ const MasterDataSummary = () => {
                 console.log(error); //
             });
 
+        API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/qualities')
+            .then((response) => {
+                setQualities(response.data.Items)
+            })
+            .catch((error) => {
+                console.log(error); //
+            });
+
+
     }, []);
 
     const monthsList = [
@@ -88,6 +98,7 @@ const MasterDataSummary = () => {
         "November",
         "Dezember"
     ]
+    console.log(qualities)
 
     if (JSON.parse(sessionStorage.getItem('user') as string).admin) {
         return (
@@ -185,7 +196,7 @@ const MasterDataSummary = () => {
                         </div>
                     </div>
                     <div className="">
-                        <Link href="/">
+                        <Link href="/master-data/new-quality">
                             <button className="border float-right p-1.5 px-3.5 font-bold border-accent-color-1
                             bg-accent-color-4
                     hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs ml-2">+ Neue Qualität</button>
@@ -200,9 +211,17 @@ const MasterDataSummary = () => {
                                 </tr>
                                 </thead>
                                 <tbody className="bg-gray-50">
-                                <tr>
-                                    <td></td>
-                                </tr>
+                                {qualities ? qualities.map((quality: any) =>
+                                    <tr key={quality.quality_id}
+                                        className="text-xs text-gray-500 border-b text-left underline">
+                                        <Link href={"/master-data/edit-quality/" +
+                                            quality.quality_id}>
+                                            <a><td className="underline">{quality.quality_name}</td></a>
+                                        </Link>
+                                    </tr>
+                                )
+                                    : ""
+                                }
                                 </tbody>
                             </table>
                         </div>
