@@ -98,7 +98,6 @@ const MasterDataSummary = () => {
         "November",
         "Dezember"
     ]
-    console.log(qualities)
 
     if (JSON.parse(sessionStorage.getItem('user') as string).admin) {
         return (

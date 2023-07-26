@@ -34,8 +34,6 @@ const EditSort = () => {
 
     },[] );
 
-    console.log(priceMatrices)
-
     const deleteSort = (sort: any) => {
         API.delete('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/sorts',
             { data: { sort_name: sort } })
@@ -56,7 +54,7 @@ const EditSort = () => {
     }
 
     return(
-        <div className="px-20">
+        <div className="px-20 h-full overflow-auto">
             <div className="flex w-full mb-5">
                 <Link href="/kalkulation/index-management">
                     <button className="float-right border ml-auto p-1.5 px-3.5 font-bold border-accent-color-1 bg-accent-color-4
@@ -73,7 +71,7 @@ const EditSort = () => {
             </div>
             <p className="my-9 text-3xl font-bold">{"Indexgruppe bearbeiten '" + fromHex(pid.indexgroup_name) + "'"}</p>
             <div className="mb-10 sm:rounded-lg shadow-md border overflow-auto">
-                <table className="flex-row w-full table-auto">
+                <table className="flex-row w-full table-auto overflow-auto">
                     <thead>
                     <tr className="text-xs text-gray-500 border-b text-left">
                         <th className="font-normal">Sorte</th>
