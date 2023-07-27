@@ -276,7 +276,7 @@ const MasterDataSummary = () => {
                 <div className="columns-2 h-max mt-7 space-x-5">
                     <div>
                         <div>
-                            <Link href="/">
+                            <Link href="/master-data/new-machine-type">
                                 <button className="border float-right p-1.5 px-3.5 font-bold border-accent-color-1
                             bg-accent-color-4
                     hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs ml-2">+ Neuer Maschinentyp</button>
