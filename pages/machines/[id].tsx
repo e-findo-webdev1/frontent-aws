@@ -61,9 +61,7 @@ const MachineStorageHistory = () => {
         setTimeout(() => {
             setIntervalCount(count => count + 1);
         }, 1000 * 140);
-    },[startDate,pageList, endDate, page, machinesData[0].machine_id, intervalCount]);
-
-    console.log('s')
+    },[startDate,pageList, endDate, page, intervalCount]);
 
     const router = useRouter()
     const pid = router.query

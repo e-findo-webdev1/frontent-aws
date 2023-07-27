@@ -6,8 +6,13 @@
   <component name="ChangeListManager">
     <list default="true" id="46e0077f-1afc-4c07-b20b-cd300e9edac7" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/components/navigation/Breadcrumbs.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/components/navigation/Breadcrumbs.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/machines/[id].tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/machines/[id].tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pages/master-data.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/master-data.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pages/master-data/edit-machine/[id].tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/master-data/edit-machine/[id].tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/master-data/new-index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/master-data/edit-index/[index_name].tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/reporting/annual-evaluation.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/reporting/annual-evaluation.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/reporting/monthly-evaluation.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/reporting/monthly-evaluation.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,7 +64,7 @@
       <option name="presentableId" value="Default" />
       <updated>1690198411881</updated>
       <workItem from="1690198414069" duration="90000" />
-      <workItem from="1690198521601" duration="17549000" />
+      <workItem from="1690198521601" duration="35213000" />
     </task>
     <servers />
   </component>

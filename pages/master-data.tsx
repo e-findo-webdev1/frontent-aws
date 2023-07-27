@@ -2,6 +2,7 @@ import {useEffect, useState} from "react";
 import API from "axios";
 import Link from "next/link";
 import moment from "moment";
+import toHex from "./components/helpers/toHex";
 
 const MasterDataSummary = () => {
     const [machinesData, setMachinesData] = useState<any>();
@@ -224,7 +225,7 @@ const MasterDataSummary = () => {
                                 </tbody>
                             </table>
                         </div>
-                        <Link href="/">
+                        <Link href="/kalkulation/index-management">
                             <button className="border float-right p-1.5 px-3.5 font-bold border-accent-color-1
                             bg-accent-color-4
                     hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs ml-2 mt-7">+ Neuer Index</button>
@@ -246,10 +247,12 @@ const MasterDataSummary = () => {
                                             priceMatrix.indeces.map((index: any) =>
                                                 <tr key={priceMatrix.price_matrix + index}
                                                     className="text-xs text-gray-500 border-b text-left">
-                                                    <td className="underline">
-                                                        {priceMatrix.indexgroup_name + " - "
-                                                            + priceMatrix.price_matrix + " - " + index}
-                                                    </td>
+                                                    <Link href={"/master-data/edit-index/" +
+                                                        toHex(priceMatrix.indexgroup_name + " - "
+                                                            + priceMatrix.price_matrix + " - " + index)}>
+                                                        <a><td className="underline">{priceMatrix.indexgroup_name + " - "
+                                                            + priceMatrix.price_matrix + " - " + index}</td></a>
+                                                    </Link>
                                                     <td>
                                                         {
                                                             priceMatrix.prices ?

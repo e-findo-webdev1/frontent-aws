@@ -19,71 +19,74 @@ const EditMachine = () => {
     const [waretypes, setWaretypes] = useState<any>();
     const [clients, setClients] = useState<any>();
     const [priceMatrices, setPriceMatrices] = useState<any>();
-    const [indeces, setIndeces] = useState<any>([]);
-    const [company, setCompany] = useState<any>();
+    const [indeces, setIndeces] = useState<any>({set:false});
+    const [company, setCompany] = useState<any>({set:false});
     const [qualities, setQualities] = useState<any>();
 
     useEffect(() => {
 
-        if (priceMatrices) {
-            let indecesList: any = []
-            for (let matrix in priceMatrices) {
-                if (priceMatrices[matrix].indeces) {
-                    for (let index in priceMatrices[matrix].indeces) {
-                        indecesList.push(priceMatrices[matrix].indeces[index])
-                    }
-                }
-                if (indeces == "") {
-                    setIndeces(indecesList)
-                }
-            }
+        const fetchData = async () => {
+            const apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines';
+
+            await API.get(apiName)
+                .then((response) => {
+                    setData(response.data.Items.filter((item: any) => item.machine_id == pid.id)[0]);
+                })
+                .catch((error) => {
+                    console.log(error.response);
+                });
+
+            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/waretypes')
+                .then((response) => {
+                    setWaretypes(response.data.Items);
+                })
+                .catch((error) => {
+                    console.log(error.response);
+                });
+
+            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/clients')
+                .then((response) => {
+                    setClients(response.data.Items);
+                })
+                .catch((error) => {
+                    console.log(error.response);
+                });
+
+            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/price-matrices')
+                .then((response) => {
+                    setPriceMatrices(response.data.Items);
+                        let indecesList: any = []
+                        for (let matrix in response.data.Items) {
+                            if (response.data.Items[matrix].indeces) {
+                                for (let index in response.data.Items[matrix].indeces) {
+                                    indecesList.push(
+                                        response.data.Items[matrix].price_matrix + ' - '
+                                        + response.data.Items[matrix].indexgroup_name + ' - '
+                                        + response.data.Items[matrix].indeces[index])
+                                }
+                            }
+                            setIndeces(indecesList)
+                        }
+                })
+                .catch((error) => {
+                    console.log(error.response);
+                });
+
+            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/qualities')
+                .then((response) => {
+                    setQualities(response.data.Items)
+                })
+                .catch((error) => {
+                    console.log(error.response);
+                });
         }
-        const apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines';
-
-        API.get(apiName)
-            .then((response) => {
-                setData(response.data.Items.filter((item: any) => item.machine_id == pid.id)[0]);
-            })
-            .catch((error) => {
-                console.log(error.response);
-            });
-
-        API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/waretypes')
-            .then((response) => {
-                setWaretypes(response.data.Items);
-            })
-            .catch((error) => {
-                console.log(error.response);
-            });
-
-        API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/clients')
-            .then((response) => {
-                setClients(response.data.Items);
-            })
-            .catch((error) => {
-                console.log(error.response);
-            });
-
-        API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/price-matrices')
-            .then((response) => {
-                setPriceMatrices(response.data.Items)
-            })
-            .catch((error) => {
-                console.log(error.response);
-            });
-
-        API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/qualities')
-            .then((response) => {
-                setQualities(response.data.Items)
-            })
-            .catch((error) => {
-                console.log(error.response);
-            });
-
+        fetchData()
         setCompany(sessionStorage.getItem("company"))
 
 
-    }, [pid] );
+    }, [pid, indeces.set] );
+
+    console.log(indeces)
 
     const responseBody = {
         automaticTara: false,
@@ -345,7 +348,7 @@ const EditMachine = () => {
                                         onChange={(e) =>
                                             setData({...data, index: e.target.value})}>
                                     <option key={"noIndex"}>{"- kein Index -"}</option>
-                                    {priceMatrices ? indeces.map((index: any) =>
+                                    {priceMatrices && indeces.set != false ? indeces.map((index: any) =>
                                         <option key={index}>{index}</option>
                                     ): ""}
 

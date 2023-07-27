@@ -273,53 +273,21 @@ const AnnualEvaluation = () => {
                                             data:
                                                 monthsList.map((month: any) =>
                                                     isNaN(parseFloat(
-                                                        priceMatrices
-                                                            .filter((matrix: any) =>
-                                                                matrix.indexgroup_name ==
-                                                                (sorts.filter((sort: any) =>
-                                                                        sort.description ==
-                                                                        machinesData
-                                                                            .filter((machine: any) =>
-                                                                                machine.index != "" &&
-                                                                                datasetsIndex[dataset]
-                                                                                    .includes(machine.index)
-                                                                            )[0].waretype)[0].indexgroup_name
-                                                                ) &&
-                                                                matrix.price_matrix ==
-                                                                (sorts.filter((sort: any) =>
-                                                                        sort.description ==
-                                                                        machinesData
-                                                                            .filter((machine: any) =>
-                                                                                machine.index != "" &&
-                                                                                datasetsIndex[dataset]
-                                                                                    .includes(machine.index)
-                                                                            )[0].waretype)[0].sort_name
-                                                                ))[0].prices[month][datasetsIndex[dataset]
-                                                            .replace("Index: ", "").replace('.', ',')]
+                                                        priceMatrices.filter((matrix: any) =>
+                                                            datasetsIndex[dataset].includes(matrix.price_matrix) &&
+                                                            datasetsIndex[dataset].includes(matrix.indexgroup_name)
+                                                        )[0].prices[month][datasetsIndex[dataset]
+                                                            .slice(datasetsIndex[dataset]
+                                                                .indexOf("-", datasetsIndex[dataset]
+                                                                    .indexOf("-") + 1)+1).replace(" ", "").replace('.', ',')]
                                                     )) == true ? 0 : parseFloat(
-                                                        priceMatrices
-                                                            .filter((matrix: any) =>
-                                                                matrix.indexgroup_name ==
-                                                                (sorts.filter((sort: any) =>
-                                                                        sort.description ==
-                                                                        machinesData
-                                                                            .filter((machine: any) =>
-                                                                                machine.index != "" &&
-                                                                                datasetsIndex[dataset]
-                                                                                    .includes(machine.index)
-                                                                            )[0].waretype)[0].indexgroup_name
-                                                                ) &&
-                                                                matrix.price_matrix ==
-                                                                (sorts.filter((sort: any) =>
-                                                                        sort.description ==
-                                                                        machinesData
-                                                                            .filter((machine: any) =>
-                                                                                machine.index != "" &&
-                                                                                datasetsIndex[dataset]
-                                                                                    .includes(machine.index)
-                                                                            )[0].waretype)[0].sort_name
-                                                                ))[0].prices[month][datasetsIndex[dataset]
-                                                            .replace("Index: ", "").replace('.', ',')]
+                                                        priceMatrices.filter((matrix: any) =>
+                                                            datasetsIndex[dataset].includes(matrix.price_matrix) &&
+                                                            datasetsIndex[dataset].includes(matrix.indexgroup_name)
+                                                        )[0].prices[month][datasetsIndex[dataset]
+                                                            .slice(datasetsIndex[dataset]
+                                                                .indexOf("-", datasetsIndex[dataset]
+                                                                    .indexOf("-") + 1)+1).replace(" ", "").replace('.', ',')]
                                                     )
                                                 )
                                         }

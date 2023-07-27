@@ -267,6 +267,8 @@ const MonthlyEvaluation = () => {
                                 datasetsIndex.push(datasetExtra[dataset])
                             }
 
+                            console.log(datasetsIndex)
+
                             if (selectedCategory == 'Monatspreis') {
                                 const data: any = {
                                     labels: [monthsList[monthsList.indexOf(selectedMonth)]],
@@ -294,26 +296,14 @@ const MonthlyEvaluation = () => {
                                                 // @ts-ignore
                                                 borderColor: colors[dataset],
                                                 data:
-                                                    [parseFloat((priceMatrices.filter((matrix: any) =>
-                                                        matrix.indexgroup_name ==
-                                                        (sorts.filter((sort: any) =>
-                                                                sort.description ==
-                                                                machinesData
-                                                                    .filter((machine: any) =>
-                                                                        machine.index != "" &&
-                                                                        datasetsIndex[dataset].includes(machine.index)
-                                                                    )[0].waretype)[0].indexgroup_name
-                                                        ) &&
-                                                        matrix.price_matrix ==
-                                                        (sorts.filter((sort: any) =>
-                                                                sort.description ==
-                                                                machinesData
-                                                                    .filter((machine: any) =>
-                                                                        machine.index != "" &&
-                                                                        datasetsIndex[dataset].includes(machine.index)
-                                                                    )[0].waretype)[0].sort_name
-                                                        ))[0].prices[selectedMonth][datasetsIndex[dataset]
-                                                        .replace("Index: ", "")]).replace(',', '.'))]
+                                                    [parseFloat(priceMatrices.filter((matrix: any) =>
+                                                        datasetsIndex[dataset].includes(matrix.price_matrix) &&
+                                                        datasetsIndex[dataset].includes(matrix.indexgroup_name)
+                                                    )[0].prices[selectedMonth][datasetsIndex[dataset]
+                                                        .slice(datasetsIndex[dataset]
+                                                            .indexOf("-", datasetsIndex[dataset]
+                                                                .indexOf("-") + 1)+1).replace(" ", "")]
+                                                        .replace(',', '.'))]
                                             });
                                     } else {
                                         data.datasets.push(
@@ -629,6 +619,8 @@ const MonthlyEvaluation = () => {
         }
         fetchData()
     }, [controlDocuments.set, selectedMonth, myChart.set, selectedMachine, selectedCategory]);
+
+    console.log()
 
     const handlePopupSend = async () => {
         let certificate = certificates.filter((certificate: any)=> certificate.document_id == popupCertificate)[0]
