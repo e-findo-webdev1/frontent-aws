@@ -358,13 +358,13 @@ const MasterDataSummary = () => {
                 </div>
                 <div>
                     <div>
-                        <Link href="/">
+                        <Link href="/master-data/new-contractor">
                             <button className="border float-right p-1.5 px-3.5 font-bold border-accent-color-1
                             bg-accent-color-4
                     hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs ml-2">+ Neuer Auftragnehmer</button>
                         </Link>
                         <p className="text-2xl mt-7 font-bold mb-5">Auftragnehmer</p>
-                        <div className="sm:rounded-lg border overflow-auto h-full">
+                        <div className="sm:rounded-lg border overflow-auto h-full mb-20">
                             <table className="flex-row table-auto w-full">
                                 <thead>
                                 <tr className="text-xs text-gray-500 border-b text-left">
@@ -382,14 +382,25 @@ const MasterDataSummary = () => {
                                         contractors.map((contractor: any) =>
                                             <tr key={contractor.contractor_id}
                                                 className="text-xs text-gray-500 border-b text-left">
+                                                <Link href={"/master-data/edit-contractor/" + contractor.contractor_id}>
+                                                    <a><td className="underline">
+                                                        {contractor.contractor_name}</td></a>
+                                                </Link>
                                                 <td>
-                                                    {contractor.contractor_name}
+                                                    {contractor.street}
                                                 </td>
-                                                <td/>
-                                                <td/>
-                                                <td/>
-                                                <td/>
-                                                <td/>
+                                                <td>
+                                                    {contractor.zip_code}
+                                                </td>
+                                                <td>
+                                                    {contractor.city}
+                                                </td>
+                                                <td>
+                                                    {contractor.telefon}
+                                                </td>
+                                                <td>
+                                                    {contractor.email}
+                                                </td>
                                             </tr>
                                         )
                                         : ""
