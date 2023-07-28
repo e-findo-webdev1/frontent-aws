@@ -299,7 +299,8 @@ const MasterDataSummary = () => {
                                                 .map((machineType: any) =>
                                                     <tr key={machineType.machine_type_id}
                                                         className="text-xs text-gray-500 border-b text-left">
-                                                        <Link href="/">
+                                                        <Link href={"/master-data/edit-machine-type/"
+                                                            + machineType.machine_type_id}>
                                                             <a><td className="underline">
                                                                 {machineType.machine_type_name}</td></a>
                                                         </Link>

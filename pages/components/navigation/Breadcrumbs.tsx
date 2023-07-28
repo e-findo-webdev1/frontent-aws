@@ -70,6 +70,8 @@ const Breadcrumbs = () => {
                                         route
                                             .replace("master-data", "Stammdaten")
                                             .replace("edit-client", "Client Anpassung")
+                                            .replace("edit-machine-type", "Maschinentyp Anpassung")
+                                            .replace("new-machine-type", "Neuer Maschinentyp")
                                             .replace("new-machine", "Neue Maschine")
                                             .replace("new-client", "Neuer Client")
                                             .replace("edit-machine", "Maschinen Anpassung")
@@ -95,6 +97,7 @@ const Breadcrumbs = () => {
                                             .replace("[quality_id]", "")
                                             .replace("[material_id]", "")
                                             .replace("[index_name]", "")
+                                            .replace("[machine_type_id]", "")
                                             .replace("-", " ")
                                             .replace("-", " ")
                                             .replace("/", "")
