@@ -13,6 +13,7 @@ const MasterDataSummary = () => {
     const [contractors, setContractors] = useState<any>();
     const [emailTexts, setEmailTexts] = useState<any>();
     const [qualities, setQualities] = useState<any>();
+    const [workers, setWorkers] = useState<any>();
 
 
     useEffect(() => {
@@ -82,6 +83,13 @@ const MasterDataSummary = () => {
                 console.log(error); //
             });
 
+        API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/accounts')
+            .then((response) => {
+                setWorkers(response.data.Items)
+            })
+            .catch((error) => {
+                console.log(error); //
+            });
 
     }, []);
 
@@ -315,7 +323,7 @@ const MasterDataSummary = () => {
                         </div>
                     </div>
 
-                    <Link href="/">
+                    <Link href="/master-data/new-worker">
                         <button className="border float-right p-1.5 px-3.5 font-bold border-accent-color-1
                             bg-accent-color-4
                     hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs ml-2">+ Neuer Mitarbeiter</button>
@@ -332,9 +340,18 @@ const MasterDataSummary = () => {
                             </tr>
                             </thead>
                             <tbody className="bg-gray-50">
-                            <tr>
-                                <td></td>
-                            </tr>
+                            {workers ? workers.map((worker: any) =>
+                                <tr key={worker.userName}
+                                    className="text-xs text-gray-500 border-b text-left">
+                                    <Link href={"/master-data/edit-worker/" + worker.loginName}>
+                                        <a><td className="underline">
+                                            {worker.userName}</td></a>
+                                    </Link>
+                                    <td>{worker.initials}</td>
+                                    <td>{worker.email}</td>
+                                </tr>
+                            ) : ''}
+
                             </tbody>
                         </table>
                     </div>

@@ -127,7 +127,7 @@ const NewWorker = () => {
                 <p className="mt-5 text-xl font-bold mb-5">Logindaten</p>
                 <table className="text-sm space-y-5">
                     <tr>
-                        <td className="text-sm font-semibold">Loginname:</td>
+                        <td className="text-sm font-semibold">Email:</td>
                         <td>
                             <input className="border rounded pl-2.5 py-0.5"
                                    required={ true }
