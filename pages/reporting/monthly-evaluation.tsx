@@ -939,7 +939,8 @@ const MonthlyEvaluation = () => {
                                     </Link>
                                 </td>
                                 <td>
-                                    {certificates ? certificates.filter((certificate: any) =>
+                                    {certificates && certificates.filter((certificate: any) =>
+                                        certificate.document_id == document.document_id).length > 0 ? certificates.filter((certificate: any) =>
                                         certificate.document_id == document.document_id)[0].comment : '' }
                                 </td>
 
