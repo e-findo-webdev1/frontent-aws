@@ -267,8 +267,6 @@ const MonthlyEvaluation = () => {
                                 datasetsIndex.push(datasetExtra[dataset])
                             }
 
-                            console.log(datasetsIndex)
-
                             if (selectedCategory == 'Monatspreis') {
                                 const data: any = {
                                     labels: [monthsList[monthsList.indexOf(selectedMonth)]],
@@ -619,8 +617,6 @@ const MonthlyEvaluation = () => {
         }
         fetchData()
     }, [controlDocuments.set, selectedMonth, myChart.set, selectedMachine, selectedCategory]);
-
-    console.log()
 
     const handlePopupSend = async () => {
         let certificate = certificates.filter((certificate: any)=> certificate.document_id == popupCertificate)[0]

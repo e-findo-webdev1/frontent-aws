@@ -4,6 +4,7 @@ import fromHex from "../../components/helpers/fromHex";
 import API from "axios";
 import moment from "moment";
 import Link from "next/link";
+import toHex from "../../components/helpers/toHex";
 
 const PriceMatrix = () => {
     const [currentTime] = useState<any>(moment());
@@ -125,12 +126,11 @@ const PriceMatrix = () => {
         window.location.replace('/kalkulation/index-management');
     }
 
-    console.log(priceMatrix)
 
     return(
         <div id="content-page" className="px-24 h-full overflow-auto">
             <div className="h-max overflow-auto">
-                <Link href={"/kalkulation/"}>
+                <Link href={"/kalkulation/edit-sort/" + toHex(priceMatrix.indexgroup_name)}>
                     <button className="float-right border ml-auto p-1.5 px-3.5 font-bold border-accent-color-1
                         bg-accent-color-4 hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs">
                         ← Zurück
