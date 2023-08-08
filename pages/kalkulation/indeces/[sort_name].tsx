@@ -49,12 +49,12 @@ const IndecesManegement = () => {
 
     }, [pid]);
 
-    const deleteIndex = (index: any) => {
+    const deleteIndex = async (index: any) => {
         let indeces
         {priceMatrix.indeces ? indeces = priceMatrix.indeces : indeces = []}
         let position = priceMatrix.indeces.findIndex((index: any) => index == index)
         indeces.splice(position, 1)
-        API.put('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/price-matrices',
+        await API.put('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/price-matrices',
             {price_matrix: sort.sort_name, indexgroup_name: sort.indexgroup_name,
             indeces: indeces})
             .then(function (response) {
@@ -63,11 +63,12 @@ const IndecesManegement = () => {
             .catch(function (error) {
                 console.log(error);
             });
+        window.location.replace("/kalkulation/edit-sort/" + toHex(sort.indexgroup_name));
     }
 
     return(
         <div className="px-20">
-            <Link href={"/kalkulation/index-management/"}>
+            <Link href={"/kalkulation/edit-sort/" + toHex(sort.indexgroup_name)}>
                 <button className="float-right border ml-auto p-1.5 px-3.5 font-bold border-accent-color-1
                         bg-accent-color-4 hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs">
                     ← Zurück

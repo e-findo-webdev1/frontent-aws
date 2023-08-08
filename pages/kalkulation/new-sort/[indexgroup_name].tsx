@@ -3,6 +3,7 @@ import API from "axios";
 import Link from "next/link";
 import {useRouter} from "next/router";
 import fromHex from "../../components/helpers/fromHex";
+import toHex from "../../components/helpers/toHex";
 
 
 const NewSort = () => {
@@ -19,16 +20,17 @@ const NewSort = () => {
 
     const responseBody = {sort_name: "", description: "", indexgroup_name: ""}
 
-    const onSubmitHandler = (event: React.FormEvent<HTMLFormElement>) => {
+    const onSubmitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         responseBody.sort_name = sortName
         responseBody.description = description
         responseBody.indexgroup_name = indexgroupName
-        sendData(responseBody)
+        await sendData(responseBody)
+        window.location.replace("/kalkulation/edit-sort/" + pid.indexgroup_name as string);
     }
 
-    const sendData = (responseBody: any) => {
-        API.put('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/sorts',
+    const sendData = async (responseBody: any) => {
+        await API.put('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/sorts',
             responseBody)
             .then(function (response) {
                 console.log(response);
@@ -36,7 +38,7 @@ const NewSort = () => {
             .catch(function (error) {
                 console.log(error);
             });
-        API.put('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/price-matrices',
+        await API.put('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/price-matrices',
             {price_matrix: responseBody.sort_name, indexgroup_name: indexgroupName})
             .then(function (response) {
                 console.log(response);
@@ -44,6 +46,7 @@ const NewSort = () => {
             .catch(function (error) {
                 console.log(error);
             });
+
     }
 
     return(

@@ -3,6 +3,7 @@ import API from "axios";
 import Link from "next/link";
 import {useRouter} from "next/router";
 import fromHex from "../../../components/helpers/fromHex";
+import toHex from "../../../components/helpers/toHex";
 
 
 const NewIndex = () => {
@@ -54,7 +55,7 @@ const NewIndex = () => {
 
     }, []);
 
-    const onSubmitHandler = (event: React.FormEvent<HTMLFormElement>) => {
+    const onSubmitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         setPrices({
             'Januar': {...prices, [indexName]: 0},
@@ -72,7 +73,8 @@ const NewIndex = () => {
         })
         let indeces
         {priceMatrix.indeces ? indeces = [...priceMatrix.indeces, indexName] : indeces = [indexName]}
-        sendData(indeces)
+        await sendData(indeces)
+        window.location.replace("/kalkulation/edit-sort/" + toHex(sort.indexgroup_name));
     }
 
 
@@ -90,7 +92,7 @@ const NewIndex = () => {
 
     return(
         <div className="px-20">
-            <Link href={"/kalkulation/"}>
+            <Link href={"/kalkulation/edit-sort/" + toHex(sort.indexgroup_name)}>
                 <button className="float-right border ml-auto p-1.5 px-3.5 font-bold border-accent-color-1 bg-accent-color-4
                         hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs">← Zurück
                 </button>

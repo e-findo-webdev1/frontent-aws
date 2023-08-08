@@ -34,8 +34,8 @@ const EditSort = () => {
 
     },[] );
 
-    const deleteSort = (sort: any) => {
-        API.delete('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/sorts',
+    const deleteSort = async (sort: any) => {
+        await API.delete('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/sorts',
             { data: { sort_name: sort } })
             .then(function (response) {
                 console.log(response);
@@ -43,7 +43,7 @@ const EditSort = () => {
             .catch(function (error) {
                 console.log(error);
             });
-        API.delete('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/price-matrices',
+        await API.delete('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/price-matrices',
             { data: { price_matrix: sort } })
             .then(function (response) {
                 console.log(response);
@@ -51,6 +51,7 @@ const EditSort = () => {
             .catch(function (error) {
                 console.log(error);
             });
+        window.location.replace("/kalkulation/edit-sort/" + pid.indexgroup_name as string);
     }
 
     return(

@@ -30,13 +30,14 @@ const SortEdit = () => {
 
     const responseBody = {sort_name: "", description: "", indexgroup_name: ""}
 
-    const onSubmitHandler = (event: React.FormEvent<HTMLFormElement>) => {
+    const onSubmitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         responseBody.sort_name = sort.sort_name
         responseBody.description = sort.description
         responseBody.indexgroup_name = sort.indexgroup_name
-        deleteData(sort.sort_name)
-        sendData(responseBody)
+        await deleteData(sort.sort_name)
+        await sendData(responseBody)
+        window.location.replace("/kalkulation/edit-sort/" + toHex(sort.indexgroup_name));
     }
 
     const deleteData = (sort: any) => {
@@ -79,7 +80,7 @@ const SortEdit = () => {
 
     return(
         <div className="px-20">
-            <Link href={"/kalkulation/"}>
+            <Link href={"/kalkulation/edit-sort/" + toHex(sort.indexgroup_name)}>
                 <button className="float-right border ml-auto p-1.5 px-3.5 font-bold border-accent-color-1
                         bg-accent-color-4 hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs">
                     ← Zurück
