@@ -137,7 +137,7 @@ const EditWorker = () => {
                     <table className="text-sm space-y-5">
                         <tbody>
                         <tr>
-                            <td className="text-sm font-semibold">Loginname:</td>
+                            <td className="text-sm font-semibold">Email:</td>
                             <td>
                                 <input id="loginName" className="border rounded w-full pl-2.5 py-0.5"
                                        onChange={(e)=>
