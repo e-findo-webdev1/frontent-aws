@@ -9,8 +9,11 @@ const EditIndex = () => {
 
     const [priceMatrix, setPriceMatrix] = useState<any>();
     const [newIndeces, setNewIndeces] = useState<any>();
+    // @ts-ignore
     const [newIndexName, setNewIndexName] = useState<any>(fromHex(pid.index_name)
+        // @ts-ignore
         .slice(fromHex(pid.index_name)
+            // @ts-ignore
             .indexOf("-", fromHex(pid.index_name)
                 .indexOf("-") + 1)+1).replace(" ", ""));
     const [newPrices, setNewPrices] = useState<any>();
@@ -27,7 +30,9 @@ const EditIndex = () => {
             API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/price-matrices')
                 .then((response) => {
                     setPriceMatrix(response.data.Items.filter((matrix: any) =>
+                        // @ts-ignore
                         fromHex(pid.index_name).includes(matrix.price_matrix) &&
+                        // @ts-ignore
                         fromHex(pid.index_name).includes(matrix.indexgroup_name)
                     )[0]);
                 })
@@ -38,35 +43,50 @@ const EditIndex = () => {
     }, [pid.id]);
 
     const sendData = async () => {
+        // @ts-ignore
         if (newIndexName != fromHex(pid.index_name)
+            // @ts-ignore
             .slice(fromHex(pid.index_name)
+                // @ts-ignore
                 .indexOf("-", fromHex(pid.index_name)
                     .indexOf("-") + 1)+1).replace(" ", ""))
         {
             let newIndecesList: any = []
             newIndecesList = [...priceMatrix.indeces]
+            // @ts-ignore
             newIndecesList.pop(fromHex(pid.index_name)
+                // @ts-ignore
                 .slice(fromHex(pid.index_name)
+                    // @ts-ignore
                     .indexOf("-", fromHex(pid.index_name)
                         .indexOf("-") + 1)+1).replace(" ", ""))
             newIndecesList.push(newIndexName)
             let newPricesObject: any []
             newPricesObject = {...priceMatrix.prices}
             for (let month in newPricesObject) {
+                // @ts-ignore
                 if (newPricesObject[month][fromHex(pid.index_name)
+                    // @ts-ignore
                     .slice(fromHex(pid.index_name)
+                        // @ts-ignore
                         .indexOf("-", fromHex(pid.index_name)
                             .indexOf("-") + 1) + 1).replace(" ", "")]) {
                     newPricesObject = {
                         ...newPricesObject, [month]: {
+                            // @ts-ignore
                             ...newPricesObject[month], [newIndexName]: newPricesObject[month][fromHex(pid.index_name)
+                                // @ts-ignore
                                 .slice(fromHex(pid.index_name)
+                                    // @ts-ignore
                                     .indexOf("-", fromHex(pid.index_name)
                                         .indexOf("-") + 1) + 1).replace(" ", "")]
                         }
                     }
+                    // @ts-ignore
                     delete newPricesObject[month][fromHex(pid.index_name)
+                        // @ts-ignore
                         .slice(fromHex(pid.index_name)
+                            // @ts-ignore
                             .indexOf("-", fromHex(pid.index_name)
                                 .indexOf("-") + 1) + 1).replace(" ", "")]
                 }}
@@ -107,8 +127,11 @@ const EditIndex = () => {
                         <td>
                             <input id="name" className="border rounded px-2.5 py-0.5"
                                    required={ true }
+                                // @ts-ignore
                                    defaultValue={fromHex(pid.index_name)
+                                       // @ts-ignore
                                        .slice(fromHex(pid.index_name)
+                                           // @ts-ignore
                                            .indexOf("-", fromHex(pid.index_name)
                                                .indexOf("-") + 1)+1).replace(" ", "")}
                                    onChange={(e) =>
@@ -133,13 +156,19 @@ const EditIndex = () => {
                         <span className="text-xs py-1">{month}</span>
                         <input className="text-xs ml-auto border text-right px-2.5 rounded pl-2.5 py-1 mr-1 w-20"
                                defaultValue={priceMatrix && priceMatrix.prices[month]
+                                   // @ts-ignore
                                    [fromHex(pid.index_name)
+                                   // @ts-ignore
                                    .slice(fromHex(pid.index_name)
+                                       // @ts-ignore
                                        .indexOf("-", fromHex(pid.index_name)
                                            .indexOf("-") + 1)+1).replace(" ", "")
                                    .replace(',', '.')] ? parseInt(priceMatrix.prices[month]
+                                   // @ts-ignore
                                    [fromHex(pid.index_name)
+                                   // @ts-ignore
                                    .slice(fromHex(pid.index_name)
+                                       // @ts-ignore
                                        .indexOf("-", fromHex(pid.index_name)
                                            .indexOf("-") + 1)+1).replace(" ", "")
                                    .replace(',', '.')]) : 0}
@@ -148,8 +177,11 @@ const EditIndex = () => {
                                    setPriceMatrix({...priceMatrix,
                                        prices: {...priceMatrix.prices,
                                            [month]: {...priceMatrix.prices[month],
+                                               // @ts-ignore
                                                 [fromHex(pid.index_name)
+                                                    // @ts-ignore
                                                     .slice(fromHex(pid.index_name)
+                                                        // @ts-ignore
                                                         .indexOf("-", fromHex(pid.index_name)
                                                             .indexOf("-") + 1)+1).replace(" ", "")]: e.target.value
                                            }}})
