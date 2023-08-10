@@ -6,14 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="46e0077f-1afc-4c07-b20b-cd300e9edac7" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/components/helpers/fromHex.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/components/helpers/fromHex.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/kalkulation/edit-sort/[indexgroup_name].tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/kalkulation/edit-sort/[indexgroup_name].tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/kalkulation/edit-sort/sort/[sort_name].tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/kalkulation/edit-sort/sort/[sort_name].tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/kalkulation/indeces/[sort_name].tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/kalkulation/indeces/[sort_name].tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/kalkulation/indeces/edit-index/[index_name].tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/kalkulation/indeces/edit-index/[index_name].tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/kalkulation/indeces/new-index/[sort_name].tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/kalkulation/indeces/new-index/[sort_name].tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/kalkulation/new-sort/[indexgroup_name].tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/kalkulation/new-sort/[indexgroup_name].tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/machines/[id].tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/machines/[id].tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/components/login/LoginForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/components/login/LoginForm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/reporting/monthly-evaluation.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/reporting/monthly-evaluation.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -81,7 +75,7 @@
       <workItem from="1690198414069" duration="90000" />
       <workItem from="1690198521601" duration="40967000" />
       <workItem from="1690806028451" duration="3465000" />
-      <workItem from="1691434998188" duration="4190000" />
+      <workItem from="1691434998188" duration="5923000" />
     </task>
     <servers />
   </component>

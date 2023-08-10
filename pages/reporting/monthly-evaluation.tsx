@@ -820,7 +820,8 @@ const MonthlyEvaluation = () => {
                                     />
                                 </td>
                                 <td>
-                                    {document.waretype}<br/>
+                                    {document.waretype}, {machinesData.filter((machine: any) =>
+                                    machine.machine_id == document.machine_id)[0].quality}<br/>
                                     {waretypes.filter((item: any) =>
                                     item.name_waretype == document.waretype
                                     )[0].internal_number}

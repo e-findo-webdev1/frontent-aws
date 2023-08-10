@@ -43,6 +43,7 @@ const LoginForm = () => {
                 client.client_id == users.filter((user: any)=> user.email == email)[0].client_id)[0]))
             // @ts-ignore
             window.location.reload(false);
+            window.location.replace('/');
         }
 
         else {
