@@ -155,6 +155,8 @@ const EditWorker = () => {
                                        className="border rounded pl-2.5 py-0.5"
                                        onChange={(e)=>
                                            setData({...data, password: e.target.value})}
+                                       required={true}
+                                       defaultValue={data ? data.password: ''}
                                        />
                             </td>
                         </tr>
