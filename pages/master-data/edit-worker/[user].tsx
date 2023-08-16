@@ -303,9 +303,9 @@ const EditWorker = () => {
                         </p>
                         <p>
                             <input type="checkbox" className="mr-3"
-                                   checked={data ? data.totalAmountPermission : false}
+                                   checked={data ? data.enterAmountReceivedPermission : false}
                                    onChange={(e)=>
-                                       setData({...data, totalAmountPermission: e.target.checked})}
+                                       setData({...data, enterAmountReceivedPermission: e.target.checked})}
                             />
                             Monatsauswertung: Betrag erhalten eintragen
                         </p>
