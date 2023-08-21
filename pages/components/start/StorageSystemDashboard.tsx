@@ -368,7 +368,7 @@ const StorageSystemDashboard = () => {
         for (let machine in machinesData) {
             const machineID = machinesData[machine].machine_id
             const averageThroughput = machinesData[machine].averageThroughputInLastHour
-            const currentNetto = machinesData[machine].lastTara
+            const currentNetto = machinesData[machine].lastIndicate - machinesData[machine].lastTara
             const maxNetto = machinesData[machine].maxNetto
             const workingHours = (maxNetto-currentNetto)/averageThroughput
             if (averageThroughput != 0) {

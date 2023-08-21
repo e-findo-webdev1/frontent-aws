@@ -478,22 +478,23 @@ const MasterData = () => {
 
                                             <div
                                                 // @ts-ignore
-                                                className={ (machine.lastIndicate) * 100
+                                                className={ ((machine.lastIndicate) - machine.lastTara) * 100
                                                 / machine.maxNetto > 0
                                                     ? getFillerStyle(
-                                                        (machine.lastIndicate) * 100
+                                                        ((machine.lastIndicate) - machine.lastTara)* 100
                                                         / machine.maxNetto
                                                     )
                                                     : 0
                                                 }/>
                                         </div>
-                                        { parseInt(((machine.lastIndicate) * 100
+                                        { parseInt(((machine.lastIndicate - machine.lastTara) * 100
                                             / machine.maxNetto).toFixed(0)) > 0
                                             ?
-                                            ((machine.lastIndicate) * 100
+                                            ((machine.lastIndicate - machine.lastTara) * 100
                                                 / machine.maxNetto).toFixed(0)
                                             : 0}%</td>
-                                    <td className="text-right">{machine.lastIndicate} kg</td>
+                                    <td className="text-right">{machine.lastIndicate ?
+                                        machine.lastIndicate-machine.lastTara : 0} kg</td>
                                     <td className="text-right">
                                         <Link href={"/master-data/price-list/" + machine.machine_id}>
                                             <button className="underline">
@@ -504,7 +505,8 @@ const MasterData = () => {
                                             </button>
                                         </Link>
                                     </td>
-                                    <td className="text-right">{machine.price_list ? (machine.lastIndicate *
+                                    <td className="text-right">{machine.price_list & machine.lastIndicate ?
+                                        ((machine.lastIndicate -machine.lastTara)*
                                         parseInt(machine.price_list.prices
                                         // @ts-ignore
                                         [moment().year()][monthsList[moment().month()]]) /1000).toFixed(2)
