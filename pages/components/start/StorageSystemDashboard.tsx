@@ -459,19 +459,19 @@ const StorageSystemDashboard = () => {
 
                                                     <div
                                                         // @ts-ignore
-                                                        className={ (machine.lastIndicate) * 100
+                                                        className={ (machine.lastIndicate - machine.lastTara) * 100
                                                         / machine.maxNetto > 0
                                                         ? getFillerStyle(
-                                                        (machine.lastIndicate) * 100
+                                                        (machine.lastIndicate - machine.lastTara) * 100
                                                         / machine.maxNetto
                                                         )
                                                         : 0
                                                     }/>
                                                 </div>
-                                                { parseInt(((machine.lastIndicate) * 100
+                                                { parseInt(((machine.lastIndicate - machine.lastTara) * 100
                                                     / machine.maxNetto).toFixed(0)) > 0
                                                     ?
-                                                    ((machine.lastIndicate) * 100
+                                                    ((machine.lastIndicate - machine.lastTara) * 100
                                                     / machine.maxNetto).toFixed(0)
                                                     : 0}%
                                                 </a>
@@ -575,14 +575,15 @@ const StorageSystemDashboard = () => {
                                                 </span>
                                             }
                                         </td>
-                                        <td className="text-right">{machine.lastIndicate} kg</td>
+                                        <td className="text-right">{machine.lastIndicate ?
+                                            machine.lastIndicate - machine.lastTara : 0} kg</td>
                                         <td className="text-right">
                                                     {machine.price_list ?
                                                         machine.price_list.prices
                                                             // @ts-ignore
                                                             [moment().year()][monthsList[moment().month()]] : "0,00"} €
                                         </td>
-                                        <td className="text-right">{machine.price_list ? (machine.lastIndicate *
+                                        <td className="text-right">{machine.price_list ? ((machine.lastIndicate - machine.lastTara) *
                                             parseInt(machine.price_list.prices
                                             // @ts-ignore
                                             [moment().year()][monthsList[moment().month()]]) /1000)
@@ -651,26 +652,35 @@ const StorageSystemDashboard = () => {
                     <p className="flex-grow flex-1">
                         <span className="font-bold">Gesamtmenge aller eMSS<br/></span>
                         {machinesData && controlDocuments ? machinesData.reduce( function(a: any, b: any){
-                            return a + (b['lastIndicate']);
+                            if ((b['lastIndicate'] - parseFloat(b['lastTara'])) > 0) {
+                                return a + (b['lastIndicate'] - parseFloat(b['lastTara']));
+                            }
+                            else {
+                                return a
+                            }
                         }, 0) + controlDocuments.
                         filter((document: any)=>moment(document.timestamp).format("DD/MM/YYYY") ==
                             moment().format("DD/MM/YYYY")).
                         reduce( function(a: any, b: any){
-                            return a + (b['netto']);
+                            return a + (b['netto'] - b['tara']);
                         }, 0) + " kg": "0 kg"}
                     </p>
                     <p className="flex-grow flex-1">
                         <span className="font-bold">Erlös<br/></span>
                         { machinesData && controlDocuments ?
                             (machinesData.reduce( function(a: any, b: any){
-                            return a + (b['lastIndicate'] *
-                                // @ts-ignore
-                                parseInt(b.price_list.prices[moment().year()][monthsList[moment().month()]]) / 1000);
+                                if ((b['lastIndicate'] - parseFloat(b['lastTara'])) > 0) {
+                                    return a + ((b['lastIndicate'] - b['lastTara'])*
+                                    // @ts-ignore
+                                    parseInt(b.price_list.prices[moment().year()][monthsList[moment().month()]]) / 1000);
+                                } else {
+                                    return a
+                                }
                         }, 0) + controlDocuments.
                         filter((document: any)=>moment(document.timestamp).format("DD/MM/YYYY") ==
                             moment().format("DD/MM/YYYY")).
                         reduce( function(a: any, b: any){
-                            return a + (b['netto'] *
+                            return a + ((b['netto'] - b['tara'])*
                                 parseInt(machinesData.filter((machine: any) =>
                                     machine.machine_id == b['machine_id']
                                     // @ts-ignore
@@ -689,23 +699,32 @@ const StorageSystemDashboard = () => {
                         {machinesData && controlDocuments ? controlDocuments.
                             filter((document: any)=>moment(document.timestamp).month() == moment().month()).
                         reduce( function(a: any, b: any){
-                            return a + (b['netto'])
+                            return a + b['netto'] - b['tara']
                         }, 0) + machinesData.reduce( function(a: any, b: any){
-                            return a + (b['lastIndicate']);
+                            if ((b['lastIndicate'] - parseFloat(b['lastTara'])) > 0) {
+                                return a + b['lastIndicate'] - b['lastTara'];
+                            } else {
+                                return a
+                            }
                         }, 0) + " kg" : "0 kg"}</p>
                     <p className="flex-grow flex-1">
                         <span className="font-bold">Gesamterlöse<br/></span>
                         {controlDocuments ? (controlDocuments.
                         filter((document: any)=>moment(document.timestamp).month() == moment().month()).
                         reduce( function(a: any, b: any){
-                            return a + ((b['netto']) *
+                            return a + ((b['netto'] - b['tara']) *
                                 parseInt(machinesData.filter((machine: any) => machine.machine_id == b['machine_id'])[0]
                                     // @ts-ignore
                                     .price_list.prices[moment().year()][monthsList[moment().month()]])/1000)
                         }, 0) + (machinesData.reduce( function(a: any, b: any){
-                            return a + (b['lastIndicate'] *
-                                // @ts-ignore
-                                parseInt(b.price_list.prices[moment().year()][monthsList[moment().month()]]) / 1000);
+                            if ((b['lastIndicate'] - parseFloat(b['lastTara'])) > 0) {
+                                return a + ((b['lastIndicate'] - b['lastTara']) *
+                                    // @ts-ignore
+                                    parseInt(b.price_list.prices[moment().year()][monthsList[moment().month()]]) / 1000);
+                            } else {
+                                return a
+                            }
+
                         }, 0))).toFixed(2).replace(".", ",") + " €" : "0 €"}
                         </p>
                 </div>
