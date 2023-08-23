@@ -57,6 +57,7 @@ const Breadcrumbs = () => {
                                 .replace("index-management", "/kalkulation/index-management")
                                 .replace("monthly-evaluation", "reporting/monthly-evaluation")
                                 .replace("edit-sort", "/kalkulation/index-management")
+                                .replace("machines", "/")
                             }>
                                 <a className={
                                     route == "[id]" || route == "user-data" || route == "master-data"
