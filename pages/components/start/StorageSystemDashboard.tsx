@@ -82,12 +82,6 @@ const StorageSystemDashboard = () => {
 
     }, [pickupDates, pageReload]);
 
-    if (controlDocuments) {
-        console.log(controlDocuments.filter((document: any) => document.machine_id == 7998)
-            .reduce((acc: any, cur: any)=>((acc = acc + cur.averageThroughput), acc), 0) /
-        controlDocuments.filter((document: any) => document.machine_id == 7998).length)
-    }
-
     let SHIFT_CALENDAR = {
         'Sunday': {
             'shift1': {
