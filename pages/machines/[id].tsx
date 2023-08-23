@@ -241,7 +241,7 @@ const MachineStorageHistory = () => {
                 Geschwindigkeit letzte Stunde: { machinesData.length != 0 && machinesData[0].averageThroughput != 0
                 //TO-DO translate time outputs to german
                 //@ts-ignore
-                ? "ca. "  + Math.floor(machinesData[0].averageFillingInLastHour) + " kg/h"
+                ? "ca. "  + Math.floor(machinesData[0].averageThroughputInLastHour) + " kg/h"
                 : "ca. 0 kg/h"}</button>
 
             <div>

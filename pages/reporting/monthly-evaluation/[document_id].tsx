@@ -104,14 +104,14 @@ const MonthlyComment = () => {
         responseBody.machine_id = controlDocument[0].machine_id
         responseBody.endOfCycle = controlDocument[0].endOfCycle
 
-        function getBase64(file: any) {
+        const getBase64 = async (file: any) => {
             let reader = new FileReader();
             reader.readAsDataURL(file);
-            reader.onload = function () {
+            reader.onload = async function () {
                 let string = reader.result
                 // @ts-ignore
                 responseBody.formData = string
-                API.put('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/certificates',
+                await API.put('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/certificates',
                     responseBody)
                     .then(function (response) {
                         console.log(response);
@@ -142,6 +142,8 @@ const MonthlyComment = () => {
                     console.log(error);
                 });
         }
+
+       // window.location.replace('/reporting/monthly-evaluation')
     }
 
     return (
