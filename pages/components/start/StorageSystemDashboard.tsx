@@ -82,6 +82,12 @@ const StorageSystemDashboard = () => {
 
     }, [pickupDates, pageReload]);
 
+    if (controlDocuments) {
+        console.log(controlDocuments.filter((document: any) => document.machine_id == 7998)
+            .reduce((acc: any, cur: any)=>((acc = acc + cur.averageThroughput), acc), 0) /
+        controlDocuments.filter((document: any) => document.machine_id == 7998).length)
+    }
+
     let SHIFT_CALENDAR = {
         'Sunday': {
             'shift1': {
@@ -367,11 +373,11 @@ const StorageSystemDashboard = () => {
         SHIFT_CALENDAR = capitalizeDays(shifts)
         for (let machine in machinesData) {
             const machineID = machinesData[machine].machine_id
-            const averageThroughput = machinesData[machine].averageThroughput
+            const averageThroughput = 185//machinesData[machine].averageThroughput
             const currentNetto = machinesData[machine].lastIndicate - machinesData[machine].lastTara
             const maxNetto = machinesData[machine].maxNetto
-            const workingHours = (maxNetto-currentNetto)/averageThroughput
-            if (averageThroughput != 0) {
+            const workingHours = ((maxNetto-currentNetto)/averageThroughput)
+            if (averageThroughput) {
                 calculatePlannedDate(workingHours, machineID)
             }
         }

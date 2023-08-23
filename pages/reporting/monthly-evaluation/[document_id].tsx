@@ -72,15 +72,11 @@ const MonthlyComment = () => {
                     response.data.Items.filter((document: any) =>
                         document.document_id == pid.document_id
                     )[0].workingWeight);
+                setComment(certificate.comment)
             })
             .catch((error) => {
                 console.log(error.response);
             });
-        if (comment == '') {
-            setComment('')
-        } else {
-            setComment(certificate.comment)
-        }
     }, [controlDocument.set, isFileSent, certificate.set]);
 
     const changeHandler = () => {
