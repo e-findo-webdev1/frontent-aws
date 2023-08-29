@@ -658,12 +658,13 @@ const StorageSystemDashboard = () => {
                             else {
                                 return a
                             }
-                        }, 0) + controlDocuments.
-                        filter((document: any)=>moment(document.timestamp).format("DD/MM/YYYY") ==
-                            moment().format("DD/MM/YYYY")).
-                        reduce( function(a: any, b: any){
-                            return a + (b['netto'] - b['tara']);
-                        }, 0) + " kg": "0 kg"}
+                        }, 0) //+ controlDocuments.
+                        //filter((document: any)=>moment(document.timestamp).format("DD/MM/YYYY") ==
+                         //   moment().format("DD/MM/YYYY")).
+                        //reduce( function(a: any, b: any){
+                          //  return a + (b['netto'] - b['tara']);
+                       // }, 0)
+                            + " kg": "0 kg"}
                     </p>
                     <p className="flex-grow flex-1">
                         <span className="font-bold">Erlös<br/></span>
@@ -676,16 +677,18 @@ const StorageSystemDashboard = () => {
                                 } else {
                                     return a
                                 }
-                        }, 0) + controlDocuments.
-                        filter((document: any)=>moment(document.timestamp).format("DD/MM/YYYY") ==
-                            moment().format("DD/MM/YYYY")).
-                        reduce( function(a: any, b: any){
-                            return a + ((b['netto'] - b['tara'])*
-                                parseInt(machinesData.filter((machine: any) =>
-                                    machine.machine_id == b['machine_id']
+                        }, 0)
+                                //+ controlDocuments.
+                        //filter((document: any)=>moment(document.timestamp).format("DD/MM/YYYY") ==
+                           // moment().format("DD/MM/YYYY")).
+                        //reduce( function(a: any, b: any){
+                            //return a + ((b['netto'] - b['tara'])*
+                               // parseInt(machinesData.filter((machine: any) =>
+                                //    machine.machine_id == b['machine_id']
                                     // @ts-ignore
-                                )[0].price_list.prices[moment().year()][monthsList[moment().month()]]) / 1000);
-                        }, 0)).toFixed(2).replace(".", ",") + " €": "0 €"}
+                               // )[0].price_list.prices[moment().year()][monthsList[moment().month()]]) / 1000);
+                      //  }, 0)
+                            ).toFixed(2).replace(".", ",") + " €": "0 €"}
                     </p>
                 </div>
                 <hr className="my-5 mx-10"/>
