@@ -640,7 +640,7 @@ const AnnualEvaluation = () => {
                                 <td className="text-right">
                                     {weighingCertificates
                                     && weighingCertificates.length != 0
-                                        ? weighingCertificates.filter((certificate: any) =>
+                                        ? (weighingCertificates.filter((certificate: any) =>
                                     moment(certificate.endOfCycle).month() == monthsList.indexOf(month))
                                         .filter((certificate: any) => {
                                             if (selectedMachine != "- Alle -") {
@@ -664,7 +664,7 @@ const AnnualEvaluation = () => {
                                             return a + parseInt((b['workingWeight'])) * machinesData.filter(
                                                 (machine: any) => machine.machine_id == b.machine_id)[0]
                                                 .price_list.prices[currentYear][month] / 1000
-                                        }, 0) + ' €' : '0 €'}
+                                        }, 0)).toFixed(2) + ' €' : '0 €'}
                                 </td>
                             </tr>
                         )
