@@ -322,40 +322,42 @@ const MasterDataSummary = () => {
                             </div>
                         </div>
                     </div>
-
-                    <Link href="/master-data/new-worker">
-                        <button className="border float-right p-1.5 px-3.5 font-bold border-accent-color-1
+                    <div>
+                                <Link href="/master-data/new-worker">
+                                <button className="border float-right p-1.5 px-3.5 font-bold border-accent-color-1
                             bg-accent-color-4
                     hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs ml-2">+ Neuer Mitarbeiter</button>
-                    </Link>
-                    <p className="text-2xl font-bold mb-5">Mitarbeiter</p>
-                    <div className="sm:rounded-lg shadow-md overflow-auto h-full"></div>
-                    <div className="sm:rounded-lg border overflow-auto h-full">
-                        <table className="flex-row table-auto w-full">
-                            <thead>
-                            <tr className="text-xs text-gray-500 border-b text-left">
-                                <th className="font-normal">Mitarbeiter</th>
-                                <th className="font-normal">Kürzel</th>
-                                <th className="font-normal">Email</th>
-                            </tr>
-                            </thead>
-                            <tbody className="bg-gray-50">
-                            {workers ? workers.map((worker: any) =>
-                                <tr key={worker.userName}
-                                    className="text-xs text-gray-500 border-b text-left">
-                                    <Link href={"/master-data/edit-worker/" + worker.loginName}>
-                                        <a><td className="underline">
-                                            {worker.userName}</td></a>
-                                    </Link>
-                                    <td>{worker.initials}</td>
-                                    <td>{worker.email}</td>
-                                </tr>
-                            ) : ''}
+                            </Link>
+                            <p className="text-2xl font-bold mb-5 mt-5">Mitarbeiter</p>
+                            <div className="sm:rounded-lg shadow-md overflow-auto h-full"></div>
+                            <div className="sm:rounded-lg border overflow-auto h-full">
+                                <table className="flex-row table-auto w-full">
+                                    <thead>
+                                    <tr className="text-xs text-gray-500 border-b text-left">
+                                        <th className="font-normal">Mitarbeiter</th>
+                                        <th className="font-normal">Kürzel</th>
+                                        <th className="font-normal">Email</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody className="bg-gray-50">
+                                    {workers ? workers.map((worker: any) =>
+                                        <tr key={worker.userName}
+                                            className="text-xs text-gray-500 border-b text-left">
+                                            <Link href={"/master-data/edit-worker/" + worker.loginName}>
+                                                <a><td className="underline">
+                                                    {worker.userName}</td></a>
+                                            </Link>
+                                            <td>{worker.initials}</td>
+                                            <td>{worker.email}</td>
+                                        </tr>
+                                    ) : ''}
 
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        </div>
+
                 <div>
                     <div>
                         <Link href="/master-data/new-contractor">
