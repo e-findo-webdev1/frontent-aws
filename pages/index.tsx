@@ -50,20 +50,19 @@ const Home: NextPage = () => {
 
         fetchData()
 
+        },[]
+    )
+
+    const sendEmail = (e: any) => {
+        e.preventDefault();
         const emailList = []
         for (let worker in workers) {
             emailList.push(workers[worker].email)
         }
         setEmailList(emailList)
 
-        },[]
-    )
-
-    const sendEmail = (e: any) => {
-        e.preventDefault();
-
         emailjs.send('service_q2p4iwl', 'template_svalxfj',
-            { email_list: emailList,
+           { email_list: emailList,
                 client_company: JSON.parse(sessionStorage.getItem('company') as string).client_name },
             'T3_j793le9k-t00DB')
             .then((result) => {
