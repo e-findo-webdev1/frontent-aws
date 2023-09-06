@@ -362,12 +362,14 @@ const StorageSystemDashboard = () => {
         }
     }
 
-    if (machinesData && shifts && plannedDates.length == 0) {
+    if (machinesData && controlDocuments && shifts && plannedDates.length == 0) {
         // @ts-ignore
         SHIFT_CALENDAR = capitalizeDays(shifts)
         for (let machine in machinesData) {
             const machineID = machinesData[machine].machine_id
-            const averageThroughput = 240 + (machinesData[machine].averageThroughput * 0.065)
+            const averageThroughput = ((controlDocuments.reduce( function(a: any, b: any){
+                  return a + b['averageThroughput'];
+                 }, 0) / controlDocuments.length) + machinesData[machine].averageThroughput) / 2
             const currentNetto = machinesData[machine].lastIndicate
             const maxNetto = machinesData[machine].maxNetto
             const workingHours = ((maxNetto-currentNetto)/averageThroughput)

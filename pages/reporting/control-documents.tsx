@@ -113,9 +113,9 @@ const ControlDocuments = () => {
                             <td>{company.client_number}-<br/>{parseInt(company.client_number) + document.document_id}</td>
                             <td>{moment(document.timestamp).format('DD.MM.yyyy HH:mm')}</td>
                             <td>{document.waretype}</td>
-                            <td>{document.netto}</td>
+                            <td>{document.netto + document.tara}</td>
                             <td>{document.tara}</td>
-                            <td>{document.netto - document.tara}</td>
+                            <td>{document.netto}</td>
                             <td>{((moment(document.endOfCycle).unix()-moment(document.startOfCycle).unix())
                                 /3600).toFixed(2)}h</td>
                             <td>{(document.totalProductionTime/3600000).toFixed(2)}h</td>
