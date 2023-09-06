@@ -655,12 +655,12 @@ const StorageSystemDashboard = () => {
                         <span className="font-bold">Gesamtmenge aller eMSS<br/></span>
                         {machinesData && controlDocuments ? machinesData.reduce( function(a: any, b: any){
                                 return a + (b['lastIndicate']);
-                        }, 0) //+ controlDocuments.
-                        //filter((document: any)=>moment(document.timestamp).format("DD/MM/YYYY") ==
-                         //   moment().format("DD/MM/YYYY")).
-                        //reduce( function(a: any, b: any){
-                          //  return a + (b['netto'] - b['tara']);
-                       // }, 0)
+                        }, 0) + controlDocuments.
+                        filter((document: any)=>moment(document.timestamp).format("DD/MM/YYYY") ==
+                            moment().format("DD/MM/YYYY")).
+                        reduce( function(a: any, b: any){
+                            return a + (b['netto']);
+                        }, 0)
                             + " kg": "0 kg"}
                     </p>
                     <p className="flex-grow flex-1">
@@ -696,7 +696,7 @@ const StorageSystemDashboard = () => {
                         {machinesData && controlDocuments ? controlDocuments.
                             filter((document: any)=>moment(document.timestamp).month() == moment().month()).
                         reduce( function(a: any, b: any){
-                            return a + b['netto'] - b['tara']
+                            return a + b['netto']
                         }, 0) + machinesData.reduce( function(a: any, b: any){
                                 return a + b['lastIndicate']
                         }, 0) + " kg" : "0 kg"}</p>
@@ -705,7 +705,7 @@ const StorageSystemDashboard = () => {
                         {controlDocuments ? (controlDocuments.
                         filter((document: any)=>moment(document.timestamp).month() == moment().month()).
                         reduce( function(a: any, b: any){
-                            return a + ((b['netto'] - b['tara']) *
+                            return a + ((b['netto']) *
                                 parseInt(machinesData.filter((machine: any) => machine.machine_id == b['machine_id'])[0]
                                     // @ts-ignore
                                     .price_list.prices[moment().year()][monthsList[moment().month()]])/1000)
