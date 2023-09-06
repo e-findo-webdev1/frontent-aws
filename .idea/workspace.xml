@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="46e0077f-1afc-4c07-b20b-cd300e9edac7" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/components/start/StorageSystemDashboard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/components/start/StorageSystemDashboard.tsx" afterDir="false" />
-    </list>
+    <list default="true" id="46e0077f-1afc-4c07-b20b-cd300e9edac7" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -84,7 +81,7 @@
       <workItem from="1693386025728" duration="1638000" />
       <workItem from="1693842933327" duration="856000" />
       <workItem from="1693912592915" duration="5571000" />
-      <workItem from="1693994695433" duration="3971000" />
+      <workItem from="1693994695433" duration="4581000" />
     </task>
     <servers />
   </component>
