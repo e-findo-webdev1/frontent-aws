@@ -367,8 +367,8 @@ const StorageSystemDashboard = () => {
         SHIFT_CALENDAR = capitalizeDays(shifts)
         for (let machine in machinesData) {
             const machineID = machinesData[machine].machine_id
-            const averageThroughput = 185//machinesData[machine].averageThroughput
-            const currentNetto = machinesData[machine].lastIndicate - machinesData[machine].lastTara
+            const averageThroughput = 240 + (machinesData[machine].averageThroughput * 0.065)
+            const currentNetto = machinesData[machine].lastIndicate
             const maxNetto = machinesData[machine].maxNetto
             const workingHours = ((maxNetto-currentNetto)/averageThroughput)
             if (averageThroughput) {
@@ -459,19 +459,19 @@ const StorageSystemDashboard = () => {
 
                                                     <div
                                                         // @ts-ignore
-                                                        className={ (machine.lastIndicate - machine.lastTara) * 100
+                                                        className={ (machine.lastIndicate) * 100
                                                         / machine.maxNetto > 0
                                                         ? getFillerStyle(
-                                                        (machine.lastIndicate - machine.lastTara) * 100
+                                                        (machine.lastIndicate) * 100
                                                         / machine.maxNetto
                                                         )
                                                         : 0
                                                     }/>
                                                 </div>
-                                                { parseInt(((machine.lastIndicate - machine.lastTara) * 100
+                                                { parseInt(((machine.lastIndicate) * 100
                                                     / machine.maxNetto).toFixed(0)) > 0
                                                     ?
-                                                    ((machine.lastIndicate - machine.lastTara) * 100
+                                                    ((machine.lastIndicate) * 100
                                                     / machine.maxNetto).toFixed(0)
                                                     : 0}%
                                                 </a>
@@ -576,14 +576,14 @@ const StorageSystemDashboard = () => {
                                             }
                                         </td>
                                         <td className="text-right">{machine.lastIndicate ?
-                                            machine.lastIndicate - machine.lastTara : 0} kg</td>
+                                            machine.lastIndicate : 0} kg</td>
                                         <td className="text-right">
                                                     {machine.price_list ?
                                                         machine.price_list.prices
                                                             // @ts-ignore
                                                             [moment().year()][monthsList[moment().month()]] : "0,00"} €
                                         </td>
-                                        <td className="text-right">{machine.price_list ? ((machine.lastIndicate - machine.lastTara) *
+                                        <td className="text-right">{machine.price_list ? ((machine.lastIndicate) *
                                             parseInt(machine.price_list.prices
                                             // @ts-ignore
                                             [moment().year()][monthsList[moment().month()]]) /1000)
@@ -652,12 +652,7 @@ const StorageSystemDashboard = () => {
                     <p className="flex-grow flex-1">
                         <span className="font-bold">Gesamtmenge aller eMSS<br/></span>
                         {machinesData && controlDocuments ? machinesData.reduce( function(a: any, b: any){
-                            if ((b['lastIndicate'] - parseFloat(b['lastTara'])) > 0) {
-                                return a + (b['lastIndicate'] - parseFloat(b['lastTara']));
-                            }
-                            else {
-                                return a
-                            }
+                                return a + (b['lastIndicate']);
                         }, 0) //+ controlDocuments.
                         //filter((document: any)=>moment(document.timestamp).format("DD/MM/YYYY") ==
                          //   moment().format("DD/MM/YYYY")).
@@ -670,13 +665,10 @@ const StorageSystemDashboard = () => {
                         <span className="font-bold">Erlös<br/></span>
                         { machinesData && controlDocuments ?
                             (machinesData.reduce( function(a: any, b: any){
-                                if ((b['lastIndicate'] - parseFloat(b['lastTara'])) > 0) {
-                                    return a + ((b['lastIndicate'] - b['lastTara'])*
+
+                                    return a + ((b['lastIndicate'])*
                                     // @ts-ignore
                                     parseInt(b.price_list.prices[moment().year()][monthsList[moment().month()]]) / 1000);
-                                } else {
-                                    return a
-                                }
                         }, 0)
                                 //+ controlDocuments.
                         //filter((document: any)=>moment(document.timestamp).format("DD/MM/YYYY") ==
@@ -704,11 +696,7 @@ const StorageSystemDashboard = () => {
                         reduce( function(a: any, b: any){
                             return a + b['netto'] - b['tara']
                         }, 0) + machinesData.reduce( function(a: any, b: any){
-                            if ((b['lastIndicate'] - parseFloat(b['lastTara'])) > 0) {
-                                return a + b['lastIndicate'] - b['lastTara'];
-                            } else {
-                                return a
-                            }
+                                return a + b['lastIndicate']
                         }, 0) + " kg" : "0 kg"}</p>
                     <p className="flex-grow flex-1">
                         <span className="font-bold">Gesamterlöse<br/></span>
@@ -720,13 +708,9 @@ const StorageSystemDashboard = () => {
                                     // @ts-ignore
                                     .price_list.prices[moment().year()][monthsList[moment().month()]])/1000)
                         }, 0) + (machinesData.reduce( function(a: any, b: any){
-                            if ((b['lastIndicate'] - parseFloat(b['lastTara'])) > 0) {
-                                return a + ((b['lastIndicate'] - b['lastTara']) *
+                                return a + ((b['lastIndicate'] ) *
                                     // @ts-ignore
                                     parseInt(b.price_list.prices[moment().year()][monthsList[moment().month()]]) / 1000);
-                            } else {
-                                return a
-                            }
 
                         }, 0))).toFixed(2).replace(".", ",") + " €" : "0 €"}
                         </p>
