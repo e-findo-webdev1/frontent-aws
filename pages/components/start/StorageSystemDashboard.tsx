@@ -656,12 +656,12 @@ const StorageSystemDashboard = () => {
                         <span className="font-bold">Gesamtmenge aller eMSS<br/></span>
                         {machinesData && controlDocuments ? machinesData.reduce( function(a: any, b: any){
                                 return a + (b['lastIndicate']);
-                        }, 0) + controlDocuments.
-                        filter((document: any)=>moment(document.timestamp).format("DD/MM/YYYY") ==
-                            moment().format("DD/MM/YYYY")).
-                        reduce( function(a: any, b: any){
-                            return a + (b['netto']);
-                        }, 0)
+                        }, 0) //+ controlDocuments.
+                        //filter((document: any)=>moment(document.timestamp).format("DD/MM/YYYY") ==
+                            //moment().format("DD/MM/YYYY")).
+                        //reduce( function(a: any, b: any){
+                            //return a + (b['netto']);
+                       // }, 0)
                             + " kg": "0 kg"}
                     </p>
                     <p className="flex-grow flex-1">
