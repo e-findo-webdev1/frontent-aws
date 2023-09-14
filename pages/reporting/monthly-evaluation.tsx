@@ -827,7 +827,7 @@ const MonthlyEvaluation = () => {
                                     )[0].internal_number}
                                 </td>
                                 <td className="text-right">
-                                    {document.netto - document.tara}
+                                    {document.netto}
                                 </td>
                                 <td className="text-right">
                                     {certificates && certificates.filter((certificate: any) =>
@@ -843,7 +843,7 @@ const MonthlyEvaluation = () => {
                                         certificate.document_id == document.document_id).length != 0 &&
                                     certificates.filter((certificate: any) =>
                                         certificate.document_id == document.document_id)[0].workingWeight
-                                        ? (document.netto - document.tara) - certificates.filter((certificate: any) =>
+                                        ? (document.netto) - certificates.filter((certificate: any) =>
                                         certificate.document_id == document.document_id)[0].workingWeight
                                         : ''}
                                 </td>
@@ -857,7 +857,7 @@ const MonthlyEvaluation = () => {
                                 <td className="text-right">
                                     { machinesData.filter((machine:any)=>
                                         machine.machine_id==document.machine_id)[0].price_list
-                                        ?   ((document.netto - document.tara) / 1000 *
+                                        ?   ((document.netto) / 1000 *
                                             parseInt(machinesData.filter((machine:any)=>
                                                 machine.machine_id==document.machine_id)[0].price_list.prices
                                                 [moment().year()][monthsList[moment().month()]]))
@@ -881,7 +881,8 @@ const MonthlyEvaluation = () => {
                                 </td>
                                 <td className="text-right">
                                     <button className={JSON.parse(sessionStorage.getItem('user') as string)
-                                        .enterAmountReceivedPermission ? "underline" : "pointer-events-none"}
+                                        .enterAmountReceivedPermission && certificates.filter((certificate: any)=>
+                                        certificate.document_id == document.document_id).length != 0 ? "underline" : "pointer-events-none"}
                                             onClick={()=>setPopupCertificate(document.document_id)}>
                                         {certificates && certificates.filter((certificate: any)=>
                                             certificate.document_id == document.document_id).length != 0
