@@ -263,11 +263,11 @@ const MasterDataSummary = () => {
                                                     </Link>
                                                     <td>
                                                         {
-                                                            priceMatrix.prices ?
+                                                            priceMatrix.prices[monthsList[moment().month()]][index] ?
                                                                 priceMatrix.prices
                                                                     [monthsList[moment().month()]]
                                                                     [index] + " €"
-                                                                : "0.00 €"
+                                                                : "0,00 €"
                                                         }
                                                     </td>
                                                 </tr>
