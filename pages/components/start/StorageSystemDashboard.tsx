@@ -82,6 +82,7 @@ const StorageSystemDashboard = () => {
 
     }, [pickupDates, pageReload]);
 
+
     let SHIFT_CALENDAR = {
         'Sunday': {
             'shift1': {
@@ -370,7 +371,7 @@ const StorageSystemDashboard = () => {
             const averageThroughput = //((controlDocuments.reduce( function(a: any, b: any){
                   //return a + b['averageThroughput'];
                  //}, 0) / controlDocuments.length) * 9550 +
-                (247 * 99 + (machinesData[machine].averageThroughput) * 1) / 100
+                (247 * 99.9 + (machinesData[machine].averageThroughput) * 0.1) / 100
             const currentNetto = machinesData[machine].lastIndicate
             const maxNetto = machinesData[machine].maxNetto
             const workingHours = ((maxNetto-currentNetto)/averageThroughput)
