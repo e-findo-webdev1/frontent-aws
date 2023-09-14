@@ -91,7 +91,7 @@ const EditIndex = () => {
                                 .indexOf("-") + 1) + 1).replace(" ", "")]
                 }}
             let newPriceMatrix = {...priceMatrix, prices: newPricesObject, indeces: newIndecesList}
-            console.log(newPriceMatrix)
+            //console.log(newPriceMatrix)
             await API.put('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/price-matrices',
             newPriceMatrix)
             .then(function (response) {
@@ -104,7 +104,7 @@ const EditIndex = () => {
              window.location.replace('/master-data');
         } else {
             await API.put('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/price-matrices',
-                '')
+                {...priceMatrix, prices: priceMatrix.prices})
                 .then(function (response) {
                     console.log(response);
                 })
