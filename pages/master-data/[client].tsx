@@ -505,8 +505,8 @@ const MasterData = () => {
                                             </button>
                                         </Link>
                                     </td>
-                                    <td className="text-right">{machine.price_list & machine.lastIndicate ?
-                                        ((machine.lastIndicate)*
+                                    <td className="text-right">{machine.price_list && machine.lastIndicate ?
+                                        (machine.lastIndicate *
                                         parseInt(machine.price_list.prices
                                         // @ts-ignore
                                         [moment().year()][monthsList[moment().month()]]) /1000).toFixed(2)
