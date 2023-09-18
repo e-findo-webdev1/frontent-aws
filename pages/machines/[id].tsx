@@ -30,8 +30,10 @@ const MachineStorageHistory = () => {
         startDate.setHours(0,0,0,0)
 
         setData([])
+
         const apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/log-data/'
-            + machinesData[0].machine_id + "/" + moment(startDate.setHours(2,0,0,0) ).unix() + "/" + moment(newEndDate).unix() + "/" + page;
+            + machinesData[0].machine_id + "/" + moment(startDate.setHours(2,0,0,0) )
+                .unix() + "/" + moment(newEndDate).unix() + "/" + page;
 
         API.get(apiName)
             .then((response) => {
@@ -115,20 +117,7 @@ const MachineStorageHistory = () => {
         sendData(responseBody)
     }
 
-    const refreshList = () => {
-        const apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/log-data/'
-            + machinesData[0].machine_id + "/" + moment(startDate).unix() + "/" + moment(endDate).unix() + "/" + page
 
-        API.get(apiName)
-            .then((response) => {
-                setData(response.data[0])
-                setListLength(response.data[1])
-            })
-            .catch((error) => {
-                console.log(error.response);
-            });
-
-    }
 
     const changePage = (page: number) => {
         updatePageList(page)

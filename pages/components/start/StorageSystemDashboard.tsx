@@ -486,14 +486,14 @@ const StorageSystemDashboard = () => {
                                                     { machine.total_working_time != 0 && plannedDates && plannedDates
                                                             .filter((obj:any) =>
                                                             {return obj.machineID===machine.machine_id}).length != 0
-                                                        ? plannedDates
+                                                        && machine.averageThroughput !=0 ? plannedDates
                                                           .filter((obj:any) =>
                                                             {return obj.machineID===machine.machine_id})
                                                             .map((plannedDate: any) =>
                                                                 <a key={plannedDate.machineID}>
                                                                     {plannedDate.taskEnd.format('DD.MM.YYYY HH:mm')}
                                                                 </a>)
-                                                        : "-"
+                                                        : <span className="underline">noch keine Füllung</span>
                                                     }<br/>
                                                     <a className={ machine.isDatePicked && machine.total_working_time != 0
                                                         && userPermissions.abholdatumPopupPermission
