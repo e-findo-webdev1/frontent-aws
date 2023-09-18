@@ -1,10 +1,11 @@
 import {useRouter} from "next/router";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 
 import "react-datepicker/dist/react-datepicker.css"
 import DatePicker from "react-datepicker";
 import API from 'axios';
 import moment from "moment";
+import Link from "next/link";
 
 const MachineStorageHistory = () => {
     const [startDate, setStartDate] = useState(new Date());
@@ -159,6 +160,11 @@ const MachineStorageHistory = () => {
 
     return(
         <div id="content-page" className="mx-10 p-10">
+            <Link href="/">
+                <button className="float-right border ml-auto p-1.5 px-3.5 font-bold border-accent-color-1 bg-accent-color-4
+                        hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs mt-10">← Zurück
+                </button>
+            </Link>
             <p className="text-3xl font-bold">Übersicht</p>
             <span className="text-sm font-bold">Status Maschine</span>
             <div className="text-sm flex">
