@@ -18,7 +18,7 @@ const MachineStorageHistory = () => {
     const [page, setPage] = useState<any>(1);
     const [listLength, setListLength] = useState<any>();
     const [pageList, setPageList] = useState<any[]>([]);
-    const [intervalCount, setIntervalCount] = useState(0);
+    const [test, setTest] = useState<any>({test: false})
 
     useEffect(() => {
 
@@ -26,45 +26,61 @@ const MachineStorageHistory = () => {
         startDate.setDate(startDate.getDate())
         setStartDate(startDate)
         newEndDate.setDate(endDate.getDate() + 1)
-        newEndDate.setHours(0,0,0,0);
+        newEndDate.setHours(0, 0, 0, 0);
         setNewEndDate(newEndDate)
-        startDate.setHours(0,0,0,0)
+        startDate.setHours(0, 0, 0, 0)
 
         setData([])
 
-        const apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/log-data/'
-            + machinesData[0].machine_id + "/" + moment(startDate.setHours(2,0,0,0) )
-                .unix() + "/" + moment(newEndDate).unix() + "/" + page;
+        const getData = async () => {
 
-        API.get(apiName)
-            .then((response) => {
-                setData(response.data[0])
-                setListLength(response.data[1])
-                const newPageList = []
-                if (pageList.length == 0) {
-                    for (let i = 1; i < Math.ceil(listLength/100) + 1; i++) {
-                        newPageList.push(i)
-                    }
-                    setPageList(newPageList)
-                }
-            })
-            .catch((error) => {
-                console.log(error.response);
-            });
+            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines')
+                .then((response) => {
+                    setMachinesData(response.data.Items.filter((item: any) => item.machine_id == pid.id));
+                })
+                .catch((error) => {
+                    console.log(error.response);
+                });
+
+            if (pid.id as string == '7998') {
+                const apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/log-data/'
+                    + pid.id as string + "/" + moment(startDate.setHours(2, 0, 0, 0))
+                        .unix() + "/" + moment(newEndDate).unix() + "/" + page;
+
+                await API.get(apiName)
+                    .then((response) => {
+                        setData(response.data[0])
+                        setListLength(response.data[1])
+                        const newPageList = []
+                        if (pageList.length == 0) {
+                            for (let i = 1; i < Math.ceil(listLength / 100) + 1; i++) {
+                                newPageList.push(i)
+                            }
+                            setPageList(newPageList)
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error.response);
+                    });
+            }
+            else {
+                setTest({test: true})
+            }
+
+        }
+        getData()
 
 
-        API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines')
-            .then((response) => {
-                setMachinesData(response.data.Items.filter((item: any) => item.machine_id == pid.id));
-            })
-            .catch((error) => {
-                console.log(error.response);
-            });
-        // wait 5 s before cause a re-render
-        setTimeout(() => {
-            setIntervalCount(count => count + 1);
-        }, 1000 * 140);
-    },[startDate,pageList, endDate, page, intervalCount]);
+    }, [startDate, pageList, endDate, page, test.test]);
+
+    setTimeout(() => {
+        if (test.test) {
+            setTest({test: false})
+        } else {
+            setTest({test: true})
+        }
+        }, 1000 * 130);
+
 
     const router = useRouter()
     const pid = router.query
@@ -171,7 +187,7 @@ const MachineStorageHistory = () => {
                 <div className="flex space-x-9 mt-4 mb-2">
                     <div className="flex space-x-2">
                         <span className="m-auto">Von:</span>
-                        <DatePicker className="shadow-md border text-ce,nter p-0.5 w-full"
+                        <DatePicker className="shadow-md border text-center p-0.5 w-full"
                                     dateFormat="yyyy/MM/dd"
                                     selected={startDate}
                                     onChange={(date:Date) => setStartDate(date)}/>
@@ -183,8 +199,28 @@ const MachineStorageHistory = () => {
                                     selected={endDate}
                                     onChange={(date:Date) => setEndDate(date)}/>
                     </div>
+                    <div className="flex space-x-2">
+                        <span className="m-auto">Status:</span>
+                        <select id="machineType"
+                                className="pl-2.5 py-0.5 shadow-md border text-center p-0.5 m-0 appearance-none
+                                        bg-[url('https://www.svgrepo.com/show/80156/down-arrow.svg')]
+                                        bg-no-repeat bg-[length:15px] [background-position-x:95%]
+                                        [background-position-y:5px] w-44"
+                                value="- Alle -"
+                        >
+                            <option>- Alle -</option>
+                            <option>Wird beffult (1)</option>
+                            <option>kein Container (2)</option>
+                            <option>kein Container (2) -clear-</option>
+                            <option>Container tariert (3)</option>
+                            <option>Container tariert (3) -tara-</option>
+                            <option>Abholung (6)</option>
+                            <option>Abholung (6) -clear-</option>
+                            <option>Standstill (7)</option>
+                            <option>Containertausch (8)</option>
+                        </select>
+                    </div>
                 </div>
-
             </div>
             <button className="my-3 mr-3 p-1 px-3.5 border-accent-color-1 bg-accent-color-4 hover:bg-accent-color-5
                     sm:rounded-lg shadow-md border text-xs font-semibold">
