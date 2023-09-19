@@ -199,6 +199,27 @@ const MachineStorageHistory = () => {
                                     selected={endDate}
                                     onChange={(date:Date) => setEndDate(date)}/>
                     </div>
+                    <div className="flex space-x-2">
+                        <span className="m-auto">Status:</span>
+                        <select id="machineType"
+                                className="pl-2.5 py-0.5 shadow-md border text-center p-0.5 m-0 appearance-none
+                                        bg-[url('https://www.svgrepo.com/show/80156/down-arrow.svg')]
+                                        bg-no-repeat bg-[length:15px] [background-position-x:95%]
+                                        [background-position-y:5px] w-44"
+                                value="- Alle -"
+                        >
+                            <option>- Alle -</option>
+                            <option>Wird beffult (1)</option>
+                            <option>kein Container (2)</option>
+                            <option>kein Container (2) -clear-</option>
+                            <option>Container tariert (3)</option>
+                            <option>Container tariert (3) -tara-</option>
+                            <option>Abholung (6)</option>
+                            <option>Abholung (6) -clear-</option>
+                            <option>Standstill (7)</option>
+                            <option>Containertausch (8)</option>
+                        </select>
+                    </div>
                 </div>
             </div>
             <button className="my-3 mr-3 p-1 px-3.5 border-accent-color-1 bg-accent-color-4 hover:bg-accent-color-5

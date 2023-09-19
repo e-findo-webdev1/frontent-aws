@@ -15,33 +15,25 @@ const ControlDocuments = () => {
     const [machines, setMachines] = useState<any>();
     const [waretypes, setWaretypes] = useState<any>();
     const [certificates, setCertificates] = useState<any>({set:false});
+    const [refresh, setRefresh] = useState<any>({set: false})
 
     useEffect(() => {
         setCompany(JSON.parse(sessionStorage.getItem('company') as string));
 
         const fetchData = async () => {
 
+            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines')
+                .then((response) => {
+                    setMachines(response.data.Items.filter((machine: any) => machine.client ==
+                        JSON.parse(sessionStorage.getItem('company') as string).client_name))
+                })
+                .catch((error) => {
+                    console.log(error.response);
+                });
+
             await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/certificates')
                 .then((response) => {
                     setCertificates(response.data.Items)
-                })
-                .catch((error) => {
-                    console.log(error.response);
-                });
-
-            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/control-documents')
-                .then((response) => {
-                    setControlDocuments(response.data.Items)
-                    ;
-                })
-                .catch((error) => {
-                    console.log(error.response);
-                });
-
-            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines')
-                .then((response) => {
-                    setMachines(response.data.Items)
-                    ;
                 })
                 .catch((error) => {
                     console.log(error.response);
@@ -54,10 +46,25 @@ const ControlDocuments = () => {
                 .catch((error) => {
                     console.log(error.response);
                 });
+
+            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/control-documents')
+                .then((response) => {
+                    if (machines) {
+                        setControlDocuments(response.data.Items.filter((document: any) => machines.map((machine: any) =>
+                            machine.machine_id).includes(document.machine_id)));
+                    } else {
+                        setRefresh({set: true})
+                    }
+
+                })
+                .catch((error) => {
+                    console.log(error.response);
+                });
         }
 
         fetchData()
-    }, []);
+
+    }, [refresh.set]);
 
     return(
         <div id="content-page" className="px-20">
@@ -100,7 +107,8 @@ const ControlDocuments = () => {
                                     company = {company}
                                     waretype = {machines != undefined
                                         ? machines.filter((item: any) =>
-                                            item.machine_id == document.machine_id)[0].waretype
+                                            // item.machine_id == document.machine_id)[0].waretype
+                                            item.machine_id == document.machine_id).waretype
                                         : ''}
                                     sort = {
                                     machines != undefined
@@ -127,6 +135,7 @@ const ControlDocuments = () => {
                                         <img className="h-5" src={
                                             certificates && certificates.filter((certificate: any) =>
                                                 certificate.document_id == document.document_id).length == 0
+
                                             || certificates.filter((certificate: any) =>
                                                 certificate.document_id == document.document_id).pdf_data == '' ?
                                                 "/upload-svgrepo-com.svg" : '/document.png'}/></button>
