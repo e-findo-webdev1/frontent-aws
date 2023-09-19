@@ -19,6 +19,7 @@ const MachineStorageHistory = () => {
     const [listLength, setListLength] = useState<any>();
     const [pageList, setPageList] = useState<any[]>([]);
     const [test, setTest] = useState<any>({test: false})
+    const [status, setStatus] = useState<any>('- Alle -')
 
     useEffect(() => {
 
@@ -49,7 +50,12 @@ const MachineStorageHistory = () => {
 
                 await API.get(apiName)
                     .then((response) => {
-                        setData(response.data[0])
+                        if (status != '- Alle -') {
+                            setData(response.data[0].filter((log: any) => log.status.includes(status)))
+                        } else {
+                            setData(response.data[0])
+                        }
+
                         setListLength(response.data[1])
                         const newPageList = []
                         if (pageList.length == 0) {
@@ -70,8 +76,7 @@ const MachineStorageHistory = () => {
         }
         getData()
 
-
-    }, [startDate, pageList, endDate, page, test.test]);
+    }, [startDate, pageList, endDate, page, test.test, status]);
 
     setTimeout(() => {
         if (test.test) {
@@ -206,8 +211,9 @@ const MachineStorageHistory = () => {
                                         bg-[url('https://www.svgrepo.com/show/80156/down-arrow.svg')]
                                         bg-no-repeat bg-[length:15px] [background-position-x:95%]
                                         [background-position-y:5px] w-44"
-                                value="- Alle -"
-                        >
+                                value={status}
+                                onChange={(e)=>
+                                    setStatus(e.target.value)}>
                             <option>- Alle -</option>
                             <option>Wird beffult (1)</option>
                             <option>kein Container (2)</option>
