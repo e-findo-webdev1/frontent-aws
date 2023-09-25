@@ -43,7 +43,8 @@ const MachineStorageHistory = () => {
                     console.log(error.response);
                 });
 
-            if (pid.id as string == '7998') {
+            //if (machinesData[0] && machinesData[0].client == JSON.parse(sessionStorage.getItem('company') as string).client_name) {
+            if (pid.id as string == pid.id) {
                 const apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/log-data/'
                     + pid.id as string + "/" + moment(startDate.setHours(2, 0, 0, 0))
                         .unix() + "/" + moment(newEndDate).unix() + "/" + page;

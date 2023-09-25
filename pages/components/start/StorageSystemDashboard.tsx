@@ -82,7 +82,7 @@ const StorageSystemDashboard = () => {
 
     }, [pickupDates, pageReload]);
 
-
+    console.log(machinesData)
     let SHIFT_CALENDAR = {
         'Sunday': {
             'shift1': {

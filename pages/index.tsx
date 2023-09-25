@@ -54,7 +54,6 @@ const Home: NextPage = () => {
     )
 
 
-
     const sendEmail = (e: any) => {
         e.preventDefault();
         const emailList = []
