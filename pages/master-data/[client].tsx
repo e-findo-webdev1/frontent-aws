@@ -524,69 +524,69 @@ const MasterData = () => {
                     setPickupDate={setPickupDate}
                 />
             </div>
-            <div className="columns-2 h-max">
-                <div>
+            <div className=" grid grid-cols-2 gap-x-5">
+                <div className="col-span-1 h-max">
                     <Link href="/master-data/shift-manager">
                         <button className="border ml-auto p-1.5 px-3.5 font-bold border-accent-color-1 bg-accent-color-4
                         hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs flex">Schichten Bearbeiten
                         </button>
                     </Link>
-                </div>
-                <span className="text-xs uppercase font-bold text-gray-500">
-                      Schichten
-                </span>
-                <div className="mb-10 sm:rounded-lg shadow-md border overflow-auto h-full">
-                    <table className="flex-row w-full table-auto">
-                        <thead>
-                        <tr className="text-xs text-gray-500 border-b text-left">
-                            <th/>
-                            <th className="font-normal">Start</th>
-                            <th className="font-normal">Ende</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr className="bg-gray-50 text-xs border-b text-left">
-                            <td className="w-24">Schicht 1</td>
-                            <td>{shiftHours ? shiftHours.shift1_start : "00:00"}</td>
-                            <td>{shiftHours ? shiftHours.shift1_end : "00:00"}</td>
-                        </tr>
-                        {   shiftHours && shiftHours.shift2_start != "00:00" && shiftHours.shift2_end != "00:00"
-                            ? <tr className="bg-gray-50 text-xs border-b text-left">
-                                <td className="w-24">Schicht 2</td>
-                                <td>{shiftHours ? shiftHours.shift2_start : "00:00"}</td>
-                                <td>{shiftHours ? shiftHours.shift2_end : "00:00"}</td>
-                            </tr>
-                            : ""}
-                        {   shiftHours && shiftHours.shift3_start != "00:00" && shiftHours.shift3_end != "00:00"
-                            ? <tr className="bg-gray-50 text-xs border-b text-left">
-                                <td className="w-24">Schicht 3</td>
-                                <td>{shiftHours ? shiftHours.shift3_start : "00:00"}</td>
-                                <td>{shiftHours ? shiftHours.shift3_end : "00:00"}</td>
-                            </tr>
-                            : ""}
-                        {   shiftHours && shiftHours.shift4_start != "00:00" && shiftHours.shift4_end != "00:00"
-                            ? <tr className="bg-gray-50 text-xs border-b text-left">
-                                <td className="w-24">Schicht 4</td>
-                                <td>{shiftHours ? shiftHours.shift4_start : "00:00"}</td>
-                                <td>{shiftHours ? shiftHours.shift4_end : "00:00"}</td>
-                            </tr>
-                        : ""}
 
-                        </tbody>
-                    </table>
+                    <p className="text-xs uppercase font-bold text-gray-500">
+                        Schichten
+                    </p>
+                    <div className="sm:rounded-lg shadow-md border overflow-auto h-max">
+                        <table className="flex-row w-full table-auto">
+                            <thead>
+                            <tr className="text-xs text-gray-500 border-b text-left">
+                                <th/>
+                                <th className="font-normal">Start</th>
+                                <th className="font-normal">Ende</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr className="bg-gray-50 text-xs border-b text-left">
+                                <td className="w-24">Schicht 1</td>
+                                <td>{shiftHours ? shiftHours.shift1_start : "00:00"}</td>
+                                <td>{shiftHours ? shiftHours.shift1_end : "00:00"}</td>
+                            </tr>
+                            {   shiftHours && shiftHours.shift2_start != "00:00" && shiftHours.shift2_end != "00:00"
+                                ? <tr className="bg-gray-50 text-xs border-b text-left">
+                                    <td className="w-24">Schicht 2</td>
+                                    <td>{shiftHours ? shiftHours.shift2_start : "00:00"}</td>
+                                    <td>{shiftHours ? shiftHours.shift2_end : "00:00"}</td>
+                                </tr>
+                                : ""}
+                            {   shiftHours && shiftHours.shift3_start != "00:00" && shiftHours.shift3_end != "00:00"
+                                ? <tr className="bg-gray-50 text-xs border-b text-left">
+                                    <td className="w-24">Schicht 3</td>
+                                    <td>{shiftHours ? shiftHours.shift3_start : "00:00"}</td>
+                                    <td>{shiftHours ? shiftHours.shift3_end : "00:00"}</td>
+                                </tr>
+                                : ""}
+                            {   shiftHours && shiftHours.shift4_start != "00:00" && shiftHours.shift4_end != "00:00"
+                                ? <tr className="bg-gray-50 text-xs border-b text-left">
+                                    <td className="w-24">Schicht 4</td>
+                                    <td>{shiftHours ? shiftHours.shift4_start : "00:00"}</td>
+                                    <td>{shiftHours ? shiftHours.shift4_end : "00:00"}</td>
+                                </tr>
+                                : ""}
+
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-                <div className="">
-                    <div>
+
+                <div className="col-span-1">
                         <Link href="/master-data/new-worker">
                             <button className="border ml-auto p-1.5 px-3.5 font-bold border-accent-color-1 bg-accent-color-4
                         hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs flex">+ Neuer Mitarbeiter
                             </button>
                         </Link>
-                    </div>
-                    <span className="text-xs uppercase font-bold text-gray-500">
+                    <p className="text-xs uppercase font-bold text-gray-500">
                       Mitarbeiter
-                </span>
-                    <div className="sm:rounded-lg shadow-md border h-full">
+                </p>
+                    <div className="sm:rounded-lg shadow-md border overflow-auto h-max">
                         <table className="flex-row w-full table-auto">
                             <thead>
                             <tr className="text-xs text-gray-500 border-b text-left">
