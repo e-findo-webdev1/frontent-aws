@@ -29,84 +29,94 @@ const MasterData = () => {
     const [clients, setClients] = useState<any>({set: false});
 
     useEffect(() => {
-        API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/clients')
-            .then((response) => {
-                setData(
-                    response.data.Items
-                        .filter( (client: any) => client.client_id == pid.client)
-                );
-            })
-            .catch((error) => {
-                console.log(error.response);
-            });
 
-        let apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines';
+        const getData = async () => {
 
-        API.get(apiName)
-            .then((response) => {
-                setMachinesData(response.data.Items
-                    .filter((machine: { client: string; }) =>
-                        machine.client == data[0].client_name))
-                if (sessionStorage.getItem('company')) {
-                    setClientId(JSON.parse(sessionStorage.getItem("company") as string).client_id)
-                }
-                if (clients.set == false) {
-                    setClients(true)
-                }
-            })
-            .catch((error) => {
-                console.log(error.response);
-            });
+            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/clients')
+                .then((response) => {
+                    setData(
+                        response.data.Items
+                            .filter( (client: any) => client.client_id == pid.client)
+                    );
+                })
+                .catch((error) => {
+                    console.log(error.response);
+                });
 
-        API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/shifts')
-            .then((response) => {
-                setShift(
-                    response.data.Items
-                        .filter( (shift: any) => shift.client_number == pid.client )[0].shifts
-                );
-                setShiftHours(
-                    response.data.Items
-                        .filter( (shift: any) => shift.client_number == pid.client )[0].shiftHours
-                );
-            })
-            .catch((error) => {
-                console.log(error.response);
-            });
+            let apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines';
 
-        API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/users')
-            .then((response) => {
-                setWorkers(
-                    response.data.Items.filter((obj: any) => obj.client_id == pid.client));
-            })
-            .catch((error) => {
-                console.log(error.response);
-            });
+            await API.get(apiName)
+                .then((response) => {
+                    setMachinesData(response.data.Items
+                        .filter((machine: { client: string; }) =>
+                            machine.client == data[0].client_name))
+                    if (sessionStorage.getItem('company')) {
+                        setClientId(JSON.parse(sessionStorage.getItem("company") as string).client_id)
+                    }
+                    if (clients.set == false) {
+                        setClients(true)
+                    }
+                })
+                .catch((error) => {
+                    console.log(error.response);
+                });
 
-        API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/lands')
-            .then((response) => {
-                setLands(
-                    response.data.Items);
-            })
-            .catch((error) => {
-                console.log(error.response);
-            });
+            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/shifts')
+                .then((response) => {
+                    setShift(
+                        response.data.Items
+                            .filter( (shift: any) => shift.shift_id == JSON.parse(sessionStorage
+                                .getItem('company') as string).client_number )[0].shifts
+                    );
+                    setShiftHours(
+                        response.data.Items
+                            .filter( (shift: any) => shift.shift_id == JSON.parse(sessionStorage
+                                .getItem('company') as string).client_number)[0].shiftHours
+                    );
+                })
+                .catch((error) => {
+                    console.log(error.response);
+                });
 
-        API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/clients')
-            .then((response) => {
-                setClients(response.data.Items);
-            })
-            .catch((error) => {
-                console.log(error.response);
-            });
+            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/users')
+                .then((response) => {
+                    setWorkers(
+                        response.data.Items.filter((obj: any) => obj.client_id == pid.client));
+                })
+                .catch((error) => {
+                    console.log(error.response);
+                });
 
-        if (shifts && shiftsReady == false) {
+            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/lands')
+                .then((response) => {
+                    setLands(
+                        response.data.Items);
+                })
+                .catch((error) => {
+                    console.log(error.response);
+                });
+
+            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/clients')
+                .then((response) => {
+                    setClients(response.data.Items);
+                })
+                .catch((error) => {
+                    console.log(error.response);
+                });
+        }
+
+        getData()
+        if (shifts != undefined) {
             // @ts-ignore
             SHIFT_CALENDAR = capitalizeDays(shifts)
-            setShiftsReady(true)
             calculatePlannedDate( '2023/02/14', '10:00')
+        } else {
+            setShiftsReady('true')
         }
 
     },[pid, clientId, clients.set] );
+
+    console.log(shifts)
 
     const monthsList = {
         0: "Januar",
