@@ -62,11 +62,11 @@ const MasterData = () => {
             .then((response) => {
                 setShift(
                     response.data.Items
-                        .filter( (shift: any) => shift.client_id == pid.client )[0].shifts
+                        .filter( (shift: any) => shift.client_number == pid.client )[0].shifts
                 );
                 setShiftHours(
                     response.data.Items
-                        .filter( (shift: any) => shift.client_id == pid.client )[0].shiftHours
+                        .filter( (shift: any) => shift.client_number == pid.client )[0].shiftHours
                 );
             })
             .catch((error) => {
@@ -403,9 +403,6 @@ const MasterData = () => {
     const maxNetto = 25000
     const workingHours = (maxNetto-currentNetto)/averageKiloPerHour
 
-
-    // @ts-ignore
-    // @ts-ignore
     return (
         <div id="content-page" className="px-24 h-full overflow-auto">
             <div className="mt-10">

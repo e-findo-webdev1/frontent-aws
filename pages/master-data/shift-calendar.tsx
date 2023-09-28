@@ -226,15 +226,16 @@ const ShiftCalendar = () => {
     }
 
     const responseBody = { shift_id: JSON.parse(sessionStorage.getItem('company') as string).client_number, selection: {}, shifts: {} }
-    const saveShiftCalendar = (event: any) => {
+    const saveShiftCalendar = async (event: any) => {
         event.preventDefault();
         responseBody.shift_id = parseInt(JSON.parse(sessionStorage.getItem('company') as string).client_number)
         responseBody.shifts = shifts
         responseBody.selection = selection
-        sendData(responseBody)
+        await sendData(responseBody)
+        window.location.replace('/master-data/' + JSON.parse(sessionStorage.getItem('company') as string).client_id)
     }
-    const sendData = (responseBody: any) => {
-        API.put('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/shifts',
+    const sendData = async (responseBody: any) => {
+        await API.put('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/shifts',
             responseBody)
             .then(function (response) {
                 console.log(response);
@@ -285,7 +286,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.monday.shift1.start}
+                                        defaultValue={shifts.monday.shift1.start}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -315,7 +316,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.monday.shift1.end}
+                                        defaultValue={shifts.monday.shift1.end}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -345,7 +346,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.monday.shift2.start}
+                                        defaultValue={shifts.monday.shift2.start}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -375,7 +376,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.monday.shift2.end}
+                                        defaultValue={shifts.monday.shift2.end}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -405,7 +406,7 @@ const ShiftCalendar = () => {
                                 </option>
                             </select>
                             <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                    value={shifts.monday.shift3.start}
+                                    defaultValue={shifts.monday.shift3.start}
                                     placeholder="hh:mm"
                                     onChange={(e) =>
                                     {
@@ -435,7 +436,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.monday.shift3.end}
+                                        defaultValue={shifts.monday.shift3.end}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -465,7 +466,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.monday.shift4.start}
+                                        defaultValue={shifts.monday.shift4.start}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -495,7 +496,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.monday.shift4.end}
+                                        defaultValue={shifts.monday.shift4.end}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -530,7 +531,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.tuesday.shift1.start}
+                                        defaultValue={shifts.tuesday.shift1.start}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -560,7 +561,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.tuesday.shift1.end}
+                                        defaultValue={shifts.tuesday.shift1.end}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -590,7 +591,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.tuesday.shift2.start}
+                                        defaultValue={shifts.tuesday.shift2.start}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -620,7 +621,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.tuesday.shift2.end}
+                                        defaultValue={shifts.tuesday.shift2.end}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -650,7 +651,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.tuesday.shift3.start}
+                                        defaultValue={shifts.tuesday.shift3.start}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -680,7 +681,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.tuesday.shift3.end}
+                                        defaultValue={shifts.tuesday.shift3.end}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -710,7 +711,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.tuesday.shift4.start}
+                                        defaultValue={shifts.tuesday.shift4.start}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -740,7 +741,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.tuesday.shift4.end}
+                                        defaultValue={shifts.tuesday.shift4.end}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -775,7 +776,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.wednesday.shift1.start}
+                                        defaultValue={shifts.wednesday.shift1.start}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -805,7 +806,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.wednesday.shift1.end}
+                                        defaultValue={shifts.wednesday.shift1.end}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -835,7 +836,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.wednesday.shift2.start}
+                                        defaultValue={shifts.wednesday.shift2.start}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -865,7 +866,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.wednesday.shift2.end}
+                                        defaultValue={shifts.wednesday.shift2.end}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -895,7 +896,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.wednesday.shift3.start}
+                                        defaultValue={shifts.wednesday.shift3.start}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -925,7 +926,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.wednesday.shift3.end}
+                                        defaultValue={shifts.wednesday.shift3.end}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -955,7 +956,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.wednesday.shift4.start}
+                                        defaultValue={shifts.wednesday.shift4.start}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -985,7 +986,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.wednesday.shift4.end}
+                                        defaultValue={shifts.wednesday.shift4.end}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -1020,7 +1021,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.thursday.shift1.start}
+                                        defaultValue={shifts.thursday.shift1.start}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -1049,7 +1050,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.thursday.shift1.end}
+                                        defaultValue={shifts.thursday.shift1.end}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -1078,7 +1079,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.thursday.shift2.start}
+                                        defaultValue={shifts.thursday.shift2.start}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -1107,7 +1108,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.thursday.shift2.end}
+                                        defaultValue={shifts.thursday.shift2.end}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -1136,7 +1137,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.thursday.shift3.start}
+                                        defaultValue={shifts.thursday.shift3.start}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -1165,7 +1166,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.thursday.shift3.end}
+                                        defaultValue={shifts.thursday.shift3.end}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -1194,7 +1195,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.thursday.shift4.start}
+                                        defaultValue={shifts.thursday.shift4.start}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -1223,7 +1224,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.thursday.shift4.end}
+                                        defaultValue={shifts.thursday.shift4.end}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -1257,7 +1258,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.friday.shift1.start}
+                                        defaultValue={shifts.friday.shift1.start}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -1286,7 +1287,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.friday.shift1.end}
+                                        defaultValue={shifts.friday.shift1.end}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -1315,7 +1316,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.friday.shift2.start}
+                                        defaultValue={shifts.friday.shift2.start}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -1344,7 +1345,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.friday.shift2.end}
+                                        defaultValue={shifts.friday.shift2.end}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -1373,7 +1374,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.friday.shift3.start}
+                                        defaultValue={shifts.friday.shift3.start}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -1402,7 +1403,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.friday.shift3.end}
+                                        defaultValue={shifts.friday.shift3.end}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -1431,7 +1432,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.friday.shift4.start}
+                                        defaultValue={shifts.friday.shift4.start}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -1460,7 +1461,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.friday.shift4.end}
+                                        defaultValue={shifts.friday.shift4.end}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -1494,7 +1495,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.saturday.shift1.start}
+                                        defaultValue={shifts.saturday.shift1.start}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -1523,7 +1524,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.saturday.shift1.end}
+                                        defaultValue={shifts.saturday.shift1.end}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -1552,7 +1553,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.saturday.shift2.start}
+                                        defaultValue={shifts.saturday.shift2.start}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -1581,7 +1582,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.saturday.shift2.end}
+                                        defaultValue={shifts.saturday.shift2.end}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -1610,7 +1611,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.saturday.shift3.start}
+                                        defaultValue={shifts.saturday.shift3.start}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -1639,7 +1640,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.saturday.shift3.end}
+                                        defaultValue={shifts.saturday.shift3.end}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -1668,7 +1669,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.saturday.shift4.start}
+                                        defaultValue={shifts.saturday.shift4.start}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -1697,7 +1698,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.saturday.shift4.end}
+                                        defaultValue={shifts.saturday.shift4.end}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -1731,7 +1732,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.sunday.shift1.start}
+                                        defaultValue={shifts.sunday.shift1.start}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -1760,7 +1761,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.sunday.shift1.end}
+                                        defaultValue={shifts.sunday.shift1.end}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -1789,7 +1790,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.sunday.shift2.start}
+                                        defaultValue={shifts.sunday.shift2.start}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -1818,7 +1819,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.sunday.shift2.end}
+                                        defaultValue={shifts.sunday.shift2.end}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -1847,7 +1848,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.sunday.shift3.start}
+                                        defaultValue={shifts.sunday.shift3.start}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -1876,7 +1877,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.sunday.shift3.end}
+                                        defaultValue={shifts.sunday.shift3.end}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -1905,7 +1906,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.sunday.shift4.start}
+                                        defaultValue={shifts.sunday.shift4.start}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
@@ -1934,7 +1935,7 @@ const ShiftCalendar = () => {
                                     </option>
                                 </select>
                                 <input  className="border w-16 ml-2 rounded pl-2.5 py-0.5"
-                                        value={shifts.sunday.shift4.end}
+                                        defaultValue={shifts.sunday.shift4.end}
                                         placeholder="hh:mm"
                                         onChange={(e) =>
                                         {
