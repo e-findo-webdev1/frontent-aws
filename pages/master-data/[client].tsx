@@ -116,8 +116,6 @@ const MasterData = () => {
 
     },[pid, clientId, clients.set] );
 
-    console.log(shifts)
-
     const monthsList = {
         0: "Januar",
         1: "Februar",
@@ -557,21 +555,24 @@ const MasterData = () => {
                                 <td>{shiftHours ? shiftHours.shift1_start : "00:00"}</td>
                                 <td>{shiftHours ? shiftHours.shift1_end : "00:00"}</td>
                             </tr>
-                            {   shiftHours && shiftHours.shift2_start != "00:00" && shiftHours.shift2_end != "00:00"
+                            {   shiftHours && shiftHours.shift2_start != undefined &&
+                            shiftHours.shift2_start != "00:00" && shiftHours.shift2_end != "00:00"
                                 ? <tr className="bg-gray-50 text-xs border-b text-left">
                                     <td className="w-24">Schicht 2</td>
                                     <td>{shiftHours ? shiftHours.shift2_start : "00:00"}</td>
                                     <td>{shiftHours ? shiftHours.shift2_end : "00:00"}</td>
                                 </tr>
                                 : ""}
-                            {   shiftHours && shiftHours.shift3_start != "00:00" && shiftHours.shift3_end != "00:00"
+                            {   shiftHours && shiftHours.shift3_start != undefined &&
+                            shiftHours.shift3_start != "00:00" && shiftHours.shift3_end != "00:00"
                                 ? <tr className="bg-gray-50 text-xs border-b text-left">
                                     <td className="w-24">Schicht 3</td>
                                     <td>{shiftHours ? shiftHours.shift3_start : "00:00"}</td>
                                     <td>{shiftHours ? shiftHours.shift3_end : "00:00"}</td>
                                 </tr>
                                 : ""}
-                            {   shiftHours && shiftHours.shift4_start != "00:00" && shiftHours.shift4_end != "00:00"
+                            {   shiftHours && shiftHours.shift4_start != undefined &&
+                            shiftHours.shift4_start != "00:00" && shiftHours.shift4_end != "00:00"
                                 ? <tr className="bg-gray-50 text-xs border-b text-left">
                                     <td className="w-24">Schicht 4</td>
                                     <td>{shiftHours ? shiftHours.shift4_start : "00:00"}</td>

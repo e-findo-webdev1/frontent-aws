@@ -188,6 +188,16 @@ const ShiftCalendar = () => {
         select55: "So:",
         select56: "So:"
     })
+    const [shiftHours, setShiftHours] = useState<any>({
+            shift1_end: "00:00",
+            shift1_start: "00:00",
+            shift2_end: "00:00",
+            shift2_start: "00:00",
+            shift3_end: "00:00",
+            shift3_start: "00:00",
+            shift4_end: "00:00",
+            shift4_start: "00:00"
+    });
 
     useEffect(() => {
         const apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/shifts';
@@ -203,6 +213,11 @@ const ShiftCalendar = () => {
                     response.data.Items
                         .filter( (shift: any) => shift.shift_id ==
                             JSON.parse(sessionStorage.getItem('company') as string).client_number )[0].selection
+                );
+                setShiftHours(
+                    response.data.Items
+                        .filter( (shift: any) => shift.shift_id ==
+                            JSON.parse(sessionStorage.getItem('company') as string).client_number )[0].shiftHours
                 )
             })
             .catch((error) => {
@@ -225,12 +240,14 @@ const ShiftCalendar = () => {
         });
     }
 
-    const responseBody = { shift_id: JSON.parse(sessionStorage.getItem('company') as string).client_number, selection: {}, shifts: {} }
+    const responseBody = { shift_id: JSON.parse(sessionStorage.getItem('company') as string).client_number,
+        selection: {}, shifts: {}, shiftHours: {} }
     const saveShiftCalendar = async (event: any) => {
         event.preventDefault();
         responseBody.shift_id = parseInt(JSON.parse(sessionStorage.getItem('company') as string).client_number)
         responseBody.shifts = shifts
         responseBody.selection = selection
+        responseBody.shiftHours = shiftHours
         await sendData(responseBody)
         window.location.replace('/master-data/' + JSON.parse(sessionStorage.getItem('company') as string).client_id)
     }

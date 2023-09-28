@@ -25,7 +25,9 @@ const ShiftManager = () => {
 
     useEffect(() => {
         const apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/shifts';
+
         setClientId(parseInt(JSON.parse(sessionStorage.getItem("company") as string).client_number))
+
         API.get(apiName)
             .then((response) => {
                 setShifts(
@@ -62,12 +64,19 @@ const ShiftManager = () => {
 
         }
         setHoursList(tempHoursList)
-        { shifts.shiftHours && numberOfShifts == -1
-            ? setNumberOfShitfs(Object.keys(shifts.shiftHours).length/2)
-            : ""
+        if (shifts.shiftHours && numberOfShifts == -1) {
+            let x = 0
+            for ( let i = 0; i < 4; i++) {
+                if (shifts.shiftHours['shift' + i + '_start'] != "00:00" && shifts.shiftHours['shift' + i + '_end'] != "00:00"
+                    && shifts.shiftHours['shift' + i + '_start'] != undefined) {
+                    x+=1
+                }
+                setNumberOfShitfs(x)
+            }
         }
 
     },[clientId, numberOfShifts]);
+
 
     const responseBody = { shift_id: 0, client_id: 0, selection: {}, shifts: {}, shiftHours: {} }
 
@@ -78,10 +87,12 @@ const ShiftManager = () => {
         responseBody.selection = shifts.selection
         responseBody.shiftHours = shifts.shiftHours
         sendData(responseBody)
+        window.location.replace('/master-data/' + JSON.parse(sessionStorage.getItem('company') as string).client_id)
+
     }
 
-    const sendData = (responseBody: any) => {
-        API.put('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/shifts',
+    const sendData = async (responseBody: any) => {
+        await API.put('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/shifts',
             responseBody)
             .then(function (response) {
                 console.log(response);
@@ -90,7 +101,6 @@ const ShiftManager = () => {
                 console.log(error);
             });
     }
-    console.log(shifts)
 
     return(
         <div id="content-page" className="px-20 h-full overflow-auto">
