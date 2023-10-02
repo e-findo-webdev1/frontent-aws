@@ -263,6 +263,12 @@ const MonthlyEvaluation = () => {
                                 }
                             }, [])
 
+                            // Add indexes unassigned to any machine to display prices for each month
+
+
+
+                            //
+
                             for (let dataset in datasetExtra) {
                                 datasetsIndex.push(datasetExtra[dataset])
                             }

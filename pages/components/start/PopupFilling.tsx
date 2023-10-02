@@ -7,12 +7,11 @@ import emailjs, {send} from "@emailjs/browser";
 const PopupFilling = ({machineID, pickupDate, setPickupDates, setMachineID, setPickupDate, pickupDates, machinesData,
                    areDatesConfirmed, setAreDatesConfirmed, setNewPickupDates, newPickupDates, radioConfirmed,
                    setRadioConfirmed, popupFilling, setPopupFilling, contractors, setIsDatePicked, isDatePicked,
-                   defaultContractor, selectedContractor, setSelectedContractor}: any) => {
+                   defaultContractor, selectedContractor, setSelectedContractor, plannedDates}: any) => {
 
     const [displayedDate, setDisplayedDate] = useState<any>();
     const [userPermissions] = useState(
         JSON.parse(sessionStorage.getItem('user') as string));
-
 
     const sendEmail = (date: any) => {
 
@@ -27,7 +26,6 @@ const PopupFilling = ({machineID, pickupDate, setPickupDates, setMachineID, setP
                 console.log(error.text);
             });
     };
-
 
     const sendData = (responseBody: any) => {
 
@@ -127,8 +125,9 @@ const PopupFilling = ({machineID, pickupDate, setPickupDates, setMachineID, setP
                         <DatePicker className="shadow-md border text-center p-0.5"
                             // @ts-ignore
                                     selected={
-                                        pickupDate && pickupDate != ""
-                                            ? moment(pickupDate).toDate()
+                                        plannedDates && plannedDates.filter((date :any) => date.machineID == machineID)[0] != undefined
+                                            ? plannedDates.filter((date :any) => date.machineID == machineID)[0].taskEnd.toDate()
+                                             //moment(pickupDate).toDate()
                                             // @ts-ignore
                                             //: pickupDates.length != 0 ?
                                             //   pickupDates

@@ -622,6 +622,7 @@ const StorageSystemDashboard = () => {
                         defaultContractor = {defaultContractor}
                         selectedContractor = {selectedContractor}
                         setSelectedContractor = {setSelectedContractor}
+                        plannedDates = {plannedDates}
                     />
                     <Popup
                         machineID={machineID}
