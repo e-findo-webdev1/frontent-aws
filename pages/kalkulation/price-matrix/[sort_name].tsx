@@ -137,7 +137,7 @@ const PriceMatrix = () => {
                     </button>
                 </Link>
                 <p className="text-lg font-bold mb-3">
-                    Preismatrix: {priceMatrix.indexgroup_name + " - " + fromHex(pid.sort_name)}</p>
+                    Preismatrix: {priceMatrix.indexgroup_name + " - " + (fromHex(pid.sort_name) as string)}</p>
                 <p className="font-bold text-sm">2023</p>
                 <form onSubmit={onSubmitHandler}>
                 <div className="mb-3 sm:rounded-lg shadow-md border overflow-auto max-h-full w-3/5 mt-3">

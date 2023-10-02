@@ -114,7 +114,8 @@ const EditSort = () => {
                                                 {priceMatrices
                                                     && priceMatrices.filter((matrix: any) =>
                                                         matrix.indexgroup_name == sort.indexgroup_name
-                                                        && matrix.price_matrix == sort.sort_name)[0].indeces
+                                                    //&& matrix.price_matrix == sort.sort_name)[0].indeces
+                                                        && matrix.price_matrix == sort.sort_name).indeces
                                                     ? `${priceMatrices.filter((matrix: any) =>
                                                 matrix.indexgroup_name == sort.indexgroup_name
                                                 && matrix.price_matrix == sort.sort_name)[0].indeces.length} Indexe `

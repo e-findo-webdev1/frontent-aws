@@ -6,7 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="46e0077f-1afc-4c07-b20b-cd300e9edac7" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/reporting/monthly-evaluation.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/reporting/monthly-evaluation.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/components/helpers/fromHex.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/components/helpers/fromHex.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/kalkulation/edit-sort/[indexgroup_name].tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/kalkulation/edit-sort/[indexgroup_name].tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/kalkulation/edit-sort/sort/[sort_name].tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/kalkulation/edit-sort/sort/[sort_name].tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/kalkulation/price-matrix/[sort_name].tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/kalkulation/price-matrix/[sort_name].tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -94,7 +97,7 @@
       <workItem from="1695650623716" duration="1672000" />
       <workItem from="1695730814739" duration="3337000" />
       <workItem from="1695889731762" duration="4452000" />
-      <workItem from="1696245020902" duration="350000" />
+      <workItem from="1696245020902" duration="2074000" />
     </task>
     <servers />
   </component>

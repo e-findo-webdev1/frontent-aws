@@ -40,8 +40,8 @@ const SortEdit = () => {
         window.location.replace("/kalkulation/edit-sort/" + toHex(sort.indexgroup_name));
     }
 
-    const deleteData = (sort: any) => {
-        API.delete('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/sorts',
+    const deleteData = async (sort: any) => {
+        await API.delete('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/sorts',
             { data: { sort_name: fromHex(pid.sort_name) } })
             .then(function (response) {
                 console.log(response);
@@ -49,7 +49,7 @@ const SortEdit = () => {
             .catch(function (error) {
                 console.log(error);
             });
-        API.delete('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/price-matrices',
+        await API.delete('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/price-matrices',
             { data: { price_matrix: fromHex(pid.sort_name) } })
             .then(function (response) {
                 console.log(response);
@@ -59,8 +59,8 @@ const SortEdit = () => {
             });
     }
 
-    const sendData = (responseBody: any) => {
-        API.put('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/sorts',
+    const sendData = async (responseBody: any) => {
+        await API.put('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/sorts',
             responseBody)
             .then(function (response) {
                 console.log(response);
@@ -68,7 +68,7 @@ const SortEdit = () => {
             .catch(function (error) {
                 console.log(error);
             });
-        API.put('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/price-matrices',
+        await API.put('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/price-matrices',
             {price_matrix: responseBody.sort_name, indexgroup_name: responseBody.indexgroup_name})
             .then(function (response) {
                 console.log(response);
@@ -80,7 +80,7 @@ const SortEdit = () => {
 
     return(
         <div className="px-20">
-            <Link href={"/kalkulation/edit-sort/" + toHex(sort.indexgroup_name)}>
+            <Link href={sort ? "/kalkulation/edit-sort/" + toHex(sort.indexgroup_name) : "/kalkulation"}>
                 <button className="float-right border ml-auto p-1.5 px-3.5 font-bold border-accent-color-1
                         bg-accent-color-4 hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs">
                     ← Zurück
