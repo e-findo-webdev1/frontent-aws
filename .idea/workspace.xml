@@ -6,9 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="46e0077f-1afc-4c07-b20b-cd300e9edac7" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/master-data/[client].tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/master-data/[client].tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/master-data/shift-calendar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/master-data/shift-calendar.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/master-data/shift-manager.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/master-data/shift-manager.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/reporting/monthly-evaluation.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/reporting/monthly-evaluation.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -95,7 +93,8 @@
       <workItem from="1695156381725" duration="598000" />
       <workItem from="1695650623716" duration="1672000" />
       <workItem from="1695730814739" duration="3337000" />
-      <workItem from="1695889731762" duration="3841000" />
+      <workItem from="1695889731762" duration="4452000" />
+      <workItem from="1696245020902" duration="350000" />
     </task>
     <servers />
   </component>
