@@ -285,7 +285,10 @@ const MonthlyEvaluation = () => {
                                 ]
 
                                 for (let dataset in datasetsIndex) {
-                                    if (datasetsIndex[dataset].includes('Index')) {
+                                    if (datasetsIndex[dataset].includes('Index') && priceMatrices.filter((matrix: any) =>
+                                        datasetsIndex[dataset].includes(matrix.price_matrix) &&
+                                        datasetsIndex[dataset].includes(matrix.indexgroup_name)
+                                    )[0].prices[selectedMonth]) {
                                         data.datasets.push(
                                             {
                                                 label: datasetsIndex[dataset],
