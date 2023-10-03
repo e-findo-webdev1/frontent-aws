@@ -104,8 +104,8 @@ const PopupFilling = ({machineID, pickupDate, setPickupDates, setMachineID, setP
                 5: "Samstag",
                 6: "Sonntag"
             }
-        if (pickupDate && pickupDate != "") {
-            const day = moment(pickupDate).day()
+        if (plannedDates && plannedDates.filter((date :any) => date.machineID == machineID)[0] != undefined) {
+            const day = plannedDates.filter((date :any) => date.machineID == machineID)[0].taskEnd.day()
             // @ts-ignore
             return days[day]
         }
