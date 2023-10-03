@@ -255,23 +255,29 @@ const MonthlyEvaluation = () => {
                                 }
                             }, [])
 
-                            const datasetExtra = machinesData.reduce(function (a: any, b: any) {
-                                if (a && a.includes(b['index']) == false && b['index'] != '') {
-                                    return [...a, 'Index: ' + b['index']];
-                                } else {
-                                    return a
-                                }
-                            }, [])
+
 
                             // Add indexes unassigned to any machine to display prices for each month
 
+                            const datasetPriceMatrices = priceMatrices.filter((matrix: any) => matrix.prices != undefined)
+                                .reduce(function (a: any, b: any) {
+                                        for (let index in b['indeces']) {
+                                            if (b
+                                                .prices[selectedMonth][b['indeces'][index]] != undefined) {
+                                            return [...a, 'Index: ' + b['price_matrix'] + ' - ' + b['indexgroup_name'] +
+                                            ' - ' + b['indeces'][index]];
+                                            } else {
+                                                return a
+                                            }
+                                    }
 
+                                }, [])
+
+                            for (let dataset in datasetPriceMatrices) {
+                                datasetsIndex.push(datasetPriceMatrices[dataset])
+                            }
 
                             //
-
-                            for (let dataset in datasetExtra) {
-                                datasetsIndex.push(datasetExtra[dataset])
-                            }
 
                             if (selectedCategory == 'Monatspreis') {
                                 const data: any = {
@@ -294,7 +300,11 @@ const MonthlyEvaluation = () => {
                                     if (datasetsIndex[dataset].includes('Index') && priceMatrices.filter((matrix: any) =>
                                         datasetsIndex[dataset].includes(matrix.price_matrix) &&
                                         datasetsIndex[dataset].includes(matrix.indexgroup_name)
-                                    )[0].prices[selectedMonth]) {
+                                    )[0].prices[selectedMonth][datasetsIndex[dataset]
+                                        .slice(datasetsIndex[dataset]
+                                            .indexOf("-", datasetsIndex[dataset]
+                                                .indexOf("-") + 1)+1).replace(" ", "")]
+                                        .replace(',', '.')) {
                                         data.datasets.push(
                                             {
                                                 label: datasetsIndex[dataset],
