@@ -1,0 +1,153 @@
+import {useEffect, useState} from "react";
+import API from "axios";
+import moment from "moment";
+import PDF from "../components/helpers/pdf";
+import Link from "next/link";
+
+const ControlDocuments = () => {
+    const [company, setCompany] = useState({
+        address_id: '', automatic_email: false, city: "", client_id: 0, client_name: "",
+        client_number: "", client_status: 1, co_distance: 0, co_orig_amount: 0, co_orig_trips: 0,
+        co_orig_year: 0, co_show: 1, contact: "", email: "", land_id: 0, logo_url: "", next_pdf_nr: 0,
+        spokesperson: "", street: "", telefon: "", worktime_mail: 0, worktime_status: 0, zip_code: ""
+    });
+    const [controlDocuments, setControlDocuments] = useState([]);
+    const [machines, setMachines] = useState<any>();
+    const [waretypes, setWaretypes] = useState<any>();
+    const [certificates, setCertificates] = useState<any>({set:false});
+    const [refresh, setRefresh] = useState<any>({set: false})
+
+    useEffect(() => {
+        setCompany(JSON.parse(sessionStorage.getItem('company') as string));
+
+        const fetchData = async () => {
+
+            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines')
+                .then((response) => {
+                    setMachines(response.data.Items.filter((machine: any) => machine.client ==
+                        JSON.parse(sessionStorage.getItem('company') as string).client_name))
+                })
+                .catch((error) => {
+                    console.log(error.response);
+                });
+
+            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/certificates')
+                .then((response) => {
+                    setCertificates(response.data.Items)
+                })
+                .catch((error) => {
+                    console.log(error.response);
+                });
+
+            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/waretypes')
+                .then((response) => {
+                    setWaretypes(response.data.Items);
+                })
+                .catch((error) => {
+                    console.log(error.response);
+                });
+
+            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/control-documents')
+                .then((response) => {
+                    if (machines) {
+                        setControlDocuments(response.data.Items.filter((document: any) => machines.map((machine: any) =>
+                            machine.machine_id).includes(document.machine_id)));
+                    } else {
+                        setRefresh({set: true})
+                    }
+
+                })
+                .catch((error) => {
+                    console.log(error.response);
+                });
+        }
+
+        fetchData()
+
+    }, [refresh.set]);
+
+    return(
+        <div id="content-page" className="px-20">
+            <p className="mt-9 text-3xl font-bold mb-10">Kontrollbelege</p>
+            <div className="sm:rounded-lg shadow-md border overflow-auto max-h-96">
+                <table className="table-auto w-full overflow-auto">
+                    <thead>
+                    <tr className="text-xs text-gray-500 border-b text-left">
+                        <th className="font-normal">Maschine</th>
+                        <th className="font-normal">PDF</th>
+                        <th className="font-normal">Wiegenr.</th>
+                        <th className="font-normal">Datum</th>
+                        <th className="font-normal">Warenart</th>
+                        <th className="font-normal">Bruttogewitcht</th>
+                        <th className="font-normal">Taragewitcht</th>
+                        <th className="font-normal">Nettogewicht</th>
+                        <th className="font-normal">Standzeit</th>
+                        <th className="font-normal">Prod.-<br/>Zeit</th>
+                        <th className="font-normal">kg / h</th>
+                        <th className="font-normal">Bemerkung</th>
+                        <th className="font-normal">W.<br/>Schein</th>
+                    </tr>
+                    </thead>
+                    <tbody className="bg-gray-50">
+                    {controlDocuments.sort(function(a: any, b: any){
+                        // @ts-ignore
+                        return moment(b.endOfCycle).unix() - moment(a.endOfCycle).unix()})
+                        .map((document: any) =>
+                        <tr key={document.document_id} className="text-xs border-t">
+                            <td>{document.machine_id}</td>
+                            <td>
+                                <PDF
+                                    endOfCycle = {document.endOfCycle}
+                                    document_id = {document.document_id}
+                                    brutto = {document.brutto}
+                                    netto = {document.netto}
+                                    timestamp = {document.timestamp}
+                                    tara = {document.tara}
+                                    machine_id = {document.machine_id}
+                                    company = {company}
+                                    waretype = {machines != undefined
+                                        ? machines.filter((item: any) =>
+                                            // item.machine_id == document.machine_id)[0].waretype
+                                            item.machine_id == document.machine_id).waretype
+                                        : ''}
+                                    sort = {
+                                    machines != undefined
+                                    && waretypes
+                                        ? waretypes.filter((ware: any) =>
+                                            ware.name_waretype == document.waretype).waretype_number
+                                        : ''}
+                                />
+                            </td>
+                            <td>{company.client_number}-<br/>{parseInt(company.client_number) + document.document_id}</td>
+                            <td>{moment(document.timestamp).format('DD.MM.yyyy HH:mm')}</td>
+                            <td>{document.waretype}</td>
+                            <td>{document.netto + document.tara}</td>
+                            <td>{document.tara}</td>
+                            <td>{document.netto}</td>
+                            <td>{((moment(document.endOfCycle).unix()-moment(document.startOfCycle).unix())
+                                /3600).toFixed(2)}h</td>
+                            <td>{(document.totalProductionTime/3600000).toFixed(2)}h</td>
+                            <td>{controlDocuments ? (document.averageThroughput).toFixed(2) : ''}</td>
+                            <td>{}</td>
+                            <td>
+                                <Link href={"/reporting/control-documents/" + document.document_id}>
+                                    <button className="m-auto flex">
+                                        <img className="h-5" src={
+                                            certificates && certificates.filter((certificate: any) =>
+                                                certificate.document_id == document.document_id).length == 0
+
+                                            || certificates.filter((certificate: any) =>
+                                                certificate.document_id == document.document_id).pdf_data == '' ?
+                                                "/upload-svgrepo-com.svg" : '/document.png'}/></button>
+                                </Link>
+                            </td>
+                        </tr>
+                    )}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    )
+}
+
+export default ControlDocuments
