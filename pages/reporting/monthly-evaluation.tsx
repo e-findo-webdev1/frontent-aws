@@ -29,7 +29,7 @@ const MonthlyEvaluation = () => {
     const [machinesData, setMachinesData] = useState<any>([0]);
     const [controlDocuments, setControlDocuments] = useState<any>({set: false});
     const [waretypes, setWaretypes] = useState<any>({set:false});
-    const [certificates, setCertificates] = useState<any>();
+    const [certificates, setCertificates] = useState<any>({set:false});
     const [popupCertificate, setPopupCertificate] = useState<any>();
     const [receivedIncome, setReceivedIncome] = useState<any>(0);
     const [myChart, setMyChart] = useState<any>({set: false});
@@ -102,7 +102,7 @@ const MonthlyEvaluation = () => {
                                             backgroundColor: 'rgb(218,0,44)',
                                             borderColor: 'rgb(218,0,44)',
                                             data: labels.map((day: any) =>
-                                                controlDocuments
+                                                certificates
                                                     .filter((document: any) => {
                                                         if (selectedMachine != '- Alle -') {
                                                             return document.machine_id == selectedMachine
@@ -110,19 +110,42 @@ const MonthlyEvaluation = () => {
                                                             return true
                                                         }
                                                     })
-                                                    .filter((document: any) =>
-                                                        moment(document.endOfCycle).month() ==
-                                                        monthsList.indexOf(selectedMonth))
-                                                    .filter((document: any) => moment(document.endOfCycle).date() == day)
+                                                    .filter((certificate: any) =>
+                                                        moment(certificate.endOfCycle).month() == monthsList.indexOf(selectedMonth)
+                                                        &&  moment(certificate.endOfCycle).date() == day)
                                                     .reduce(function (a: any, b: any) {
-                                                        return a + ((b['netto']) - b.tara);
-                                                    }, 0))
+                                                        return a + (parseInt(b['workingWeight']));
+                                                    }, 0)
+                                            )
                                         },
                                     ]
                                 };
 
+                                data.datasets.push(
+                                    {
+                                        label: 'Gesamt-Abgangsgewicht',
+                                        backgroundColor: 'rgb(232,188,83)',
+                                        borderColor: 'rgb(232,188,83)',
+                                        data: labels.map((day: any) =>
+                                            controlDocuments
+                                                .filter((document: any) => {
+                                                    if (selectedMachine != '- Alle -') {
+                                                        return document.machine_id == selectedMachine
+                                                    } else {
+                                                        return true
+                                                    }
+                                                })
+                                                .filter((document: any) =>
+                                                    moment(document.endOfCycle).month() ==
+                                                    monthsList.indexOf(selectedMonth))
+                                                .filter((document: any) => moment(document.endOfCycle).date() == day)
+                                                .reduce(function (a: any, b: any) {
+                                                    return a + ((b['netto']));
+                                                }, 0))
+                                    }
+                                )
+
                                 const colors = [
-                                    'rgb(232,188,83)',
                                     'rgb(88,206,48)',
                                     'rgb(99,217,213)',
                                     'rgb(56,97,201)',
@@ -141,7 +164,7 @@ const MonthlyEvaluation = () => {
                                             // @ts-ignore
                                             borderColor: colors[dataset],
                                             data: labels.map((day: any) =>
-                                                controlDocuments
+                                                certificates
                                                     .filter((document: any) => {
                                                         if (selectedMachine != '- Alle -') {
                                                             return document.machine_id == selectedMachine
@@ -149,11 +172,11 @@ const MonthlyEvaluation = () => {
                                                             return true
                                                         }
                                                     })
-                                                    .filter((document: any) =>
-                                                        moment(document.endOfCycle).month() == monthsList.indexOf(selectedMonth))
-                                                    .filter((document: any) => moment(document.endOfCycle).date() == day)
+                                                    .filter((certificate: any) =>
+                                                        moment(certificate.endOfCycle).month() == monthsList.indexOf(selectedMonth)
+                                                        &&  moment(certificate.endOfCycle).date() == day)
                                                     .reduce(function (a: any, b: any) {
-                                                        return a + ((b['netto']) - b.tara);
+                                                        return a + (parseInt(b['workingWeight']));
                                                     }, 0))
                                         }
                                     )
@@ -452,7 +475,7 @@ const MonthlyEvaluation = () => {
                                             backgroundColor: 'rgb(218,0,44)',
                                             borderColor: 'rgb(218,0,44)',
                                             data: labels.map((day: any) =>
-                                                controlDocuments
+                                                certificates
                                                     .filter((document: any) => {
                                                         if (selectedMachine != '- Alle -') {
                                                             return document.machine_id == selectedMachine
@@ -460,24 +483,17 @@ const MonthlyEvaluation = () => {
                                                             return true
                                                         }
                                                     })
-                                                    .filter((document: any) =>
-                                                        moment(document.endOfCycle).month() ==
-                                                        monthsList.indexOf(selectedMonth))
-                                                    .filter((document: any) => moment(document.endOfCycle).date() == day)
+                                                    .filter((certificate: any) =>
+                                                        moment(certificate.endOfCycle).month() == monthsList.indexOf(selectedMonth)
+                                                        &&  moment(certificate.endOfCycle).date() == day)
                                                     .reduce(function (a: any, b: any) {
-                                                        return a + ((b['netto']) - b.tara) *
-                                                            parseInt(machinesData.filter((machine: any) =>
-                                                                machine.machine_id == b['machine_id'])[0]
-                                                                // @ts-ignore
-                                                                .price_list.prices[moment().year()]
-                                                                [monthsList[moment().month()]]) / 1000
+                                                        return a + (parseInt(b['income']));
                                                     }, 0))
                                         },
                                     ]
                                 };
 
                                 const colors = [
-                                    'rgb(232,188,83)',
                                     'rgb(88,206,48)',
                                     'rgb(99,217,213)',
                                     'rgb(56,97,201)',
@@ -496,7 +512,7 @@ const MonthlyEvaluation = () => {
                                             // @ts-ignore
                                             borderColor: colors[dataset],
                                             data: labels.map((day: any) =>
-                                                controlDocuments
+                                                certificates
                                                     .filter((document: any) => {
                                                         if (selectedMachine != '- Alle -') {
                                                             return document.machine_id == selectedMachine
@@ -504,22 +520,16 @@ const MonthlyEvaluation = () => {
                                                             return true
                                                         }
                                                     })
-                                                    .filter((document: any) =>
-                                                        moment(document.endOfCycle).month() ==
-                                                        monthsList.indexOf(selectedMonth))
-                                                    .filter((document: any) => moment(document.endOfCycle).date() == day)
-                                                    .filter((document: any) => document.waretype == datasetsPrices[dataset])
+                                                    .filter((certificate: any) =>
+                                                        moment(certificate.endOfCycle).month() == monthsList.indexOf(selectedMonth)
+                                                        &&  moment(certificate.endOfCycle).date() == day)
                                                     .reduce(function (a: any, b: any) {
-                                                        return a + ((b['netto']) - b.tara) *
-                                                            parseInt(machinesData.filter((machine: any) =>
-                                                                machine.machine_id == b['machine_id'])[0]
-                                                                // @ts-ignore
-                                                                .price_list.prices
-                                                                [moment().year()][monthsList[moment().month()]]) / 1000
+                                                        return a + (parseInt(b['income']));
                                                     }, 0))
                                         }
                                     )
                                 }
+
 
                                 const config = {
                                     type: 'bar',
@@ -635,7 +645,7 @@ const MonthlyEvaluation = () => {
 
         }
         fetchData()
-    }, [controlDocuments.set, selectedMonth, myChart.set, selectedMachine, selectedCategory]);
+    }, [controlDocuments.set, selectedMonth, myChart.set, selectedMachine, selectedCategory, certificates.set]);
 
     const handlePopupSend = async () => {
         let certificate = certificates.filter((certificate: any)=> certificate.document_id == popupCertificate)[0]
@@ -796,7 +806,12 @@ const MonthlyEvaluation = () => {
                     </thead>
                     <tbody className="bg-gray-50">
                     { waretypes && controlDocuments.set != false ?
-                        controlDocuments.map((document: any) =>
+                        controlDocuments
+                            .sort(function(a: any, b: any){
+                                // @ts-ignore
+                                return a.document_id - b.document_id
+                            })
+                            .map((document: any) =>
                             <tr key={document.document_id}
                                 className="text-xs text-gray-500 border-b text-left">
                                 <td>
@@ -849,7 +864,7 @@ const MonthlyEvaluation = () => {
                                     {document.netto}
                                 </td>
                                 <td className="text-right">
-                                    {certificates && certificates.filter((certificate: any) =>
+                                    {certificates && certificates.set != false && certificates.filter((certificate: any) =>
                                         certificate.document_id == document.document_id).length != 0 &&
                                     certificates.filter((certificate: any) =>
                                        certificate.document_id == document.document_id)[0].workingWeight
@@ -858,7 +873,7 @@ const MonthlyEvaluation = () => {
                                        : ''}
                                 </td>
                                 <td className="text-right">
-                                    {certificates && certificates.filter((certificate: any) =>
+                                    {certificates && certificates.set != false && certificates.filter((certificate: any) =>
                                         certificate.document_id == document.document_id).length != 0 &&
                                     certificates.filter((certificate: any) =>
                                         certificate.document_id == document.document_id)[0].workingWeight
@@ -918,6 +933,8 @@ const MonthlyEvaluation = () => {
                                         certificate.document_id == document.document_id).length != 0
                                     && certificates.filter((certificate: any) =>
                                         certificate.document_id == document.document_id)[0].workingWeight
+                                        && certificates.filter((certificate: any)=>
+                                        certificate.document_id == document.document_id)[0].income
                                         ?   (certificates.filter((certificate: any) =>
                                                certificate.document_id == document.document_id)[0].workingWeight / 1000 *
                                             parseInt(machinesData.filter((machine:any)=>
