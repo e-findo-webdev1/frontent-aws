@@ -75,7 +75,7 @@ const NavigationLinks = () => {
                 {   userPermissions.admin ?
                     navigationLinksAdmin.map((link) =>
                     <div className="flex m-auto" key={link.name} id={link.name}>
-                        <Link key={link.name} href={link.link}>
+                        <Link legacyBehavior key={link.name} href={link.link}>
                             <a className="">
                                 <div className="flex px-3 py-1">
                                     <img className="mr-1.5 mb-1.5 h-4" src={link.image}/>
@@ -89,7 +89,7 @@ const NavigationLinks = () => {
                     )
                 : navigationLinks.map((link) =>
                         <div className="flex m-auto" key={link.name} id={link.name}>
-                            <Link key={link.name} href={link.link}>
+                            <Link legacyBehavior key={link.name} href={link.link}>
                                 <a className="">
                                     <div className="flex px-3 py-1">
                                         <img className="mr-1.5 mb-1.5 h-4" src={link.image}/>

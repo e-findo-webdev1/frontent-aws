@@ -3,7 +3,7 @@ const Logo = () => {
     return (
         <div id="logo" className="mx-5 my-auto" >
             <Link href="/">
-                <a><img className="ml-5 h-10" src="/logo-1.png" alt="logo"/></a>
+                <img className="ml-5 h-10 cursor-pointer" src="/logo-1.png" alt="logo"/>
             </Link>
         </div>
     )

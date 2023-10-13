@@ -3,6 +3,9 @@ function fromHex(hex: any){
         const str = decodeURI(decodeURIComponent(hex.replace(/(..)/g,'%$1')))
         return str.replace('%2F', '/')
     }
+    else {
+        return ''
+    }
 }
 
 export default fromHex

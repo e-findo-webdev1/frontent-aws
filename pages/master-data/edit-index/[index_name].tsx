@@ -8,40 +8,101 @@ const EditIndex = () => {
     const router = useRouter()
     const pid = router.query
 
-    const [priceMatrix, setPriceMatrix] = useState<any>();
+    const [priceMatrix, setPriceMatrix] = useState<any>({
+            price_matrix: "",
+            indexgroup_name: "",
+            indeces: [],
+            prices: {
+                'Januar': {},
+                'Februar': {},
+                'März': {},
+                'April': {},
+                'Mai': {},
+                'Juni': {},
+                'Juli': {},
+                'August': {},
+                'September': {},
+                'Oktober': {},
+                'November': {},
+                'Dezember': {}
+            },
+        }
+    );
     const [newIndeces, setNewIndeces] = useState<any>();
     // @ts-ignore
-    const [newIndexName, setNewIndexName] = useState<any>(fromHex(pid.index_name)
-        // @ts-ignore
-        .slice(fromHex(pid.index_name)
-            // @ts-ignore
-            .indexOf("-", fromHex(pid.index_name)
-                .indexOf("-") + 1)+1).replace(" ", ""));
+    const [newIndexName, setNewIndexName] = useState<any>();
     const [newPrices, setNewPrices] = useState<any>();
+    const [currentYear, setCurrentYear] = useState<any>(0);
 
-
-
-    const monthsList = [
-        "Januar", "Februar", "März", "April",
-        "Mai", "Juni", "Juli", "August",
-        "September", "Oktober", "November", "Dezember"
-    ]
 
     useEffect(() => {
-            API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/price-matrices')
+        currentYear == 0 ? setCurrentYear(moment().year()) : ''
+        priceMatrix.prices[currentYear] == undefined ? setPriceMatrix({
+                ...priceMatrix,
+                prices: {
+                    ...priceMatrix.prices,
+                    [currentYear]: {
+                        'Januar': {},
+                        'Februar': {},
+                        'März': {},
+                        'April': {},
+                        'Mai': {},
+                        'Juni': {},
+                        'Juli': {},
+                        'August': {},
+                        'September': {},
+                        'Oktober': {},
+                        'November': {},
+                        'Dezember': {}
+                    }
+                }
+            }
+        ) : ''
+        // @ts-ignore
+        newIndexName ? '' : setNewIndexName(fromHex(pid.index_name)
+            // @ts-ignore
+            .slice(fromHex(pid.index_name)
+                // @ts-ignore
+                .indexOf("-", fromHex(pid.index_name)
+                    .indexOf("-") + 1)+1).replace(" ", ""))
+
+        const fetchData = async () => {
+            let apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/price-matrices';
+
+            await API.get(apiName)
                 .then((response) => {
-                    setPriceMatrix(response.data.Items.filter((matrix: any) =>
-                        // @ts-ignore
-                        fromHex(pid.index_name).includes(matrix.price_matrix) &&
-                        // @ts-ignore
-                        fromHex(pid.index_name).includes(matrix.indexgroup_name)
-                    )[0]);
+                    if (priceMatrix.price_matrix == '') {
+                        setPriceMatrix({
+                                ...priceMatrix,
+                                price_matrix: response.data.Items.filter((matrix: any) =>
+                                    matrix.price_matrix == fromHex(pid.index_name).slice(
+                                fromHex(pid.index_name).indexOf("-", fromHex(pid.index_name).indexOf("-") - 1)
+                                + 1, fromHex(pid.index_name).indexOf("-", fromHex(pid.index_name).indexOf("-") + 1)).trim())[0].price_matrix,
+                                indexgroup_name: response.data.Items.filter((matrix: any) =>
+                                    matrix.price_matrix == fromHex(pid.index_name).slice(
+                                        fromHex(pid.index_name).indexOf("-", fromHex(pid.index_name).indexOf("-") - 1)
+                                        + 1, fromHex(pid.index_name).indexOf("-", fromHex(pid.index_name).indexOf("-") + 1)).trim())[0].indexgroup_name,
+                                prices: response.data.Items.filter((matrix: any) =>
+                                    matrix.price_matrix == fromHex(pid.index_name).slice(
+                                        fromHex(pid.index_name).indexOf("-", fromHex(pid.index_name).indexOf("-") - 1)
+                                        + 1, fromHex(pid.index_name).indexOf("-", fromHex(pid.index_name).indexOf("-") + 1)).trim())[0].prices,
+                                indeces: response.data.Items.filter((matrix: any) =>
+                                    matrix.price_matrix == fromHex(pid.index_name).slice(
+                                        fromHex(pid.index_name).indexOf("-", fromHex(pid.index_name).indexOf("-") - 1)
+                                        + 1, fromHex(pid.index_name).indexOf("-", fromHex(pid.index_name).indexOf("-") + 1)).trim())[0].indeces
+                            },
+                        );
+                    }
                 })
                 .catch((error) => {
                     console.log(error.response);
                 });
+        }
+        fetchData()
 
-    }, [pid.id]);
+    }, [pid.index_name, currentYear]);
+
+    console.log(priceMatrix)
 
     const sendData = async () => {
         // @ts-ignore
@@ -117,8 +178,43 @@ const EditIndex = () => {
         }
     }
 
-            return(
-                <div id="content-page" className="mx-20 overflow-auto h-full">
+
+
+    const monthsList = [
+        'Januar',
+        'Februar',
+        'März',
+        'April',
+        'Mai',
+        'Juni',
+        'Juli',
+        'August',
+        'September',
+        'Oktober',
+        'November',
+        'Dezember'
+    ]
+
+    const months: any = {
+        0: 'Januar',
+        1: 'Februar',
+        2: 'März',
+        3: 'April',
+        4: 'Mai',
+        5: 'Juni',
+        6: 'Juli',
+        7: 'August',
+        8: 'September',
+        9: 'Oktober',
+        10: 'November',
+        11: 'Dezember'
+    }
+
+    console.log(Object.keys(priceMatrix.prices))
+
+
+        return(
+        <div id="content-page" className="px-20 overflow-auto h-full">
             <p className="mb-3 text-3xl font-bold">Index</p>
             <form>
                 <table className="mb-3 text-xs">
@@ -129,12 +225,12 @@ const EditIndex = () => {
                             <input id="name" className="border rounded px-2.5 py-0.5"
                                    required={ true }
                                 // @ts-ignore
-                                   defaultValue={fromHex(pid.index_name)
+                                   defaultValue={pid ? fromHex(pid.index_name)
                                        // @ts-ignore
                                        .slice(fromHex(pid.index_name)
                                            // @ts-ignore
                                            .indexOf("-", fromHex(pid.index_name)
-                                               .indexOf("-") + 1)+1).replace(" ", "")}
+                                               .indexOf("-") + 1)+1).replace(" ", "") : ''}
                                    onChange={(e) =>
                                    {
                                         setNewIndexName(e.target.value)
@@ -146,17 +242,51 @@ const EditIndex = () => {
                     </tbody>
                 </table>
             </form>
-            <span className="text-xs"><button className="underline">2023</button></span>
-            <span className="text-xs"> |</span>
+            <div className="h-max overflow-auto">
+                <p className="text-sm">
+                    { priceMatrix && priceMatrix.prices ?
+                        Object.keys(priceMatrix.prices)
+                            .map((year: any) =>
+                                <a key={year}
+                                   className="cursor-pointer"
+                                   onClick={(e)=>{setCurrentYear(year)}}
+                                >
+                                    <span className={currentYear == year ? 'font-bold underline' : ''}>{year}</span>
+                                    {" | "}
+                                </a>
+                            ) : ''}
+                    {
+                        // @ts-ignore
+                        <a key={Math.max(...Object.keys(priceMatrix.prices)) + 1}
+                           className="cursor-pointer"
+                           onClick={(e)=>{
+                               // @ts-ignore
+                               setCurrentYear(Math.max(...Object.keys(priceMatrix.prices)) + 1);}
+                           }
+                        >
+                    <span className={
+                        // @ts-ignore
+                        currentYear == Math.max(...Object.keys(priceMatrix.prices)) + 1
+                            ? 'font-bold underline' : ''
+                    }>
+                        {priceMatrix.price_matrix != "" ?
+                            // @ts-ignore
+                            Math.max(...Object.keys(priceMatrix.prices)) + 1 : ''}
+                    </span>
+                        </a>
+                    }
+                </p>
+            </div>
             <p className="text-xs mt-2.5">
-                <span className="font-bold">Indexpreise Jahr 2023</span>
+                <span className="font-bold">Indexpreise Jahr {currentYear}</span>
             </p>
             {priceMatrix ? monthsList.map((month: any) =>
                 <div key={month} className="mt-2">
                     <div className="flex w-40">
                         <span className="text-xs py-1">{month}</span>
                         <input className="text-xs ml-auto border text-right px-2.5 rounded pl-2.5 py-1 mr-1 w-20"
-                               defaultValue={priceMatrix && priceMatrix.prices[moment().year()][month]
+                               value={priceMatrix.prices[currentYear] && priceMatrix.prices[currentYear][month]
+                               && priceMatrix.prices[currentYear][month]
                                    // @ts-ignore
                                    [fromHex(pid.index_name)
                                    // @ts-ignore
@@ -164,31 +294,40 @@ const EditIndex = () => {
                                        // @ts-ignore
                                        .indexOf("-", fromHex(pid.index_name)
                                            .indexOf("-") + 1)+1).replace(" ", "")
-                                   .replace(',', '.')] ? parseInt(priceMatrix.prices
-                                   [moment().year()][month]
-                                   // @ts-ignore
-                                   [fromHex(pid.index_name)
-                                   // @ts-ignore
-                                   .slice(fromHex(pid.index_name)
+                                   .replace(',', '.')]
+
+                                   ? priceMatrix.prices[moment().year()][month]
                                        // @ts-ignore
-                                       .indexOf("-", fromHex(pid.index_name)
-                                           .indexOf("-") + 1)+1).replace(" ", "")
-                                   .replace(',', '.')]) : 0}
+                                       [fromHex(pid.index_name)
+                                       // @ts-ignore
+                                       .slice(fromHex(pid.index_name)
+                                           // @ts-ignore
+                                           .indexOf("-", fromHex(pid.index_name)
+                                               .indexOf("-") + 1)+1).replace(" ", "")
+                                       .replace(',', '.')] : 0}
+
                                onChange={(e) =>
-                               {
-                                   setPriceMatrix({...priceMatrix,
-                                       prices: {...priceMatrix.prices,
-                                           [month]: {...priceMatrix.prices[month],
-                                               // @ts-ignore
-                                                [fromHex(pid.index_name)
-                                                    // @ts-ignore
-                                                    .slice(fromHex(pid.index_name)
-                                                        // @ts-ignore
-                                                        .indexOf("-", fromHex(pid.index_name)
-                                                            .indexOf("-") + 1)+1).replace(" ", "")]: e.target.value
-                                           }}})
-                               }
-                        }
+                                   setPriceMatrix({
+                                       ...priceMatrix,
+                                       prices: {
+                                            ...priceMatrix.prices,
+                                            [currentYear]: {
+                                                ...priceMatrix.prices[currentYear],
+                                               [month]:
+                                               {...priceMatrix.prices[month],
+                               // @ts-ignore
+                               [fromHex(pid.index_name)
+                               // @ts-ignore
+                               .slice(fromHex(pid.index_name)
+                               // @ts-ignore
+                               .indexOf("-", fromHex(pid.index_name)
+                               .indexOf("-") + 1)+1).replace(" ", "")]: e.target.value
+                                               }
+                                           }
+                                       }
+                                   }
+                               )
+                            }
                         />
                         <span className="text-xs py-1">€</span>
                     </div>

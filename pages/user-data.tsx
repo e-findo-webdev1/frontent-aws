@@ -121,7 +121,7 @@ const UserData = () => {
                                               className="text-xs text-gray-500 border-b text-left">
                                               <td>{material.waretype_number}</td>
                                               <Link href="/">
-                                                  <a><td className="underline">{material.name_waretype}</td></a>
+                                                  <td className="underline cursor-pointer">{material.name_waretype}</td>
                                               </Link>
                                               <td/>
                                               <td/>

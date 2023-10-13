@@ -81,6 +81,7 @@ const PriceMatrix = () => {
                 });
         }
         fetchData()
+
     }, [currentYear]);
 
     console.log(priceMatrix)
@@ -238,6 +239,7 @@ const PriceMatrix = () => {
                                                                  prices: {
                                                                      ...priceMatrix.prices,
                                                                      [currentYear]: {
+                                                                         ...priceMatrix.prices[currentYear],
                                                                          [month]: {
                                                                              ...priceMatrix.prices[month],
                                                                              [index]: e.target.value

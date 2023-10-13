@@ -183,23 +183,23 @@ const Home: NextPage = () => {
                     <p className="my-7 text-2xl font-bold text-center">Reporting</p>
                     <div className="flex-row font-bold text-sm">
                         <div className="flex space-x-10 justify-center">
-                            <Link href="reporting/control-documents">
-                                <button className="w-2/5 h-[40px] p-1.5 px-3.5 border-accent-color-1
+                            <Link href="reporting/control-documents" className="w-3/5">
+                                <button className="w-full h-[40px] p-1.5 px-3.5 border-accent-color-1
                             bg-accent-color-4 hover:bg-accent-color-5
                         sm:rounded-lg shadow-md border text-xs">
                                     Kontrollbelege
                                 </button>
                             </Link>
-                            <Link href="/reporting/monthly-evaluation">
-                                <button className="w-2/5 h-[40px] p-1.5 px-3.5 border-accent-color-1
+                            <Link href="/reporting/monthly-evaluation" className="w-3/5">
+                                <button className="w-full h-[40px] p-1.5 px-3.5 border-accent-color-1
                              bg-accent-color-4 hover:bg-accent-color-5
                         sm:rounded-lg shadow-md border text-xs">
                                     Monatsauswertung</button>
                             </Link>
                         </div>
                         <div className="flex mt-5 justify-center">
-                            <Link href="/reporting/annual-evaluation">
-                                <button className="w-2/5 h-[40px] p-1.5 px-3.5 border-accent-color-1
+                            <Link href="/reporting/annual-evaluation" className="w-3/5">
+                                <button className="w-full  h-[40px] p-1.5 px-3.5 border-accent-color-1
                              bg-accent-color-4 hover:bg-accent-color-5
                         sm:rounded-lg shadow-md border text-xs">
                                     Jahresauswertung</button>
