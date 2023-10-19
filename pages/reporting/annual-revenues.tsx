@@ -107,7 +107,7 @@ const AnnualRevenues = () => {
             <div className="mb-2.5">
                 <p className="text-sm">
                     {
-                        workingYears.map((year: any) =>
+                        workingYears.length > 0 ? workingYears.map((year: any) =>
                             <a key={year}
                                className="cursor-pointer"
                                onClick={(e)=>{setCurrentYear(year)}}>
@@ -116,7 +116,13 @@ const AnnualRevenues = () => {
                                 </span>
                                 {" | "}
                             </a>
-                        )
+                        ) : <a key={currentYear}
+                               className="cursor-pointer"
+                               onClick={(e)=>{setCurrentYear(currentYear)}}>
+                                <span className={'font-bold underline'}>
+                                    {currentYear}
+                                </span>
+                        </a>
                     }
                     {
                         // @ts-ignore
@@ -133,7 +139,8 @@ const AnnualRevenues = () => {
                                     ? 'font-bold underline' : ''
                             }>
                                 {// @ts-ignore
-                                    Math.max(workingYears) + 1
+                                    workingYears.length > 0 ? Math.max(workingYears) + 1
+                                        : ''
                                 }
                             </span>
                         </a>

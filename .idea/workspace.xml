@@ -5,11 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="46e0077f-1afc-4c07-b20b-cd300e9edac7" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/kalkulation/price-matrix/[sort_name].tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/kalkulation/price-matrix/[sort_name].tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/reporting.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/reporting.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pages/reporting/annual-revenues.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/reporting/annual-revenues.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -123,7 +119,7 @@
       <workItem from="1697568419137" duration="1000" />
       <workItem from="1697632024042" duration="302000" />
       <workItem from="1697714947322" duration="46000" />
-      <workItem from="1697715000278" duration="6264000" />
+      <workItem from="1697715000278" duration="6469000" />
     </task>
     <servers />
   </component>
