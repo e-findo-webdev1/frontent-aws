@@ -84,8 +84,6 @@ const PriceMatrix = () => {
 
     }, [currentYear]);
 
-    console.log(priceMatrix)
-
     const monthsList = [
         'Januar',
         'Februar',

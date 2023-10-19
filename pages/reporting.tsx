@@ -30,9 +30,14 @@ const Reporting = () => {
                             Jahresauswertung</button>
                     </Link>
                 </div>
-                <div className="w-1/2"></div>
+                <div className="mt-5 m-x-auto w-1/2">
+                    <Link href="/reporting/annual-revenues">
+                        <button className="w-full p-3.5 border-accent-color-1 bg-accent-color-4 hover:bg-accent-color-5
+                        sm:rounded-lg shadow-md border">
+                            Jahreserlöse</button>
+                    </Link>
+                </div>
             </div>
-
         </div>
     )
 }

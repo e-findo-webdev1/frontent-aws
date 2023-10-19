@@ -5,20 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="46e0077f-1afc-4c07-b20b-cd300e9edac7" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock 2.json" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/components/helpers/fromHex.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/components/helpers/fromHex.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/components/navigation/Breadcrumbs.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/components/navigation/Breadcrumbs.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/components/navigation/Logo.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/components/navigation/Logo.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/components/navigation/NavigationLinks.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/components/navigation/NavigationLinks.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/index.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pages/kalkulation/price-matrix/[sort_name].tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/kalkulation/price-matrix/[sort_name].tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/master-data.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/master-data.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/master-data/edit-index/[index_name].tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/master-data/edit-index/[index_name].tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pages/reporting.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/reporting.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/user-data.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/user-data.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/reporting/annual-revenues.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/reporting/annual-revenues.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -63,8 +55,10 @@
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.standard&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.standard&quot;: &quot;&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;ts.external.directory.path&quot;: &quot;/Users/adrianbrodzinski/Desktop/frontent-aws/node_modules/typescript/lib&quot;,
@@ -124,7 +118,12 @@
       <workItem from="1697016858137" duration="6756000" />
       <workItem from="1697025869039" duration="758000" />
       <workItem from="1697116046511" duration="3287000" />
-      <workItem from="1697193014535" duration="7431000" />
+      <workItem from="1697193014535" duration="7537000" />
+      <workItem from="1697534742618" duration="7286000" />
+      <workItem from="1697568419137" duration="1000" />
+      <workItem from="1697632024042" duration="302000" />
+      <workItem from="1697714947322" duration="46000" />
+      <workItem from="1697715000278" duration="6264000" />
     </task>
     <servers />
   </component>

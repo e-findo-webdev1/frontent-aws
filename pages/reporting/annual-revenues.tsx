@@ -1,173 +1,144 @@
-import {useEffect, useState} from "react";
-
-const revenues_2020 = [
-    {
-        product: "Aluminium Späne, normal",
-        weight: 46480,
-        value: 60024.07,
-        income: 60024.07,
-        delta: 0.00
-    },
-    {
-        product: "Aluminium Späne, nass",
-        weight: 6860,
-        value: 8807.58,
-        income: 7310.29,
-        delta: -1497.29
-    },
-    {
-        product: "Aluminium Profile AlSi1, Fe frei",
-        weight: 50540,
-        value: 75635.31,
-        income: 75635.31,
-        delta: 0.00
-    },
-    {
-        product: "Mischschrott mit Eisenanhaftung, Alu Anteil ca. 70 %",
-        weight: 13780,
-        value: 2388.75,
-        income: 2370.67,
-        delta: -18.08
-    }
-]
-const revenues_2021 = [
-    {
-        product: "Eisenspäne",
-        weight: 1060,
-        value: 275.28,
-        income: 275.28,
-        delta: 0.00
-    },
-    {
-        product: "Aluminium Späne, normal",
-        weight: 112990,
-        value: 149397.55,
-        income: 149397.55,
-        delta: 0.00
-    },
-    {
-        product: "Aluminium Späne, nass",
-        weight: 10030,
-        value: 6132.90,
-        income: 6132.90,
-        delta: 0.00
-    },
-    {
-        product: "Aluminium Profile AlSi1, Fe frei",
-        weight: 57990,
-        value: 99753.66,
-        income: 99753.66,
-        delta: 0.00
-    },
-    {
-        product: "Mischschrott mit Eisenanhaftung, Alu Anteil ca. 70 %",
-        weight: 31450,
-        value: 8435.58,
-        income: 7851.48,
-        delta: -584.10
-    }
-]
-const revenues_2022 = [
-    {
-        product: "Mischschrott",
-        weight: 17170,
-        value: 4931.18,
-        income: 4931.18,
-        delta: 0
-    },
-    {
-        product: "Eisenspäne",
-        weight: 18510,
-        value: 4788.59,
-        income: 4762.91,
-        delta: -25.68
-    },
-    {
-        product: "Aluminium Späne, normal",
-        weight: 80250,
-        value: 142491.14,
-        income: 142028.53,
-        delta: -462.61
-    },
-    {
-        product: "Aluminium Späne, nass",
-        weight: 9770,
-        value: 6909.20,
-        income: 6909.20,
-        delta: 0
-    },
-    {
-        product: "Aluminium Profile AlSi1, Fe frei",
-        weight: 47790,
-        value: 100481.65,
-        income: 100647.85,
-        delta: 166.20
-    },
-]
+import React, {useEffect, useState} from "react";
+import moment from "moment";
+import API from "axios";
 
 const AnnualRevenues = () => {
-    const [currentYearString, setCurrentYearString] = useState("2020")
-    const [currentYear, setCurrentYear] = useState(revenues_2020)
-    const [totalWeight, setTotalWeight] = useState( 0);
-    const [totalValue, setTotalValue] = useState( 0);
-    const [totalIncome, setTotalIncome] = useState( 0);
-    const [totalDelta, setTotalDelta] = useState( 0);
+    const [currentYear, setCurrentYear] = useState(0)
+    const [weighingCertificates, setWeighingCertificates] = useState<any>();
+    const [priceMatrices, setPriceMatrices] = useState<any>({set: false});
+    const [machinesData, setMachinesData] = useState<any>();
 
-    const calculateTotalWeight = ()  => {
-        let weight = 0
+    const monthsList = [
+        "Januar",
+        "Februar",
+        "März",
+        "April",
+        "Mai",
+        "Juni",
+        "Juli",
+        "August",
+        "September",
+        "Oktober",
+        "November",
+        "Dezember"
+    ]
 
-            for (let product in currentYear) {
-                weight = (weight + currentYear[product].weight)
-            }
-        return weight;
-    }
-    const calculateTotalValue = ()  => {
-        let value = 0
-
-        for (let product in currentYear) {
-            value = (value + currentYear[product].value)
-        }
-        return value;
-    }
-    const calculateTotalIncome = ()  => {
-        let income = 0
-
-        for (let product in currentYear) {
-            income = (income + currentYear[product].income)
-        }
-        return income;
-    }
-    const calculateTotalDelta = ()  => {
-        let delta = 0
-
-        for (let product in currentYear) {
-            delta = (delta + currentYear[product].delta)
-        }
-        return delta;
-    }
-
+    const months: any = {
+       'Januar': 0,
+        'Februar': 1,
+        'März': 2,
+        'April': 3,
+        'Mai': 4,
+        'Juni': 5,
+        'Juli': 6,
+        'August': 7,
+        'September': 8,
+        'Oktober': 9,
+        'November': 10,
+        'Dezember': 11
+}
     useEffect(() => {
-        let weight = calculateTotalWeight()
-        setTotalWeight(weight)
-        let income = calculateTotalIncome()
-        setTotalIncome(income)
-        let value = calculateTotalValue()
-        setTotalValue(value)
-        let delta = calculateTotalDelta()
-        setTotalDelta(delta)
+        currentYear == 0 ? setCurrentYear(moment().year()) : ''
 
-    }, [currentYear]);
+        const fetchData = async () => {
+
+            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/certificates')
+                .then((response) => {
+                    setWeighingCertificates(
+                        response.data.Items.filter((certificate: any) => certificate.client_id ==
+                            JSON.parse(sessionStorage.getItem('company') as string).client_id)
+                            .filter((certificate: any) => moment(certificate.endOfCycle).year() == currentYear)
+                    );
+
+                })
+                .catch((error) => {
+                    console.log(error.response);
+                });
+
+            let apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines';
+
+            await API.get(apiName)
+                .then((response) => {
+                    setMachinesData(response.data.Items.filter((machine: any) =>
+                        machine.client == JSON.parse(sessionStorage.getItem('company') as string).client_name));
+
+                })
+                .catch((error) => {
+                    console.log(error.response);
+                });
+
+            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/price-matrices')
+                .then((response) => {
+                    setPriceMatrices(
+                        response.data.Items
+                    );
+                })
+                .catch((error) => {
+                    console.log(error.response);
+                });
+        }
+
+        fetchData();
+
+    }, [currentYear, priceMatrices.set]);
+
+    let workingYears: number | string[] = []
+
+    for (let machine in machinesData) {
+        let machinesWorkingYears= Object.keys(machinesData[machine].price_list.prices)
+        for (let year in machinesWorkingYears) {
+            if (workingYears.includes(machinesWorkingYears[year]) == false) {
+                workingYears.push(machinesWorkingYears[year])
+            }
+        }
+    }
+
+    let waretypes: any[] = []
+
+    for (let machine in machinesData) {
+        if (!waretypes.includes(machinesData[machine].waretype)) {
+            waretypes.push(machinesData[machine].waretype)
+        }
+    }
 
     return(
         <div id="content-page" className="px-20">
-            <p className="mt-9 text-3xl font-bold mb-5">Jahreserlöse {currentYearString}</p>
+            <p className="mt-9 text-3xl font-bold mb-5">Jahreserlöse {currentYear}</p>
             <div className="mb-2.5">
-                <span onClick={()=>{setCurrentYear(revenues_2020);setCurrentYearString("2020")}}
-                      className="text-sm cursor-pointer underline m-1">2020</span>|
-                <span onClick={()=>{setCurrentYear(revenues_2021);setCurrentYearString("2021")}}
-                      className="text-sm cursor-pointer underline m-1">2021</span>|
-                <span onClick={()=>{setCurrentYear(revenues_2022);setCurrentYearString("2022")}}
-                      className="text-sm cursor-pointer underline m-1">2022</span>
+                <p className="text-sm">
+                    {
+                        workingYears.map((year: any) =>
+                            <a key={year}
+                               className="cursor-pointer"
+                               onClick={(e)=>{setCurrentYear(year)}}>
+                                <span className={currentYear == year ? 'font-bold underline' : ''}>
+                                    {year}
+                                </span>
+                                {" | "}
+                            </a>
+                        )
+                    }
+                    {
+                        // @ts-ignore
+                        <a key={Math.max((workingYears)) + 1}
+                           className="cursor-pointer"
+                           onClick={(e)=>{
+                               // @ts-ignore
+                               setCurrentYear(Math.max(workingYears) + 1);}
+                           }
+                        >
+                            <span className={
+                                // @ts-ignore
+                                currentYear == Math.max(workingYears) + 1
+                                    ? 'font-bold underline' : ''
+                            }>
+                                {// @ts-ignore
+                                    Math.max(workingYears) + 1
+                                }
+                            </span>
+                        </a>
+                    }
+                </p>
             </div>
 
             <div className="sm:rounded-lg shadow-md border">
@@ -182,33 +153,178 @@ const AnnualRevenues = () => {
                     </tr>
                     </thead>
                     <tbody className="bg-gray-50">
-                    {currentYear.map((year) =>
-                        <tr key={year.product} className="text-xs border-t">
-                            <td>{year.product}</td>
-                            <td className="text-right">{year.weight}</td>
-                            <td className="text-right">{year.value} €</td>
-                            <td className="text-right">{year.income} €</td>
-                            <td className="text-right">{year.delta} €</td>
+                    {waretypes.sort(function (a: any, b: any){
+                        if (a < b) {
+                            return -1;
+                        }
+                        if (a > b) {
+                            return 1;
+                        }
+                        return 0;
+                    }).map((waretype: any) =>
+                        <tr key={waretype} className="text-xs text-gray-500 text-left">
+                            <td>{waretype}</td>
+                            <td className='text-right'>
+                                {weighingCertificates && machinesData ? weighingCertificates.filter((certificate: any) =>
+                                    machinesData.filter((machine: any) =>
+                                        machine.waretype == waretype).map((machine: any) => machine.machine_id)
+                                        .includes(certificate.machine_id)
+                                ).reduce(function (a: any, b: any) {
+                                    return a + (parseInt(b['workingWeight']));
+                                }, 0) + '' : ''}
+                            </td>
+                            <td className='text-right'>
+                                {
+                                    weighingCertificates && machinesData  ?
+                                        monthsList.map((month: any) =>
+                                            weighingCertificates
+                                                .filter((certificate: any) =>
+                                                    moment(certificate.endOfCycle).month() == months[month]
+                                                    && machinesData.filter((machine: any) =>
+                                                        machine.machine_id == certificate.machine_id)[0].waretype
+                                                    == waretype
+                                                )
+                                                .reduce(function (a: any, b: any) {
+                                                    if (machinesData.filter((machine: any) =>
+                                                        machine.machine_id == b['machine_id'])[0].price_list.prices
+                                                        [currentYear]) {
+                                                        return a + ((parseInt(b['workingWeight']) *
+                                                            parseInt(machinesData.filter((machine: any) =>
+                                                                machine.machine_id == b['machine_id'])
+                                                                [0].price_list.prices[currentYear][month])) / 1000)
+                                                    }
+                                                else return a + 0
+                                                }, 0))
+                                            .reduce(function (a: any, b: any) {
+                                                return a + b
+                                            }, 0).toFixed(2).replace('.', ',') + ' €'
+                                        : ''
+                                }
+                            </td>
+                            <td className='text-right'>
+                                { weighingCertificates && machinesData ? weighingCertificates.filter((certificate: any) =>
+                                    machinesData.filter((machine: any) =>
+                                        machine.waretype == waretype).map((machine: any) => machine.machine_id)
+                                        .includes(certificate.machine_id)
+                                ).reduce(function (a: any, b: any) {
+                                    return a + (parseInt(b['income']));
+                                }, 0).toFixed(2).replace('.', ',') + ' €' : ''}
+                            </td>
+                            <td className='text-right'>
+                                {
+                                    weighingCertificates && machinesData  ?
+                                        ((monthsList.map((month: any) =>
+                                            weighingCertificates
+                                                .filter((certificate: any) =>
+                                                    moment(certificate.endOfCycle).month() == months[month]
+                                                    && machinesData.filter((machine: any) =>
+                                                        machine.machine_id == certificate.machine_id)[0].waretype
+                                                    == waretype
+                                                )
+                                                .reduce(function (a: any, b: any) {
+                                                    if (machinesData.filter((machine: any) =>
+                                                        machine.machine_id == b['machine_id'])[0].price_list.prices
+                                                        [currentYear]) {
+                                                        return a + ((parseInt(b['workingWeight']) *
+                                                            parseInt(machinesData.filter((machine: any) =>
+                                                                machine.machine_id == b['machine_id'])
+                                                                [0].price_list.prices[currentYear][month])) / 1000)
+                                                    }
+                                                        else return a + 0
+                                                }, 0))
+                                            .reduce(function (a: any, b: any) {
+                                                return a + b
+                                            }, 0)) - (weighingCertificates.filter((certificate: any) =>
+                                            machinesData.filter((machine: any) =>
+                                                machine.waretype == waretype).map((machine: any) => machine.machine_id)
+                                                .includes(certificate.machine_id)
+                                        ).reduce(function (a: any, b: any) {
+                                            return a + (parseInt(b['income']));
+                                        }, 0))).toFixed(2).replace('.', ',') + ' €'
+                                        : ''
+                                }
+                            </td>
                         </tr>
-                        )}
-                    <tr>
-                        <td colSpan={5}>
+                    )}
+                    <tr className='text-xs text-gray-500 p-0 m-0 text-left'>
+                        <td colSpan={5} className=''>
                             <hr/>
                         </td>
                     </tr>
-                    <tr className="text-xs">
+                    <tr className="text-xs text-gray-500 border-b text-left">
                         <td/>
-                        <td className="text-right">
-                            {totalWeight}
+                        <td className="text-right pt-1.5 pb-4">
+                            {weighingCertificates && machinesData ? weighingCertificates.filter((certificate: any) =>
+                                machinesData.map((machine: any) => machine.machine_id)
+                                    .includes(certificate.machine_id)
+                            ).reduce(function (a: any, b: any) {
+                                return a + (parseInt(b['workingWeight']));
+                            }, 0) + '' : ''}
                         </td>
-                        <td className="text-right">
-                            {totalValue} €
+                        <td className="text-right pt-1.5 pb-4">
+                            {
+                                weighingCertificates && machinesData  ?
+                                    monthsList.map((month: any) =>
+                                        weighingCertificates
+                                            .filter((certificate: any) =>
+                                                moment(certificate.endOfCycle).month() == months[month]
+                                            )
+                                            .reduce(function (a: any, b: any) {
+                                                if (machinesData.filter((machine: any) =>
+                                                    machine.machine_id == b['machine_id'])[0].price_list.prices
+                                                    [currentYear]) {
+                                                    return a + ((parseInt(b['workingWeight']) *
+                                                        parseInt(machinesData.filter((machine: any) =>
+                                                            machine.machine_id == b['machine_id'])
+                                                            [0].price_list.prices[currentYear][month])) / 1000)
+                                                }
+                                                else return a + 0
+                                            }, 0))
+                                        .reduce(function (a: any, b: any) {
+                                            return a + b
+                                        }, 0).toFixed(2).replace('.', ',') + ' €'
+                                    : ''
+                            }
                         </td>
-                        <td className="text-right">
-                            {totalIncome} €
+                        <td className="text-right pt-1.5 pb-4">
+                            { weighingCertificates && machinesData ? weighingCertificates.filter((certificate: any) =>
+                                machinesData.map((machine: any) => machine.machine_id)
+                                    .includes(certificate.machine_id)
+                            ).reduce(function (a: any, b: any) {
+                                return a + (parseInt(b['income']));
+                            }, 0).toFixed(2).replace('.', ',') + ' €' : ''}
                         </td>
-                        <td className="text-right">
-                            {totalDelta.toFixed(2)} €
+                        <td className="text-right pt-1.5 pb-4">
+                            {
+                                weighingCertificates && machinesData  ?
+                                    (monthsList.map((month: any) =>
+                                        weighingCertificates
+                                            .filter((certificate: any) =>
+                                                moment(certificate.endOfCycle).month() == months[month]
+                                            )
+                                            .reduce(function (a: any, b: any) {
+                                                if (machinesData.filter((machine: any) =>
+                                                    machine.machine_id == b['machine_id'])[0].price_list.prices
+                                                    [currentYear]) {
+                                                    return a + ((parseInt(b['workingWeight']) *
+                                                        parseInt(machinesData.filter((machine: any) =>
+                                                            machine.machine_id == b['machine_id'])
+                                                            [0].price_list.prices[currentYear][month])) / 1000)
+                                                }
+                                                else return a + 0
+                                            }, 0))
+                                        .reduce(function (a: any, b: any) {
+                                            return a + b
+                                        }, 0)
+
+                                    - weighingCertificates.filter((certificate: any) =>
+                                        machinesData.map((machine: any) => machine.machine_id)
+                                            .includes(certificate.machine_id)
+                                    ).reduce(function (a: any, b: any) {
+                                        return a + (parseInt(b['income']));
+                                    }, 0)).toFixed(2).replace('.', ',') + ' €'
+                                    : ''
+                            }
                         </td>
                     </tr>
                     </tbody>
