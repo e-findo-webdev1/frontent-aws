@@ -149,7 +149,7 @@ const PriceMatrix = () => {
                 <p className="text-lg font-bold mb-3">
                     Preismatrix: {priceMatrix.indexgroup_name + " - " + (fromHex(pid.sort_name) as string)}</p>
                 <p className="text-sm">
-                    { priceMatrix.price_matrix != "" ?
+                    { priceMatrix.price_matrix != "" && priceMatrix.prices ?
                         Object.keys(priceMatrix.prices)
                         .map((year: any) =>
                             <a key={year}
@@ -162,19 +162,19 @@ const PriceMatrix = () => {
                         ) : ''}
                     {
                         // @ts-ignore
-                        <a key={Math.max(...Object.keys(priceMatrix.prices)) + 1}
+                        <a key={priceMatrix.prices ? Math.max(...Object.keys(priceMatrix.prices)) + 1 : ''}
                            className="cursor-pointer"
-                           onClick={(e)=>{
+                           onClick={(e)=>{priceMatrix.prices ?
                                // @ts-ignore
-                               setCurrentYear(Math.max(...Object.keys(priceMatrix.prices)) + 1);}
+                               setCurrentYear(Math.max(...Object.keys(priceMatrix.prices)) + 1) : ''}
                         }
                         >
-                            <span className={
+                            <span className={ priceMatrix.prices &&
                                 // @ts-ignore
                                 currentYear == Math.max(...Object.keys(priceMatrix.prices)) + 1
                                 ? 'font-bold underline' : ''
                             }>
-                                {priceMatrix.price_matrix != "" ?
+                                {priceMatrix.price_matrix != "" && priceMatrix.prices ?
                                     // @ts-ignore
                                 Math.max(...Object.keys(priceMatrix.prices)) + 1 : ''}
                             </span>
