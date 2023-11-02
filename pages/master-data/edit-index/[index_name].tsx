@@ -210,7 +210,6 @@ const EditIndex = () => {
         11: 'Dezember'
     }
 
-    console.log(Object.keys(priceMatrix.prices))
 
 
         return(
@@ -257,19 +256,19 @@ const EditIndex = () => {
                             ) : ''}
                     {
                         // @ts-ignore
-                        <a key={Math.max(...Object.keys(priceMatrix.prices)) + 1}
+                        <a key={priceMatrix.prices ? Math.max(...Object.keys(priceMatrix.prices)) + 1 : ''}
                            className="cursor-pointer"
-                           onClick={(e)=>{
+                           onClick={(e)=>{priceMatrix.prices ?
                                // @ts-ignore
-                               setCurrentYear(Math.max(...Object.keys(priceMatrix.prices)) + 1);}
+                               setCurrentYear(Math.max(...Object.keys(priceMatrix.prices)) + 1) : ''}
                            }
                         >
-                    <span className={
+                    <span className={ priceMatrix.prices &&
                         // @ts-ignore
                         currentYear == Math.max(...Object.keys(priceMatrix.prices)) + 1
                             ? 'font-bold underline' : ''
                     }>
-                        {priceMatrix.price_matrix != "" ?
+                        {priceMatrix.prices && priceMatrix.price_matrix != "" ?
                             // @ts-ignore
                             Math.max(...Object.keys(priceMatrix.prices)) + 1 : ''}
                     </span>
@@ -285,7 +284,7 @@ const EditIndex = () => {
                     <div className="flex w-40">
                         <span className="text-xs py-1">{month}</span>
                         <input className="text-xs ml-auto border text-right px-2.5 rounded pl-2.5 py-1 mr-1 w-20"
-                               value={priceMatrix.prices[currentYear] && priceMatrix.prices[currentYear][month]
+                               value={priceMatrix.prices && priceMatrix.prices[currentYear] && priceMatrix.prices[currentYear][month]
                                && priceMatrix.prices[currentYear][month]
                                    // @ts-ignore
                                    [fromHex(pid.index_name)

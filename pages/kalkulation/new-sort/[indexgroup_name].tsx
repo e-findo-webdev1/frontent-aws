@@ -3,6 +3,7 @@ import API from "axios";
 import Link from "next/link";
 import {useRouter} from "next/router";
 import fromHex from "../../components/helpers/fromHex";
+import moment from "moment";
 import toHex from "../../components/helpers/toHex";
 
 
@@ -18,13 +19,18 @@ const NewSort = () => {
         setIndexgroupName(fromHex(pid.indexgroup_name))
     }, );
 
-    const responseBody = {sort_name: "", description: "", indexgroup_name: ""}
+    const responseBody = {sort_name: "", description: "", indexgroup_name: "", prices: {}}
 
     const onSubmitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         responseBody.sort_name = sortName
         responseBody.description = description
         responseBody.indexgroup_name = indexgroupName
+        responseBody.prices = {[moment().year()]: {
+                "Januar": {}, "Februar": {}, "März": {}, "April": {},
+                "Mai": {}, "Juni": {}, "Juli": {}, "August": {},
+                "September": {}, "Oktober": {}, "November": {}, "Dezember": {}
+            }}
         await sendData(responseBody)
         window.location.replace("/kalkulation/edit-sort/" + pid.indexgroup_name as string);
     }

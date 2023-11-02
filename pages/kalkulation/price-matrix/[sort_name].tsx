@@ -210,7 +210,7 @@ const PriceMatrix = () => {
                             {monthsList.map((month: any) => (
                                 <tr key={month} className="text-xs text-gray-500 border-b">
                                     <td>{month}</td>
-                                    {   priceMatrix.indeces && priceMatrix.price_matrix != ""
+                                    {   priceMatrix.indeces && priceMatrix.price_matrix != "" && priceMatrix.prices
                                         && priceMatrix.prices[currentYear] != undefined &&
                                         months[currentTime.month()] == month && priceMatrix.prices[currentYear][month]
                                     != undefined
