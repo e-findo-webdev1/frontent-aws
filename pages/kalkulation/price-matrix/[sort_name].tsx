@@ -154,7 +154,7 @@ const PriceMatrix = () => {
                         .map((year: any) =>
                             <a key={year}
                                className="cursor-pointer"
-                               onClick={(e)=>{setCurrentYear(year)}}
+                               onClick={(e)=>{setCurrentYear(Math.min(year))}}
                             >
                                 <span className={currentYear == year ? 'font-bold underline' : ''}>{year}</span>
                                 {" | "}
@@ -227,7 +227,7 @@ const PriceMatrix = () => {
                                                 .map((index: any) =>
                                                     <td key={index}>
                                                     <input  className="border rounded pl-2.5 py-0.5 w-full"
-                                                     value={priceMatrix.price_matrix != ""
+                                                     defaultValue={priceMatrix.price_matrix != ""
                                                      && priceMatrix.prices != undefined
                                                          ? priceMatrix.prices[currentYear][month][index] : 0}
                                                  onChange={
@@ -239,7 +239,7 @@ const PriceMatrix = () => {
                                                                      [currentYear]: {
                                                                          ...priceMatrix.prices[currentYear],
                                                                          [month]: {
-                                                                             ...priceMatrix.prices[month],
+                                                                             ...priceMatrix.prices[currentYear][month],
                                                                              [index]: e.target.value
                                                                          }
                                                                      }

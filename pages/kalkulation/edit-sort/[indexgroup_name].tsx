@@ -114,10 +114,13 @@ const EditSort = () => {
                                                 {priceMatrices
                                                     && priceMatrices.filter((matrix: any) =>
                                                         matrix.indexgroup_name == sort.indexgroup_name
+                                                        && matrix.price_matrix == sort.sort_name)[0]
+                                                    && priceMatrices.filter((matrix: any) =>
+                                                        matrix.indexgroup_name == sort.indexgroup_name
                                                     && matrix.price_matrix == sort.sort_name)[0].indeces
                                                     ? `${priceMatrices.filter((matrix: any) =>
                                                 matrix.indexgroup_name == sort.indexgroup_name
-                                                && matrix.price_matrix == sort.sort_name)[0].indeces.length} Indexe `
+                                                && matrix.price_matrix == sort.sort_name && matrix.indeces)[0].indeces.length} Indexe `
                                                     : "0 Indexe "}
                                                 <button className="p-2 font-bold text-xs border-accent-color-1
                                                     bg-accent-color-4 hover:bg-accent-color-5 sm:rounded-lg

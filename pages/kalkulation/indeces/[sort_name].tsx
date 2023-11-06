@@ -63,7 +63,7 @@ const IndecesManegement = () => {
             .catch(function (error) {
                 console.log(error);
             });
-        window.location.replace("/kalkulation/edit-sort/" + toHex(sort.indexgroup_name));
+        //window.location.replace("/kalkulation/indeces/" + pid.sort_name);
     }
 
     return(
@@ -81,7 +81,7 @@ const IndecesManegement = () => {
                     </button>
                 </Link>
             </div>
-            <p className="text-lg font-bold mb-3">
+            <p className="text-lg font-bold mb-3 pb-12">
                 {"Indexe zu der Sorte '" + sort.indexgroup_name + ' - ' + sort.sort_name + "'"}</p>
                 <div className="mb-3 sm:rounded-lg shadow-md border overflow-auto max-h-full w-3/5 mt-3">
                     <table className="flex-row w-full table-fixed">

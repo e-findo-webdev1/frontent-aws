@@ -4,7 +4,7 @@ import Link from "next/link";
 import {useRouter} from "next/router";
 import fromHex from "../../../components/helpers/fromHex";
 import toHex from "../../../components/helpers/toHex";
-
+import moment from "moment";
 
 const NewIndex = () => {
     const router = useRouter()
@@ -15,71 +15,60 @@ const NewIndex = () => {
         {
             sort_name: "", description: "", indexgroup_name: "", indeces: []}
     );
-    const [priceMatrix, setPriceMatrix] = useState<any>();
-    const [prices, setPrices] = useState<any>(
-        {
-            'Januar': {},
-            'Februar': {},
-            'März': {},
-            'April': {},
-            'Mai': {},
-            'Juni': {},
-            'Juli': {},
-            'August': {},
-            'September': {},
-            'Oktober': {},
-            'November': {},
-            'Dezember': {}
-        }
-    );
+    const [priceMatrix, setPriceMatrix] = useState<any>({});
+    const [prices, setPrices] = useState<any>({});
 
     useEffect(() => {
-        let apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/sorts';
 
-        API.get(apiName)
-            .then((response) => {
-                setSort(response.data.Items.filter((sort: any) => sort.sort_name == fromHex(pid.sort_name))[0])
-            })
-            .catch((error) => {
-                console.log(error.response);
-            });
+        const getData = async() => {
+            let apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/sorts';
 
-        API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/price-matrices')
-            .then((response) => {
-                setPriceMatrix(response.data.Items.filter((matrix: any) =>
-                    matrix.price_matrix == fromHex(pid.sort_name))[0])
-            })
-            .catch((error) => {
-                console.log(error.response);
-            });
+            await API.get(apiName)
+                .then((response) => {
+                    setSort(response.data.Items.filter((sort: any) => sort.sort_name == fromHex(pid.sort_name))[0])
+                })
+                .catch((error) => {
+                    console.log(error.response);
+                });
 
-    }, []);
+            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/price-matrices')
+                .then((response) => {
+                    setPriceMatrix(response.data.Items.filter((matrix: any) =>
+                        matrix.price_matrix == fromHex(pid.sort_name))[0]);
+                })
+                .catch((error) => {
+                    console.log(error.response);
+                });
+        }
+        getData()
+        setPrices(priceMatrix.prices)
+
+    }, );
 
     const onSubmitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        setPrices({
-            'Januar': {...prices, [indexName]: 0},
-            'Februar': {...prices, [indexName]: 0},
-            'März': {...prices, [indexName]: 0},
-            'April': {...prices, [indexName]: 0},
-            'Mai': {...prices, [indexName]: 0},
-            'Juni': {...prices, [indexName]: 0},
-            'Juli': {...prices, [indexName]: 0},
-            'August': {...prices, [indexName]: 0},
-            'September': {...prices, [indexName]: 0},
-            'Oktober': {...prices, [indexName]: 0},
-            'November': {...prices, [indexName]: 0},
-            'Dezember': {...prices, [indexName]: 0}
-        })
+        setPrices({[moment().year()]: {
+                'Januar': {...prices[moment().year()]['Januar'], [indexName]: 0},
+                'Februar': {...prices[moment().year()]['Februar'], [indexName]: 0},
+                'März': {...prices[moment().year()]['März'], [indexName]: 0},
+                'April': {...prices[moment().year()]['April'], [indexName]: 0},
+                'Mai': {...prices[moment().year()]['Mai'], [indexName]: 0},
+                'Juni': {...prices[moment().year()]['Juni'], [indexName]: 0},
+                'Juli': {...prices[moment().year()]['Juli'], [indexName]: 0},
+                'August': {...prices[moment().year()]['August'], [indexName]: 0},
+                'September': {...prices[moment().year()]['September'], [indexName]: 0},
+                'Oktober': {...prices[moment().year()]['Oktober'], [indexName]: 0},
+                'November': {...prices[moment().year()]['November'], [indexName]: 0},
+                'Dezember': {...prices[moment().year()]['Dezember'], [indexName]: 0}
+            }})
         let indeces
         {priceMatrix.indeces ? indeces = [...priceMatrix.indeces, indexName] : indeces = [indexName]}
         await sendData(indeces)
-        window.location.replace("/kalkulation/edit-sort/" + toHex(sort.indexgroup_name));
     }
 
 
-    const sendData = (indeces: any) => {
-        API.put('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/price-matrices',
+    const sendData = async (indeces: any) => {
+        await API.put('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/price-matrices',
             {price_matrix: sort.sort_name, indexgroup_name: sort.indexgroup_name,
                 indeces: indeces, prices: prices})
             .then(function (response) {
@@ -88,6 +77,7 @@ const NewIndex = () => {
             .catch(function (error) {
                 console.log(error);
             });
+        window.location.replace("/kalkulation/edit-sort/" + toHex(sort.indexgroup_name));
     }
 
     return(

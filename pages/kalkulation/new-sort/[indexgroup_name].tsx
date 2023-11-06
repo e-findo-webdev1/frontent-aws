@@ -27,10 +27,10 @@ const NewSort = () => {
         responseBody.description = description
         responseBody.indexgroup_name = indexgroupName
         responseBody.prices = {[moment().year()]: {
-                "Januar": {}, "Februar": {}, "März": {}, "April": {},
-                "Mai": {}, "Juni": {}, "Juli": {}, "August": {},
-                "September": {}, "Oktober": {}, "November": {}, "Dezember": {}
-            }}
+            "Januar": {}, "Februar": {}, "März": {}, "April": {},
+            "Mai": {}, "Juni": {}, "Juli": {}, "August": {},
+            "September": {}, "Oktober": {}, "November": {}, "Dezember": {}
+        }}
         await sendData(responseBody)
         window.location.replace("/kalkulation/edit-sort/" + pid.indexgroup_name as string);
     }
@@ -45,7 +45,11 @@ const NewSort = () => {
                 console.log(error);
             });
         await API.put('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/price-matrices',
-            {price_matrix: responseBody.sort_name, indexgroup_name: indexgroupName})
+            {price_matrix: responseBody.sort_name, indexgroup_name: indexgroupName, prices: {[moment().year()]: {
+                        "Januar": {}, "Februar": {}, "März": {}, "April": {},
+                        "Mai": {}, "Juni": {}, "Juli": {}, "August": {},
+                        "September": {}, "Oktober": {}, "November": {}, "Dezember": {}
+                    }}})
             .then(function (response) {
                 console.log(response);
             })
@@ -54,6 +58,8 @@ const NewSort = () => {
             });
 
     }
+
+
 
     return(
         <div className="px-20">
