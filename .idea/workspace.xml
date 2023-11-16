@@ -5,20 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="46e0077f-1afc-4c07-b20b-cd300e9edac7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/pages/reporting/co2-evaluation/co2-calculation.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/components/navigation/Breadcrumbs.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/components/navigation/Breadcrumbs.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/components/navigation/NavigationButtons.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/components/navigation/NavigationButtons.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/components/start/PopupFilling.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/components/start/PopupFilling.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/components/start/StorageSystemDashboard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/components/start/StorageSystemDashboard.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/impressum.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/impressum.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/kalkulation.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/kalkulation.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/kalkulation/indeces/[sort_name].tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/kalkulation/indeces/[sort_name].tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/kalkulation/indeces/new-index/[sort_name].tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/kalkulation/indeces/new-index/[sort_name].tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/reporting.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/reporting.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/reporting/co2-evaluation.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/reporting/co2-evaluation.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/reporting/monthly-evaluation.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/reporting/monthly-evaluation.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/reporting/co2-evaluation/co2-calculation.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/reporting/co2-evaluation/co2-calculation.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -139,7 +126,7 @@
       <workItem from="1699531628197" duration="8013000" />
       <workItem from="1699617114127" duration="6258000" />
       <workItem from="1699885114646" duration="8000" />
-      <workItem from="1699966552544" duration="6807000" />
+      <workItem from="1699966552544" duration="6860000" />
     </task>
     <servers />
   </component>

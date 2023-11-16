@@ -142,7 +142,11 @@ const Co2Calculation = () => {
 
         return totalco2
     }
-
+    //<Link href="/master-data">
+    //  <button className="float-right border ml-auto p-1.5 px-3.5 font-bold border-accent-color-1 bg-accent-color-4
+    //          hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs mt-10">Drucken
+    // </button>
+    //</Link>
     return (
         <div id="content-page" className="overflow-auto h-full px-48">
             <Link href="/reporting/co2-evaluation">
@@ -150,11 +154,7 @@ const Co2Calculation = () => {
                         hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs mt-10">← Zurück
                 </button>
             </Link>
-            <Link href="/master-data">
-                <button className="float-right border ml-auto p-1.5 px-3.5 font-bold border-accent-color-1 bg-accent-color-4
-                        hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs mt-10">Drucken
-                </button>
-            </Link>
+
             <div className="columns-2 min-w-max">
                 <p className="mt-9 text-3xl font-bold mb-10">CO<sub>2</sub>-Auswertung</p>
                 <div className="min-w-max">
