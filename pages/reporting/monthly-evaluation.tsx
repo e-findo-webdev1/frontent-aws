@@ -921,7 +921,8 @@ const MonthlyEvaluation = () => {
                                     && certificates.filter((certificate: any)=>
                                         certificate.document_id == document.document_id).length != 0 ? "underline" : "pointer-events-none"}
                                             onClick={()=>setPopupCertificate(document.document_id)}>
-                                        {certificates && certificates.filter((certificate: any)=>
+                                        {certificates && certificates.set != false && certificates.set != true
+                                        && certificates.filter((certificate: any)=>
                                             certificate.document_id == document.document_id).length != 0
                                         && certificates.filter((certificate: any)=>
                                             certificate.document_id == document.document_id)[0].income ? certificates

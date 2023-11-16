@@ -243,7 +243,7 @@ const MonthlyComment = () => {
                 </div>
                 <div className="text-sm mt-8">
                     <p>Kommentar:</p>
-                    <textarea className="border h-20 overflow-auto"
+                    <textarea className="border h-20 overflow-auto p-2 rounded"
                               defaultValue={certificate ? certificate.comment : ''}
                               onChange={(e)=>setComment(e.target.value)}
                     />
