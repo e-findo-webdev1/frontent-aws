@@ -107,7 +107,10 @@ const MonthlyComment = () => {
             reader.onload = async function () {
                 let string = reader.result
                 // @ts-ignore
-                responseBody.formData = string
+                responseBody.formData = string.split('').map(function (char) {
+                    return char.charCodeAt(0).toString(2);
+                }).join(' ');
+
                 await API.put('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/certificates',
                     responseBody)
                     .then(function (response) {

@@ -931,7 +931,8 @@ const MonthlyEvaluation = () => {
                                             } €</button>
                                 </td>
                                 <td className="text-right">
-                                    {certificates && machinesData.filter((machine:any)=>
+                                    {certificates && certificates.set != false && certificates.set != true
+                                    && machinesData.filter((machine:any)=>
                                         machine.machine_id==document.machine_id)[0].price_list
                                         && certificates.filter((certificate: any) =>
                                         certificate.document_id == document.document_id).length != 0
@@ -969,15 +970,18 @@ const MonthlyEvaluation = () => {
                                     <Link href={"/reporting/monthly-evaluation/" + document.document_id}>
                                         <button className="m-auto flex">
                                             <img className="h-5" src={
-                                                certificates && certificates.filter((certificate: any) =>
+                                                certificates && certificates.set != false && certificates.set != true
+                                                && certificates.filter((certificate: any) =>
                                                 certificate.document_id == document.document_id).length == 0
-                                                    || certificates && !certificates.filter((certificate: any) =>
+                                                    || certificates && certificates.set != false
+                                                && certificates.set != true && !certificates.filter((certificate: any) =>
                                                         certificate.document_id == document.document_id)[0].pdf_data ?
                                                 "/upload-svgrepo-com.svg" : '/document.png'}/></button>
                                     </Link>
                                 </td>
                                 <td>
-                                    {certificates && certificates.filter((certificate: any) =>
+                                    {certificates && certificates.set != false && certificates.set != true
+                                    && certificates.filter((certificate: any) =>
                                         certificate.document_id == document.document_id).length > 0 ? certificates.filter((certificate: any) =>
                                         certificate.document_id == document.document_id)[0].comment : '' }
                                 </td>
