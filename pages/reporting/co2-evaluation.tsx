@@ -163,13 +163,14 @@ const Co2Evaluation = () => {
                     ); setUserMessage(2)}}
                                 className="border text-center rounded w-28 font-light"/>
                 </div>
-                <div className="mt-5 ml-10 flex space-x-3.5">
-                    <button className="border p-1.5 px-3.5 font-bold border-accent-color-1 bg-accent-color-4
-                        hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs">Drucken</button>
-                </div>
+
             </div>
         </div>
     )
 }
+//<div className="mt-5 ml-10 flex space-x-3.5">
+   // <button className="border p-1.5 px-3.5 font-bold border-accent-color-1 bg-accent-color-4
+      //                  hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs">Drucken</button>
+//</div>
 
 export default Co2Evaluation
