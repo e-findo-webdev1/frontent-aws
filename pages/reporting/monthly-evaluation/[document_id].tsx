@@ -33,6 +33,7 @@ const MonthlyComment = () => {
     const [workingWeight, setWorkingWeight] = useState<any>(0);
     const [certificate, setCertificate] = useState<any>({set:false});
     const [comment, setComment] = useState<any>('');
+    const [errorCode, setErrorCode] = useState(0);
 
     useEffect(() => {
         setIsFileSent(false)
@@ -101,26 +102,35 @@ const MonthlyComment = () => {
         responseBody.machine_id = controlDocument[0].machine_id
         responseBody.endOfCycle = controlDocument[0].endOfCycle
 
+
+        function stringToArrayBuffer(str: any) {
+            const arr = new Uint8Array(str.length / 8);
+            for(let i = 0; i<str.length; i+=8) {
+                arr[i/8] = parseInt(str.slice(i, i+8), 2);
+            }
+            return arr;
+        }
+
         const getBase64 = async (file: any) => {
             let reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onload = async function () {
                 let string = reader.result
-                // @ts-ignore
-                responseBody.formData = string.split('').map(function (char) {
-                    return char.charCodeAt(0).toString(2);
-                }).join(' ');
 
-                await API.put('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/certificates',
-                    responseBody)
-                    .then(function (response) {
-                        console.log(response);
-                        setIsFileSent(true)
-                    })
-                    .catch(function (error) {
-                        console.log(error);
-                    });
+                // @ts-ignore
+                responseBody.formData = string
+                    await API.put('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/certificates',
+                        responseBody)
+                        .then(function (response) {
+                            console.log(response);
+                            setIsFileSent(true)
+                        })
+                        .catch(function (error) {
+                            setErrorCode(1)
+                            console.log(error);
+                        });
             };
+
             reader.onerror = function (error) {
                 console.log('Error: ', error);
             };
@@ -253,6 +263,7 @@ const MonthlyComment = () => {
                 </div>
                 <div className="text-sm mt-8">
                     <p>Wiegeschein hochladen:</p>
+                    <p className="text-red-600 text-sm pt-0.5 font-light">{errorCode == 0 ? '' : 'Datei zu groß!'}</p>
                     <div>
                         <input type="file" name="file" onChange={changeHandler} />
                         <div>
