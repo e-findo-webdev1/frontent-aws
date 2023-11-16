@@ -3,6 +3,7 @@ import React, {useEffect, useState} from "react";
 import API from "axios";
 import {useRouter} from "next/router";
 import moment from "moment";
+import toHex from "../../components/helpers/toHex";
 
 const MonthlyComment = () => {
     const monthsList = [
