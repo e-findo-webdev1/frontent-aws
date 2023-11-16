@@ -1,8 +1,9 @@
 const Impressum = () => {
     return(
-        <div className="px-20 overflow-auto h-full text-justify">
-            <div className="text-xs mt-3 w-1/2">
-                <span className="font-semibold text-sm">Verantwortlich für den Inhalt und Inhaber der Website:</span><br/>
+        <div className="overflow-auto h-full px-48 overflow-auto h-full text-justify" id="content-page">
+            <p className="my-9 text-3xl font-bold">Impressum</p>
+            <div className="text-xs mt-3 max-w-xl">
+                <span className="font-semibold text-lg">Verantwortlich für den Inhalt und Inhaber der Website:</span><br/>
                 <br/>
                 <span className="text-xs font-light">
                 e-findo GmbH<br/>
@@ -18,7 +19,7 @@ const Impressum = () => {
                 www.e-findo.de<br/>
                 </span>
                 <br/>
-                <span className="font-semibold text-sm">Haftungsbeschränkung für externe Links und Urheberrecht:</span>
+                <span className="font-semibold text-lg">Haftungsbeschränkung für externe Links und Urheberrecht:</span>
                 <br/>
                 <br/>
                 <div className="font-light">

@@ -44,7 +44,7 @@ const StorageSystemDashboard = () => {
                             response.data.Items
                                 .filter( (document: any) =>
                                     machinesData.reduce( function(a: any, b: any){
-                                        return [] + (b['machine_id']);
+                                        return a + (b['machine_id']);
                                     }).includes(document.machine_id)
                                 )
                         );

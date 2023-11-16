@@ -77,7 +77,7 @@ const NewIndex = () => {
             .catch(function (error) {
                 console.log(error);
             });
-        window.location.replace("/kalkulation/edit-sort/" + toHex(sort.indexgroup_name));
+        window.location.replace("/kalkulation/indeces/" + pid.sort_name)
     }
 
     return(

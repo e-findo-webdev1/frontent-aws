@@ -59,6 +59,7 @@ const Breadcrumbs = () => {
                                 .replace("edit-sort", "/kalkulation/index-management")
                                 .replace("edit-indexgroup", "/kalkulation/index-management")
                                 .replace("machines", "/")
+                                .replace("co2-evaluation", "/reporting/co2-evaluation")
                             }>
                                 <a className={
                                     route == "[id]" || route == "user-data" || route == "master-data"
@@ -87,6 +88,7 @@ const Breadcrumbs = () => {
                                             .replace("annual-evaluation", "Jahresauswertung")
                                             .replace("index-management", "Indexverwaltung")
                                             .replace("new-indexgroup", "Neue Indexgrouppe")
+                                            .replace("co2-evaluation", "CO" + "2" + " Auswertung")
                                             .replace("edit-sort", "Sorten Anpassung")
                                             .replace("new-sort", "Neue Sorte")
                                             .replace("price-matrix", "Preismatrix")
@@ -99,6 +101,7 @@ const Breadcrumbs = () => {
                                             .replace("edit-index", "Index Anpassung")
                                             .replace("new-contractor", "Neuer Auftragnehmer")
                                             .replace("edit-contractor", "Auftragnehmer Anpassung")
+                                            .replace("co2-calculation", "Berechnung")
                                             .replace("[quality_id]", "")
                                             .replace("[material_id]", "")
                                             .replace("[index_name]", "")

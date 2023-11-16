@@ -646,7 +646,7 @@ const MonthlyEvaluation = () => {
         }
         fetchData()
     }, [controlDocuments.set, selectedMonth, myChart.set, selectedMachine, selectedCategory, certificates.set]);
-
+    console.log(certificates)
     const handlePopupSend = async () => {
         let certificate = certificates.filter((certificate: any)=> certificate.document_id == popupCertificate)[0]
         let responseBody = {
@@ -899,7 +899,7 @@ const MonthlyEvaluation = () => {
                                         : '0.00'} €
                                 </td>
                                 <td className="text-right">
-                                    { certificates && machinesData.filter((machine:any)=>
+                                    { certificates && machinesData && machinesData.filter((machine:any)=>
                                         machine.machine_id==document.machine_id)[0].price_list &&
                                     certificates.filter((certificate: any) =>
                                         certificate.document_id == document.document_id).length != 0

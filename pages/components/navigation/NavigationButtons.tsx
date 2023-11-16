@@ -9,7 +9,7 @@ const NavigationButtons = () => {
     }
 
     return(
-        <div id="navigation-buttons" className="flex ml-auto space-x-2 mr-10">
+        <div id="navigation-buttons" className="flex ml-auto space-x-2 mt-2.5 mr-10">
                 <Link href="/">
                     <button type="submit" className="flex" onClick={()=>userLogout()}>
                         <img className="m-auto mr-1.5 " src="/power-on-svgrepo-com 1.svg" width="15"/>

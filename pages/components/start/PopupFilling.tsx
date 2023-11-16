@@ -174,30 +174,6 @@ const PopupFilling = ({machineID, pickupDate, setPickupDates, setMachineID, setP
                 </div>
             </div>
             <div className="flex space-x-3">
-                <div className="flex items-center">
-                    <input id="radio-1" type="radio" value="" name="default-radio"
-                           //checked={}
-                           onChange={()=>{}}
-                           className="w-3 h-3 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500
-                               dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700
-                               dark:border-gray-600"/>
-                    <label htmlFor="radio-1"
-                           className="flex ml-2 text-xs font-medium text-gray-900 dark:text-gray-300">
-                        PDF generieren
-                    </label>
-                </div>
-                <div className="flex items-center">
-                    <input id="radio-2" type="radio" value="" name="default-radio"
-                           //checked={}
-                           onChange={()=>{}}
-                           className="w-3 h-3 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500
-                               dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700
-                               dark:border-gray-600"/>
-                    <label htmlFor="radio-2"
-                           className="flex ml-2 text-xs font-medium text-gray-900 dark:text-gray-300">
-                        Dispo-Programm
-                    </label>
-                </div>
             </div>
             <div id="popup-buttons" className="space-x-5">
                 <button className="sm:rounded-lg shadow-md border p-1"
