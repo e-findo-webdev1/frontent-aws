@@ -34,6 +34,7 @@ const MonthlyComment = () => {
     const [certificate, setCertificate] = useState<any>({set:false});
     const [comment, setComment] = useState<any>('');
     const [errorCode, setErrorCode] = useState(0);
+    const [isCommentSaved, setIsCommentSaved] = useState<any>(0);
 
     useEffect(() => {
         setIsFileSent(false)
@@ -79,7 +80,7 @@ const MonthlyComment = () => {
             .catch((error) => {
                 console.log(error.response);
             });
-    }, [controlDocument.set, isFileSent, certificate.set]);
+    }, [controlDocument.set, isFileSent, certificate.set, isCommentSaved]);
 
     const changeHandler = () => {
         // @ts-ignore
@@ -93,6 +94,7 @@ const MonthlyComment = () => {
     }
 
     const handleSubmission = async (e: any) => {
+        setIsCommentSaved(1)
 
         responseBody.document_id = pid.document_id
         responseBody.workingWeight = workingWeight
@@ -256,9 +258,16 @@ const MonthlyComment = () => {
                 </div>
                 <div className="text-sm mt-8">
                     <p>Kommentar:</p>
+                    <p className="text-sm text-green-600 pt-0.5 font-light">{isCommentSaved == 0 ? '' :
+                        isCommentSaved == 1 ? 'Kommentar gespeichert.'
+                            : isCommentSaved == 2 ? '...' : ''
+                    }</p>
                     <textarea className="border h-20 overflow-auto p-2 rounded"
                               defaultValue={certificate ? certificate.comment : ''}
-                              onChange={(e)=>setComment(e.target.value)}
+                              onChange={(e)=> {
+                                  setComment(e.target.value)
+                              }
+                    }
                     />
                 </div>
                 <div className="text-sm mt-8">
