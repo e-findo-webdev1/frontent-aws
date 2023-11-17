@@ -29,8 +29,9 @@ const IndexManagement = () => {
     }
 
     return(
-        <div className="px-20">
-            <div className="flex mb-5">
+        <div className="overflow-auto h-full px-48 m-auto">
+            <p className="my-9 text-3xl font-bold">Indexverwaltung</p>
+            <div className="mb-5 w-max">
                 <Link href="/kalkulation/new-indexgroup"><button className="border ml-auto p-1.5 px-3.5 font-bold
                               border-accent-color-1 bg-accent-color-4
                               hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs">
@@ -38,7 +39,7 @@ const IndexManagement = () => {
                 </button>
                 </Link>
             </div>
-            <div className="mb-10 sm:rounded-lg shadow-md border overflow-auto">
+            <div className="mb-10 sm:rounded-lg shadow-md border overflow-auto m-auto">
                 <table className="flex-row w-full table-auto">
                     <thead>
                     <tr className="text-xs text-gray-500 border-b text-left">

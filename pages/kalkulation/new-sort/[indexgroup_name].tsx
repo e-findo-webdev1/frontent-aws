@@ -62,7 +62,7 @@ const NewSort = () => {
 
 
     return(
-        <div className="px-20">
+        <div className="overflow-auto h-full px-48 m-auto">
             <Link href={"/kalkulation/edit-sort/" + pid.indexgroup_name}>
                 <button className="float-right border ml-auto p-1.5 px-3.5 font-bold border-accent-color-1 bg-accent-color-4
                         hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs">← Zurück

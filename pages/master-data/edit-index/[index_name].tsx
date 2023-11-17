@@ -213,7 +213,7 @@ const EditIndex = () => {
 
 
         return(
-        <div id="content-page" className="px-20 overflow-auto h-full">
+        <div id="content-page" className="overflow-auto h-full px-48 m-auto">
             <p className="mb-3 text-3xl font-bold">Index</p>
             <form>
                 <table className="mb-3 text-xs">

@@ -395,7 +395,7 @@ const StorageSystemDashboard = () => {
     }
 
     return (
-        <div id="storage-system" className="mt-5 mr-10">
+        <div id="storage-system" className="mr-10">
               <span className="text-xs uppercase font-bold text-gray-500">
                   Lagersysteme
               </span>
@@ -647,7 +647,7 @@ const StorageSystemDashboard = () => {
                 </div>
             </div>
             <div id="summary"
-                 className="mt-8 overflow-auto sm:rounded-lg shadow-md border flex-row text-center
+                 className="mt-5 overflow-auto sm:rounded-lg shadow-md border flex-row text-center
                  py-7 mt-1 text-xs">
                 <div className="flex">
                     <p className="flex-grow flex-1">

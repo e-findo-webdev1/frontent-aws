@@ -102,7 +102,7 @@ const AnnualRevenues = () => {
     }
 
     return(
-        <div id="content-page" className="px-20">
+        <div id="content-page" className="overflow-auto h-full px-48 m-auto">
             <p className="mt-9 text-3xl font-bold mb-5">Jahreserlöse {currentYear}</p>
             <div className="mb-2.5">
                 <p className="text-sm">

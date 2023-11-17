@@ -70,7 +70,7 @@ const UserData = () => {
     },[] );
 
     return(
-      <div id="content-page" className="px-24 h-full overflow-auto">
+      <div id="content-page" className="overflow-auto h-full px-48 m-auto">
           <div className="grid grid-cols-3">
               <div className="mr-5">
                   <div className="mt-10">

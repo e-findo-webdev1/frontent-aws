@@ -181,13 +181,13 @@ const MachineStorageHistory = () => {
     }
 
     return(
-        <div id="content-page" className="mx-10 p-10">
+        <div id="content-page" className="overflow-auto h-full px-48 m-auto">
             <Link href="/">
                 <button className="float-right border ml-auto p-1.5 px-3.5 font-bold border-accent-color-1 bg-accent-color-4
                         hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs mt-10">← Zurück
                 </button>
             </Link>
-            <p className="text-3xl font-bold">Übersicht</p>
+            <p className="text-3xl font-bold mt-10">Übersicht</p>
             <span className="text-sm font-bold">Status Maschine</span>
             <div className="text-sm flex">
                 <div className="flex space-x-9 mt-4 mb-2">

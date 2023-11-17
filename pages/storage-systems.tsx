@@ -161,7 +161,7 @@ const machineList = [
 
 const StorageSystems: NextPage = () => {
     return (
-        <div id="content-page" className="p-20">
+        <div id="content-page" className="overflow-auto h-full px-48 m-auto">
             <div className="sm:rounded-lg shadow-md border overflow-auto h-[30.5rem] overflow-auto">
                 <table className="table-auto w-full">
                     <thead>

@@ -88,7 +88,7 @@ const NewWorker = () => {
     }
 
     return(
-        <div id="content-page" className="px-20 h-full overflow-auto">
+        <div id="content-page" className="overflow-auto h-full px-48 m-auto">
                 <form onSubmit={onSubmitHandler}>
                     <Link href={"/master-data/" + JSON.parse(sessionStorage.getItem('company') as string).client_id}>
                         <button className="float-right border ml-auto p-1.5 px-3.5 font-bold border-accent-color-1 bg-accent-color-4

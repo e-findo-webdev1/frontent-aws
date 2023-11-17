@@ -103,8 +103,8 @@ const ShiftManager = () => {
     }
 
     return(
-        <div id="content-page" className="px-20 h-full overflow-auto">
-                <p className="mt-5 text-3xl font-bold mb-5">Schichten</p>
+        <div id="content-page" className="overflow-auto h-full px-48 m-auto">
+                <p className="mt-9 text-3xl font-bold mb-5">Schichten</p>
             <div className="flex-row">
                 <p className="text-sm">Anzahl Schichten:</p>
                 { shifts.shiftHours && numberOfShifts != -1 ?

@@ -263,7 +263,7 @@ const ShiftCalendar = () => {
     }
 
     return(
-        <div id="content-page" className="px-20 h-full overflow-auto">
+        <div id="content-page" className="overflow-auto h-full px-48 m-auto">
             <p className="mt-5 text-3xl font-bold mb-5">Arbetszeiten</p>
             <div className="mb-10 sm:rounded-lg shadow-md border overflow-auto">
                 <table className="flex-row w-full table-auto">

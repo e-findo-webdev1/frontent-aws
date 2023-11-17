@@ -103,8 +103,8 @@ const NewMachine = () => {
 
 
     return(
-        <div id="content-page" className="mx-20 overflow-auto h-full">
-            <p className="mb-7 text-3xl font-bold">Maschinen</p>
+        <div id="content-page" className="overflow-auto h-full px-48 m-auto">
+            <p className="mb-7 mt-10 text-3xl font-bold">Maschinen</p>
             <div>
                 <form onSubmit={onSubmitHandler}>
                     <table className="text-sm">

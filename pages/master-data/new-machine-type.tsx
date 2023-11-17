@@ -56,7 +56,7 @@ const NewMachineType = () => {
     }
 
     return (
-        <div id="content-page" className="px-20 h-full overflow-auto">
+        <div id="content-page" className="overflow-auto h-full px-48 m-auto">
             <Link href="/master-data">
                 <button className="float-right border ml-auto p-1.5 px-3.5 font-bold border-accent-color-1 bg-accent-color-4
                         hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs mt-10">← Zurück

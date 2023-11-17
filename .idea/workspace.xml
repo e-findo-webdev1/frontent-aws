@@ -5,8 +5,47 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="46e0077f-1afc-4c07-b20b-cd300e9edac7" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/pages/reporting/waste-balance.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/components/start/StorageSystemDashboard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/components/start/StorageSystemDashboard.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/kalkulation.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/kalkulation.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/kalkulation/edit-indexgroup/[indexgroup_name].tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/kalkulation/edit-indexgroup/[indexgroup_name].tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/kalkulation/edit-sort/[indexgroup_name].tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/kalkulation/edit-sort/[indexgroup_name].tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/kalkulation/edit-sort/sort/[sort_name].tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/kalkulation/edit-sort/sort/[sort_name].tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/kalkulation/indeces/[sort_name].tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/kalkulation/indeces/[sort_name].tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/kalkulation/indeces/edit-index/[index_name].tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/kalkulation/indeces/edit-index/[index_name].tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/kalkulation/indeces/new-index/[sort_name].tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/kalkulation/indeces/new-index/[sort_name].tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/kalkulation/index-management.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/kalkulation/index-management.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/kalkulation/new-indexgroup.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/kalkulation/new-indexgroup.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/kalkulation/new-sort/[indexgroup_name].tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/kalkulation/new-sort/[indexgroup_name].tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/kalkulation/price-matrix/[sort_name].tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/kalkulation/price-matrix/[sort_name].tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/machines/[id].tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/machines/[id].tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/master-data.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/master-data.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/master-data/[client].tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/master-data/[client].tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/master-data/edit-client/[client].tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/master-data/edit-client/[client].tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/master-data/edit-contractor/[contractor_id].tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/master-data/edit-contractor/[contractor_id].tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/master-data/edit-index/[index_name].tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/master-data/edit-index/[index_name].tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/master-data/edit-machine-type/[machine_type_id].tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/master-data/edit-machine-type/[machine_type_id].tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/master-data/edit-machine/[id].tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/master-data/edit-machine/[id].tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/master-data/edit-material/[material_id].tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/master-data/edit-material/[material_id].tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/master-data/edit-quality/[quality_id].tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/master-data/edit-quality/[quality_id].tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/master-data/edit-worker/[user].tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/master-data/edit-worker/[user].tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/master-data/new-contractor.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/master-data/new-contractor.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/master-data/new-machine-type.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/master-data/new-machine-type.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/master-data/new-machine.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/master-data/new-machine.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/master-data/new-material.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/master-data/new-material.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/master-data/new-quality.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/master-data/new-quality.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/master-data/new-worker.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/master-data/new-worker.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/master-data/shift-calendar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/master-data/shift-calendar.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/master-data/shift-manager.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/master-data/shift-manager.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/new-client.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/new-client.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/reporting.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/reporting.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/reporting/annual-evaluation.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/reporting/annual-evaluation.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/reporting/annual-revenues.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/reporting/annual-revenues.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pages/reporting/control-documents.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/reporting/control-documents.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/reporting/monthly-evaluation.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/reporting/monthly-evaluation.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/storage-systems.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/storage-systems.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -16,8 +55,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="TypeScript JSX File" />
         <option value="TypeScript File" />
+        <option value="TypeScript JSX File" />
       </list>
     </option>
   </component>
@@ -128,7 +167,7 @@
       <workItem from="1699617114127" duration="6258000" />
       <workItem from="1699885114646" duration="8000" />
       <workItem from="1699966552544" duration="12092000" />
-      <workItem from="1700223748596" duration="411000" />
+      <workItem from="1700223748596" duration="5102000" />
     </task>
     <servers />
   </component>

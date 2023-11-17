@@ -4,7 +4,7 @@ const Kalkulation = () => {
 
     if (JSON.parse(sessionStorage.getItem('user') as string).calculationPermission) {
         return(
-            <div id="content-page" className="overflow-auto h-full px-48">
+            <div id="content-page" className="overflow-auto h-full px-48 m-auto">
                 <p className="my-9 text-3xl font-bold">Indexgruppen</p>
                 <div className="flex h-[28rem] m-auto space-x-10 font-bold text-sm">
                     <div className="m-x-auto space-y-12 w-1/2">

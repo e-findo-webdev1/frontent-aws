@@ -47,7 +47,11 @@ const Reporting = () => {
                     </Link>
                 </div>
                 <div className="mt-5 m-x-auto w-1/2">
-
+                    <Link href="/reporting/waste-balance">
+                        <button className="w-full p-3.5 border-accent-color-1 bg-accent-color-4 hover:bg-accent-color-5
+                        sm:rounded-lg shadow-md border">
+                            Abfallbilanz</button>
+                    </Link>
                 </div>
             </div>
         </div>

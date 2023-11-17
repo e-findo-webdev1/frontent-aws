@@ -570,7 +570,7 @@ const AnnualEvaluation = () => {
     },[currentYear, selectedMachine, myChart.set, controlDocuments.set, selectedCategory])
 
     return(
-        <div id="content-page" className="overflow-auto h-full px-20">
+        <div id="content-page" className="overflow-auto h-full px-48 m-auto">
             <p className="mt-9 text-3xl font-bold mb-5">Jahresauswertung</p>
             <div className="flex space-x-2 text-sm">
                 <span>Maschine:</span>
@@ -634,7 +634,7 @@ const AnnualEvaluation = () => {
                 <div className="mb-10 mt-5 w-10/12" id="line-chart"/>
             </div>
 
-            <div className="sm:rounded-lg shadow-md border">
+            <div className="sm:rounded-lg shadow-md border mb-10">
                 <table className="flex-row w-full table-auto">
                     <thead>
                     <tr className="text-xs text-gray-500 border-b text-left">

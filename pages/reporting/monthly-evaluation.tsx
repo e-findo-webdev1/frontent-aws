@@ -673,7 +673,7 @@ const MonthlyEvaluation = () => {
     }
 
     return(
-        <div id="content-page" className="overflow-auto h-full px-24">
+        <div id="content-page" className="overflow-auto h-full px-48 m-auto">
             <p className="mt-5 text-3xl font-bold mb-5">Monatsauswertung</p>
             <div className="flex space-x-2 text-sm">
                 <span>Maschine:</span>

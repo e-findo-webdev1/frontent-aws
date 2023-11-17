@@ -110,7 +110,7 @@ const MasterDataSummary = () => {
 
     if (JSON.parse(sessionStorage.getItem('user') as string).admin) {
         return (
-            <div id="content-page" className="px-24 h-full overflow-auto">
+            <div id="content-page" className="overflow-auto h-full px-48 m-auto">
                 <div className="mt-10">
                     <Link href="/new-client">
                         <button className="border float-right p-1.5 px-3.5 font-bold border-accent-color-1

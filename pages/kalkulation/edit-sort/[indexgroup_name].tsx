@@ -55,8 +55,8 @@ const EditSort = () => {
     }
 
     return(
-        <div className="px-20 h-full overflow-auto">
-            <div className="flex w-full mb-5">
+        <div className="overflow-auto h-full px-48 m-auto">
+            <div className="flex mt-10 w-full mb-5 float-right">
                 <Link href="/kalkulation/index-management">
                     <button className="float-right border ml-auto p-1.5 px-3.5 font-bold border-accent-color-1 bg-accent-color-4
                         hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs">← Zurück
