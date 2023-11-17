@@ -124,8 +124,10 @@ const ControlDocuments = () => {
                             <td>{document.netto + document.tara}</td>
                             <td>{document.tara}</td>
                             <td>{document.netto}</td>
-                            <td>{((moment(document.endOfCycle).unix()-moment(document.startOfCycle).unix())
-                                /3600).toFixed(2)}h</td>
+                            <td>{ document.startOfCycle ?
+                                ((moment(document.endOfCycle).unix()-moment(document.startOfCycle).unix())
+                                    /3600).toFixed(2) + 'h' : '-'
+                            }</td>
                             <td>{(document.totalProductionTime/3600000).toFixed(2)}h</td>
                             <td>{controlDocuments ? (document.averageThroughput).toFixed(2) : ''}</td>
                             <td>{}</td>
