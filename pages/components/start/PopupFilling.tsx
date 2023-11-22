@@ -13,6 +13,9 @@ const PopupFilling = ({machineID, pickupDate, setPickupDates, setMachineID, setP
     const [userPermissions] = useState(
         JSON.parse(sessionStorage.getItem('user') as string));
 
+    const [isNewDateSelected, setIsNewDateSelected] = useState<any>(false);
+    const [newDate, setNewDate] = useState<any>(moment());
+
     const sendEmail = (date: any) => {
 
         emailjs.send('service_5mr7itc', 'template_6zkqrdi',
@@ -27,9 +30,9 @@ const PopupFilling = ({machineID, pickupDate, setPickupDates, setMachineID, setP
             });
     };
 
-    const sendData = (responseBody: any) => {
+    const sendData = async (responseBody: any) => {
 
-        API.put('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines',
+        await API.put('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines',
             responseBody)
             .then(function (response) {
                 console.log(response);
@@ -40,7 +43,7 @@ const PopupFilling = ({machineID, pickupDate, setPickupDates, setMachineID, setP
 
     }
 
-    const updatePickupDates = (date: any) => {
+    const updatePickupDates = async (date: any) => {
         // pickupDates = pickupDates.filter((obj:any) =>
         // {return obj.machineID!=machineID})
         //  pickupDates.push({machineID: machineID, taskEnd: date})
@@ -85,7 +88,7 @@ const PopupFilling = ({machineID, pickupDate, setPickupDates, setMachineID, setP
         {return obj.machine_id!=machineID})
         newDatesConfirmed.push([{machine_id: machineID, date_confirmed: radioConfirmed}])
         setAreDatesConfirmed(newDatesConfirmed.flat())
-        sendData(newMachineData)
+        await sendData(newMachineData)
         setMachineID("")
         setPickupDate("")
         setRadioConfirmed("")
@@ -111,6 +114,13 @@ const PopupFilling = ({machineID, pickupDate, setPickupDates, setMachineID, setP
         }
     }
 
+    const handleDateSelect = (date: any) => {
+        console.log(date)
+        setNewDate(moment(date))
+        setIsNewDateSelected(true)
+
+    }
+
     return(
         <div id="popup-filling"
              className={ machineID != "" && popupFilling && userPermissions.abholdatumPopupPermission
@@ -125,6 +135,7 @@ const PopupFilling = ({machineID, pickupDate, setPickupDates, setMachineID, setP
                         <DatePicker className="shadow-md border text-center p-0.5"
                             // @ts-ignore
                                     selected={
+                                        isNewDateSelected == true ? newDate.toDate() :
                                         plannedDates && plannedDates.filter((date :any) => date.machineID == machineID)[0] != undefined
                                             ? plannedDates.filter((date :any) => date.machineID == machineID)[0].taskEnd.toDate()
                                              //moment(pickupDate).toDate()
@@ -137,7 +148,7 @@ const PopupFilling = ({machineID, pickupDate, setPickupDates, setMachineID, setP
                                     }
                                     showTimeSelect dateFormat="dd.MM.yyyy HH:mm"
                                     timeFormat="HH:mm"
-                                    onChange={(date:Date) => setPickupDate(moment(date))}/>
+                                    onChange={(date:Date) => {setPickupDate(moment(date));setNewDate(moment(date));setIsNewDateSelected(true)}}/>
                         <p className="m-auto w-full">({checkDay()})</p>
                     </div>
                 </div>
