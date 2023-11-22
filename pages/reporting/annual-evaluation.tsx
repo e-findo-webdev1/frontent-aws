@@ -269,9 +269,8 @@ const AnnualEvaluation = () => {
                             }, [])
 
                             // Add indexes unassigned to any machine to display prices for each month
-
                             const datasetPriceMatrices = priceMatrices.filter((matrix: any) => matrix.prices != undefined
-                                && matrix.prices[currentYear])
+                                && matrix.prices[currentYear] && matrix.indeces && matrix.indeces != '')
                                 .reduce(function (a: any, b: any) {
                                     for (let index in b['indeces']) {
                                         if (b
@@ -284,11 +283,9 @@ const AnnualEvaluation = () => {
                                     }
 
                                 }, [])
-
                             for (let dataset in datasetPriceMatrices) {
                                 datasetsIndex.push(datasetPriceMatrices[dataset])
                             }
-
                             //
 
 
@@ -341,7 +338,8 @@ const AnnualEvaluation = () => {
                                                             )[0].prices[currentYear][month][datasetsIndex[dataset]
                                                                 .slice(datasetsIndex[dataset]
                                                                     .indexOf("-", datasetsIndex[dataset]
-                                                                        .indexOf("-") + 1)+1).replace(" ", "").replace('.', ',')]
+                                                                        .indexOf("-") + 1)+1).replace(" ", "")
+                                                                .replace('.', ',')]
                                                         )
                                                     )
                                             }
@@ -568,6 +566,8 @@ const AnnualEvaluation = () => {
 
 
     },[currentYear, selectedMachine, myChart.set, controlDocuments.set, selectedCategory])
+    console.log(priceMatrices.filter((matrix: any) => matrix.prices != undefined
+        && matrix.prices[currentYear] && matrix.indeces && matrix.indeces != ''))
 
     return(
         <div id="content-page" className="overflow-auto h-full px-48 m-auto">
