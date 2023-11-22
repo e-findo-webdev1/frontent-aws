@@ -280,7 +280,8 @@ const MonthlyEvaluation = () => {
 
                             // Add indexes unassigned to any machine to display prices for each month
 
-                            const datasetPriceMatrices = priceMatrices.filter((matrix: any) => matrix.prices != undefined
+                            const datasetPriceMatrices = priceMatrices.filter((matrix: any) =>
+                                 matrix.indeces != '' && matrix.prices != undefined
                             && matrix.prices[selectedYear][selectedMonth])
                                 .reduce(function (a: any, b: any) {
                                         for (let index in b['indeces']) {

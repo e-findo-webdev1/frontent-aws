@@ -566,8 +566,6 @@ const AnnualEvaluation = () => {
 
 
     },[currentYear, selectedMachine, myChart.set, controlDocuments.set, selectedCategory])
-    console.log(priceMatrices.filter((matrix: any) => matrix.prices != undefined
-        && matrix.prices[currentYear] && matrix.indeces && matrix.indeces != ''))
 
     return(
         <div id="content-page" className="overflow-auto h-full px-48 m-auto">

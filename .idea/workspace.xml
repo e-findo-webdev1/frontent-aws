@@ -7,10 +7,8 @@
     <list default="true" id="46e0077f-1afc-4c07-b20b-cd300e9edac7" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pages/components/start/Popup.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/components/start/Popup.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/kalkulation/indeces/[sort_name].tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/kalkulation/indeces/[sort_name].tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/kalkulation/indeces/new-index/[sort_name].tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/kalkulation/indeces/new-index/[sort_name].tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pages/reporting/annual-evaluation.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/reporting/annual-evaluation.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/reporting/waste-balance.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/reporting/waste-balance.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/reporting/monthly-evaluation.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/reporting/monthly-evaluation.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -134,7 +132,8 @@
       <workItem from="1699966552544" duration="12092000" />
       <workItem from="1700223748596" duration="11484000" />
       <workItem from="1700659030396" duration="4496000" />
-      <workItem from="1700664894553" duration="6300000" />
+      <workItem from="1700664894553" duration="6365000" />
+      <workItem from="1700672124654" duration="200000" />
     </task>
     <servers />
   </component>
