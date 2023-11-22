@@ -47,9 +47,9 @@ const Co2Evaluation = () => {
                                             return a + (b['machine_id']);
                                         }).includes(document.machine_id))
                                         .filter((document: any) =>
-                                            document.startOfCycle != undefined &&
-                                            new Date(document.startOfCycle) > startDate &&
-                                            new Date(document.startOfCycle) < endDate
+                                            document.endOfCycle != undefined &&
+                                            new Date(document.endOfCycle) > startDate &&
+                                            new Date(document.endOfCycle) < endDate
                                         ))
                             })
                     } else {

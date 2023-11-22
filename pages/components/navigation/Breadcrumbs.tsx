@@ -102,6 +102,7 @@ const Breadcrumbs = () => {
                                             .replace("new-contractor", "Neuer Auftragnehmer")
                                             .replace("edit-contractor", "Auftragnehmer Anpassung")
                                             .replace("co2-calculation", "Berechnung")
+                                            .replace("waste-balance", "Abfallbilanz")
                                             .replace("[quality_id]", "")
                                             .replace("[material_id]", "")
                                             .replace("[index_name]", "")
