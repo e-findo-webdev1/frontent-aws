@@ -241,7 +241,15 @@ const WasteBalance = () => {
             </div>
             <p className="font-bold text-sm mb-10 mt-4">Gesamtmenge: {
                 controlDocuments && controlDocuments.set != false && controlDocuments.set != true ?
-                (controlDocuments.reduce(function (a: any, b: any) {
+                (controlDocuments
+                    .filter((document: any) => selectedWaretype == '- Alle -' ? true :
+                        document.waretype == selectedWaretype)
+                    .filter((document: any) =>
+                        selectedAVVNumber == '- Alle -' ? true : waretypes.filter((waretype: any) =>
+                            waretype.name_waretype == document.waretype
+                        )[0].waretype_number == selectedAVVNumber
+                    )
+                    .reduce(function (a: any, b: any) {
                 return a + (parseInt(b['netto']));
             }, 0)/1000).toFixed(3) : 0} kg</p>
         </div>
