@@ -12,8 +12,8 @@ const Popup = ({machineID, pickupDate, setPickupDates, setMachineID, setPickupDa
         JSON.parse(sessionStorage.getItem('user') as string));
 
 
-    const sendData = (responseBody: any) => {
-        API.put('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines',
+    const sendData = async (responseBody: any) => {
+        await API.put('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines',
             responseBody)
             .then(function (response) {
                 console.log(response);
@@ -71,6 +71,7 @@ const Popup = ({machineID, pickupDate, setPickupDates, setMachineID, setPickupDa
         setMachineID("")
         setPickupDate("")
         setRadioConfirmed("")
+        window.location.replace("/")
     }
 
     const checkDay = () => {
