@@ -1,5 +1,6 @@
 import API from "axios";
 import React, {useEffect, useState} from "react";
+import moment from "moment";
 
 const NewMachine = () => {
     const [data, setData] = useState<any>([]);
@@ -31,7 +32,7 @@ const NewMachine = () => {
     newFT111: "", automaticTara: "", fillingType: "", plandateCalculation: "", status: "", client: "",
     total_working_time: 0, lastIndicate: 0, total_working_weight: 0, price_list: {
             prices: {
-                2023: {
+                [moment().year()]: {
                     Januar: '0,00',
                     Februar: '0,00',
                     März: '0,00',

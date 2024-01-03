@@ -503,14 +503,18 @@ const MasterData = () => {
                                     <td className="text-right">
                                         <Link href={"/master-data/price-list/" + machine.machine_id}>
                                             <button className="underline">
-                                                {machine.price_list ?
+                                                {machine.price_list && machine.price_list.prices
+                                                    // @ts-ignore
+                                                    [moment().year()]?
                                                     machine.price_list.prices
                                                         // @ts-ignore
                                                         [moment().year()][monthsList[moment().month()]] : "0,00"} €
                                             </button>
                                         </Link>
                                     </td>
-                                    <td className="text-right">{machine.price_list && machine.lastIndicate ?
+                                    <td className="text-right">{machine.price_list && machine.price_list.prices
+                                        // @ts-ignore
+                                        [moment().year()] && machine.lastIndicate ?
                                         (machine.lastIndicate *
                                         parseInt(machine.price_list.prices
                                         // @ts-ignore

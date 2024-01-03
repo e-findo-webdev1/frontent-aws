@@ -581,12 +581,15 @@ const StorageSystemDashboard = () => {
                                         <td className="text-right">{machine.lastIndicate ?
                                             machine.lastIndicate : 0} kg</td>
                                         <td className="text-right">
-                                                    {machine.price_list ?
+                                                    {machine.price_list && machine.price_list.prices[moment().year()]
+                                                         ?
                                                         machine.price_list.prices
                                                             // @ts-ignore
                                                             [moment().year()][monthsList[moment().month()]] : "0,00"} €
                                         </td>
-                                        <td className="text-right">{machine.price_list ? ((machine.lastIndicate) *
+                                        <td className="text-right">{machine.price_list &&
+                                        machine.price_list.prices[moment().year()]
+                                            ? ((machine.lastIndicate) *
                                             parseInt(machine.price_list.prices
                                             // @ts-ignore
                                             [moment().year()][monthsList[moment().month()]]) /1000)
@@ -669,10 +672,14 @@ const StorageSystemDashboard = () => {
                         <span className="font-bold">Erlös<br/></span>
                         { machinesData && controlDocuments ?
                             (machinesData.reduce( function(a: any, b: any){
-
-                                    return a + ((b['lastIndicate'])*
-                                    // @ts-ignore
-                                    parseInt(b.price_list.prices[moment().year()][monthsList[moment().month()]]) / 1000);
+                                    if (b.price_list.prices[moment().year()]) {
+                                        return a + ((b['lastIndicate'])*
+                                            // @ts-ignore
+                                            parseInt(b.price_list.prices[moment().year()][monthsList[moment().month()]]) / 1000);
+                                    }
+                                    else {
+                                        return a+((b['lastIndicate']))
+                                    }
                         }, 0)
                                 //+ controlDocuments.
                         //filter((document: any)=>moment(document.timestamp).format("DD/MM/YYYY") ==
@@ -712,9 +719,14 @@ const StorageSystemDashboard = () => {
                                     // @ts-ignore
                                     .price_list.prices[moment().year()][monthsList[moment().month()]])/1000)
                         }, 0) + (machinesData.reduce( function(a: any, b: any){
-                                return a + ((b['lastIndicate'] ) *
+                            if (b.price_list.prices[moment().year()]) {
+                                return a + ((b['lastIndicate']) *
                                     // @ts-ignore
                                     parseInt(b.price_list.prices[moment().year()][monthsList[moment().month()]]) / 1000);
+                            }
+                            else {
+                                return a+((b['lastIndicate']))
+                            }
 
                         }, 0))).toFixed(2).replace(".", ",") + " €" : "0 €"}
                         </p>
