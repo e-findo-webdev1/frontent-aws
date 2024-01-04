@@ -67,7 +67,7 @@ const PriceList = () => {
             <p className="mb-7 text-3xl font-bold">Maschinen</p>
             <div>
                 {machineData ? Object.keys(machineData.price_list.prices).map((year: any) =>
-                    <span>
+                    <span key={year}>
                         <span className="text-xs">
                             <button className={year == currentYear ? "underline font-bold" : "underline"}
                             onClick={()=>setCurrentYear(year)}>{year}</button></span>
