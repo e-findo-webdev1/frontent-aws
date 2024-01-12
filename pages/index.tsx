@@ -3,8 +3,9 @@ import Header from "./components/start/Header";
 import StorageSystemDashboard from "./components/start/StorageSystemDashboard";
 import Link from "next/link";
 import emailjs from "@emailjs/browser";
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import API from "axios";
+import 'react-loading-skeleton/dist/skeleton.css'
 
 const Home: NextPage = () => {
 
@@ -15,6 +16,7 @@ const Home: NextPage = () => {
     const [emailList, setEmailList] = useState<any>();
     const [emailListBack, setEmailListBack] = useState<any>(['webdev1@e-findo.de', 'it-service@e-findo.de',
         'a.maier@rail-kontor.ch']);
+    const [dataLoaded, setDataLoaded] = useState<any>(false);
 
     useEffect(() => {
 
@@ -45,7 +47,7 @@ const Home: NextPage = () => {
                 .catch((error) => {
                     console.log(error.response);
                 });
-
+            setDataLoaded(true)
         }
 
         fetchData()
@@ -227,9 +229,10 @@ const Home: NextPage = () => {
                         </div>
                     </div>
                 </div>
-                <div className="col-span-2 ml-1">
-                    <StorageSystemDashboard/>
-                </div>
+
+                    <div className="col-span-2 ml-1">
+                                    <StorageSystemDashboard/>
+                    </div>
             </div>
         </div>
 

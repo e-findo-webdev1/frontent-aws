@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import getFillerStyle from "../helpers/getFillerStyle";
 import API from "axios";
@@ -6,6 +6,8 @@ import moment from "moment";
 import Popup from "./Popup";
 import "react-datepicker/dist/react-datepicker.css";
 import PopupFilling from "./PopupFilling";
+import 'react-loading-skeleton/dist/skeleton.css'
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 
 const StorageSystemDashboard = () => {
     const [machinesData, setMachinesData] = useState<any>();
@@ -28,57 +30,63 @@ const StorageSystemDashboard = () => {
     const [pageReload, setPageReload] = useState<any>({set: false});
     const [userPermissions] = useState(
         JSON.parse(sessionStorage.getItem('user') as string));
+    const [isDataLoaded, setIsDataLoaded] = useState<any>(false);
 
 
     useEffect(() => {
-        let apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines';
 
-        API.get(apiName)
-            .then((response) => {
-                setMachinesData(response.data.Items
-                    .filter((machine: { client: string; }) =>
-                        machine.client == JSON.parse(sessionStorage.getItem('company') as string).client_name));
-                API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/control-documents')
-                    .then((response) => {
-                        setControlDocuments(
-                            response.data.Items
-                                .filter( (document: any) =>
-                                    machinesData.reduce( function(a: any, b: any){
-                                        return a + (b['machine_id']);
-                                    }).includes(document.machine_id)
-                                )
-                        );
-                    })
-                    .catch((error) => {
-                        console.log(error.response);
-                    });
-                setPageReload(true)
-            })
-            .catch((error) => {
-                console.log(error); //
-            });
+        const fetchData = async () => {
+            let apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines';
 
-        API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/shifts')
-            .then((response) => {
-                setShift(
-                    response.data.Items
-                        .filter( (shift: any) => shift.shift_id
-                            == JSON.parse(sessionStorage.getItem('company') as string).client_number )[0].shifts
-                );
-            })
-            .catch((error) => {
-                console.log(error.response);
-            });
+            await API.get(apiName)
+                .then((response) => {
+                    setMachinesData(response.data.Items
+                        .filter((machine: { client: string; }) =>
+                            machine.client == JSON.parse(sessionStorage.getItem('company') as string).client_name));
+                    API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/control-documents')
+                        .then((response) => {
+                            setControlDocuments(
+                                response.data.Items
+                                    .filter( (document: any) =>
+                                        machinesData.reduce( function(a: any, b: any){
+                                            return a + (b['machine_id']);
+                                        }).includes(document.machine_id)
+                                    )
+                            );
+                        })
+                        .catch((error) => {
+                            console.log(error.response);
+                        });
+                    setPageReload(true)
+                })
+                .catch((error) => {
+                    console.log(error); //
+                });
 
-        API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/contractors')
-            .then((response) => {
-                setContractors(
-                    response.data.Items
-                );
-            })
-            .catch((error) => {
-                console.log(error.response);
-            });
+            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/shifts')
+                .then((response) => {
+                    setShift(
+                        response.data.Items
+                            .filter( (shift: any) => shift.shift_id
+                                == JSON.parse(sessionStorage.getItem('company') as string).client_number )[0].shifts
+                    );
+                })
+                .catch((error) => {
+                    console.log(error.response);
+                });
+
+            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/contractors')
+                .then((response) => {
+                    setContractors(
+                        response.data.Items
+                    );
+                })
+                .catch((error) => {
+                    console.log(error.response);
+                });
+            setIsDataLoaded(true)
+        }
+        fetchData()
 
     }, [pickupDates, pageReload]);
 
@@ -396,97 +404,101 @@ const StorageSystemDashboard = () => {
 
     return (
         <div id="storage-system" className="mr-10">
-              <span className="text-xs uppercase font-bold text-gray-500">
+            <span className="text-xs uppercase font-bold text-gray-500">
                   Lagersysteme
-              </span>
+            </span>
+            {!isDataLoaded ?
+                <SkeletonTheme baseColor={"#F9FAFB"} highlightColor={"#ffffff"}>
+                <Skeleton className="min-h-80 max-h-80 sm:rounded-lg shadow-md"/>
+                </SkeletonTheme> :
             <div className="sm:rounded-lg shadow-md  overflow-auto">
-                <div className="sm:rounded-lg shadow-md border overflow-auto">
-                    <table className="flex-row table-auto w-full">
-                        <thead>
-                        <tr className="text-xs text-gray-500 border-b text-left">
-                            <th className="font-normal">Masch.-ID<br/>Max Netto</th>
-                            <th className="font-normal">Material</th>
-                            <th className="font-normal">Füllgrad</th>
-                            <th className="font-normal">Plandatum<br/>Abholdatum</th>
-                            <th className="font-normal">Netto (kg)</th>
+                <div className="sm:rounded-lg shadow-md border overflow-auto min-h-80 max-h-80 bg-gray-50">
+                    <table className="flex-row table-fixed w-full min-h-80 overflow-auto min-w-full max-w-52">
+                        <thead className="bg-gray-50">
+                        <tr className="text-xs text-gray-500 border-b text-left bg-white">
+                            <th className="font-normal w-24">Masch.-ID<br/>Max Netto</th>
+                            <th className="font-normal w-32">Material</th>
+                            <th className="font-normal w-40">Füllgrad</th>
+                            <th className="font-normal w-36">Plandatum<br/>Abholdatum</th>
+                            <th className="font-normal text-right">Netto (kg)</th>
                             <th className="font-normal text-right">Monatspreis<br/>(in € / t)</th>
                             <th className="font-normal text-right">Summe<br/>(in €)</th>
                         </tr>
                         </thead>
-                        <tbody className="bg-gray-50">
-                        {machinesData
-                            ? machinesData.sort(function(a: any, b: any){
-                                // @ts-ignore
-                                return a.machine_id - b.machine_id})
-                                .map((machine: any) =>
-                                    <tr key={machine.machine_id} className="text-xs border-t">
-                                        <td>
-                                            {machine.machineType}: <span className="underline">
+                            <tbody className="bg-gray-50">
+                            {machinesData
+                                ? machinesData.sort(function(a: any, b: any){
+                                    // @ts-ignore
+                                    return a.machine_id - b.machine_id})
+                                    .map((machine: any) =>
+                                            <tr key={machine.machine_id} className="text-xs border-t">
+                                                <td>
+                                                    {machine.machineType}: <span className="underline">
                         <Link href={"/machines/" + machine.machine_id}>
                             {machine.machine_id}
                         </Link></span><br/>
-                                            <span>{machine.maxNetto} kg</span></td>
-                                        <td>{machine.waretype}</td>
-                                        <td className="flex py-4">
-                                            <a className={ machine.total_working_time != 0 &&
-                                            userPermissions.abholdatumPopupPermission && machine.averageThroughput
-                                                ? "cursor-pointer flex"
-                                                : "pointer-events-none flex"}
-                                               onClick={()=>
-                                               {
-                                                   setSelectedContractor(machine.selectedContractor)
-                                                   setPopupFilling(true)
-                                                   setMachineID(machine.machine_id)
-                                                   if (machinesData && machinesData.filter((obj: any) =>
-                                                   {return obj.machine_id == machine.machine_id})[0]
-                                                       .pickup_date != "") {
-                                                       setPickupDate(moment(machinesData.filter((obj: any) =>
-                                                       {return obj.machine_id == machine.machine_id})[0].pickup_date))
-                                                   } else if (pickupDates) {
-                                                       setPickupDate(pickupDates
-                                                           .filter((obj:any) =>
-                                                           {return obj.machineID===machine.machine_id})[0]
-                                                           // @ts-ignore
-                                                           .taskEnd)
-                                                   }
+                                                    <span>{machine.maxNetto} kg</span></td>
+                                                <td>{machine.waretype}</td>
+                                                <td className=" py-4">
+                                                    <a className={ machine.total_working_time != 0 &&
+                                                    userPermissions.abholdatumPopupPermission && machine.averageThroughput
+                                                        ? "cursor-pointer flex"
+                                                        : "pointer-events-none flex"}
+                                                       onClick={()=>
+                                                       {
+                                                           setSelectedContractor(machine.selectedContractor)
+                                                           setPopupFilling(true)
+                                                           setMachineID(machine.machine_id)
+                                                           if (machinesData && machinesData.filter((obj: any) =>
+                                                           {return obj.machine_id == machine.machine_id})[0]
+                                                               .pickup_date != "") {
+                                                               setPickupDate(moment(machinesData.filter((obj: any) =>
+                                                               {return obj.machine_id == machine.machine_id})[0].pickup_date))
+                                                           } else if (pickupDates) {
+                                                               setPickupDate(pickupDates
+                                                                   .filter((obj:any) =>
+                                                                   {return obj.machineID===machine.machine_id})[0]
+                                                                   // @ts-ignore
+                                                                   .taskEnd)
+                                                           }
 
-                                                   setIsDateConfirmed(machinesData.filter((obj: any) =>
-                                                   {return obj.machine_id == machine.machine_id})[0]
-                                                       .isDateConfirmed)
-                                                   setRadioConfirmed(machinesData.filter((obj: any) =>
-                                                   {return obj.machine_id == machine.machine_id})[0]
-                                                       .isDateConfirmed)
-                                               }
-                                               }>
-                                                <div className="border border-black bg-white w-32 mr-1.5">
+                                                           setIsDateConfirmed(machinesData.filter((obj: any) =>
+                                                           {return obj.machine_id == machine.machine_id})[0]
+                                                               .isDateConfirmed)
+                                                           setRadioConfirmed(machinesData.filter((obj: any) =>
+                                                           {return obj.machine_id == machine.machine_id})[0]
+                                                               .isDateConfirmed)
+                                                       }
+                                                       }>
+                                                        <div className="border border-black w-28 bg-white mr-1.5">
 
-                                                    <div
-                                                        // @ts-ignore
-                                                        className={ (machine.lastIndicate) * 100
-                                                        / machine.maxNetto > 0
-                                                        ? getFillerStyle(
-                                                        (machine.lastIndicate) * 100
-                                                        / machine.maxNetto
-                                                        )
-                                                        : 0
-                                                    }/>
-                                                </div>
-                                                { parseInt(((machine.lastIndicate) * 100
-                                                    / machine.maxNetto).toFixed(0)) > 0
-                                                    ?
-                                                    ((machine.lastIndicate) * 100
-                                                    / machine.maxNetto).toFixed(0)
-                                                    : 0}%
-                                                </a>
-                                            </td>
-                                        <td>
-                                            {
-                                                <span>
+                                                            <div
+                                                                // @ts-ignore
+                                                                className={ (machine.lastIndicate) * 100
+                                                                / machine.maxNetto > 0
+                                                                    ? getFillerStyle(
+                                                                        (machine.lastIndicate) * 100
+                                                                        / machine.maxNetto
+                                                                    )
+                                                                    : 0
+                                                                }/>
+                                                        </div>
+                                                        { parseInt(((machine.lastIndicate) * 100
+                                                            / machine.maxNetto).toFixed(0)) > 0
+                                                            ?
+                                                            ((machine.lastIndicate) * 100
+                                                                / machine.maxNetto).toFixed(0)
+                                                            : 0}%
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    {
+                                                        <span>
                                                     { machine.total_working_time != 0 && plannedDates && plannedDates
+                                                        .filter((obj:any) =>
+                                                        {return obj.machineID===machine.machine_id}).length != 0
+                                                    && machine.averageThroughput !=0 ? plannedDates
                                                             .filter((obj:any) =>
-                                                            {return obj.machineID===machine.machine_id}).length != 0
-                                                        && machine.averageThroughput !=0 ? plannedDates
-                                                          .filter((obj:any) =>
                                                             {return obj.machineID===machine.machine_id})
                                                             .map((plannedDate: any) =>
                                                                 <a key={plannedDate.machineID}>
@@ -495,36 +507,36 @@ const StorageSystemDashboard = () => {
                                                         : <span className="underline">noch keine Füllung</span>
                                                     }<br/>
                                                     <a className={ machine.isDatePicked && machine.total_working_time != 0
-                                                        && userPermissions.abholdatumPopupPermission
+                                                    && userPermissions.abholdatumPopupPermission
                                                         ? "underline cursor-pointer flex"
                                                         : "underline pointer-events-none flex"}
-                                                    onClick={()=>
-                                                    {
-                                                        setPopup(true)
-                                                        setMachineID(machine.machine_id)
-                                                        if (machinesData && machinesData.filter((obj: any) =>
-                                                        {return obj.machine_id == machine.machine_id})[0]
-                                                            .pickup_date != "") {
-                                                            setPickupDate(moment(machinesData.filter((obj: any) =>
-                                                            {return obj.machine_id == machine.machine_id})[0].pickup_date))
-                                                        } else if (pickupDates) {
-                                                         setPickupDate(pickupDates
-                                                             .filter((obj:any) =>
-                                                             {return obj.machineID===machine.machine_id})[0]
-                                                             // @ts-ignore
-                                                             .taskEnd)
-                                                        }
+                                                       onClick={()=>
+                                                       {
+                                                           setPopup(true)
+                                                           setMachineID(machine.machine_id)
+                                                           if (machinesData && machinesData.filter((obj: any) =>
+                                                           {return obj.machine_id == machine.machine_id})[0]
+                                                               .pickup_date != "") {
+                                                               setPickupDate(moment(machinesData.filter((obj: any) =>
+                                                               {return obj.machine_id == machine.machine_id})[0].pickup_date))
+                                                           } else if (pickupDates) {
+                                                               setPickupDate(pickupDates
+                                                                   .filter((obj:any) =>
+                                                                   {return obj.machineID===machine.machine_id})[0]
+                                                                   // @ts-ignore
+                                                                   .taskEnd)
+                                                           }
 
-                                                        setIsDateConfirmed(machinesData.filter((obj: any) =>
-                                                        {return obj.machine_id == machine.machine_id})[0]
-                                                            .isDateConfirmed)
-                                                        setRadioConfirmed(machinesData.filter((obj: any) =>
-                                                        {return obj.machine_id == machine.machine_id})[0]
-                                                            .isDateConfirmed)}
+                                                           setIsDateConfirmed(machinesData.filter((obj: any) =>
+                                                           {return obj.machine_id == machine.machine_id})[0]
+                                                               .isDateConfirmed)
+                                                           setRadioConfirmed(machinesData.filter((obj: any) =>
+                                                           {return obj.machine_id == machine.machine_id})[0]
+                                                               .isDateConfirmed)}
 
-                                                    }>
+                                                       }>
                                                     { machine.isDatePicked == true && newPickupDates && newPickupDates.filter((obj:any) =>
-                                                        {return obj.machine_id == machine.machine_id}).length != 0
+                                                    {return obj.machine_id == machine.machine_id}).length != 0
                                                         ? moment(newPickupDates.filter((obj:any) =>
                                                             // @ts-ignore
                                                         {return obj.machine_id == machine.machine_id})[0].date)
@@ -534,7 +546,7 @@ const StorageSystemDashboard = () => {
                                                         && pickupDates.length != 0
                                                         && machinesData.filter((obj: any) =>
                                                         {return obj.machine_id == machine.machine_id})[0]
-                                                        .pickup_date == ""
+                                                            .pickup_date == ""
                                                             ? pickupDates
                                                                 .filter((obj:any) =>
                                                                 {return obj.machineID===machine.machine_id})
@@ -546,23 +558,23 @@ const StorageSystemDashboard = () => {
                                                             : machine.isDatePicked && machine.total_working_time !=0
                                                             && machinesData.filter((obj: any) =>
                                                             {return obj.machine_id == machine.machine_id})[0]
-                                                            .pickup_date != ""
-                                                            ? moment(machinesData.filter((obj: any) =>
+                                                                .pickup_date != ""
+                                                                ? moment(machinesData.filter((obj: any) =>
                                                                 {return obj.machine_id == machine.machine_id})[0]
-                                                                .pickup_date).format('DD.MM.yyyy HH:mm')
-                                                            : "-"
+                                                                    .pickup_date).format('DD.MM.yyyy HH:mm')
+                                                                : "-"
                                                     }
                                                         {  machine.isDatePicked && areDatesConfirmed.filter((obj:any)=>
                                                         {return obj.machine_id == machine.machine_id}).length != 0
-                                                            && areDatesConfirmed.filter((obj:any)=>
+                                                        && areDatesConfirmed.filter((obj:any)=>
                                                         {return obj.machine_id == machine.machine_id})
                                                             // @ts-ignore
                                                             .date_confirmed == false
                                                             ? <img className="ml-1" src="/icon_fragezeichen 1.svg"/>
                                                             : machine.isDatePicked && machine.total_working_time !=0
                                                             && machine.isDateConfirmed == false
-                                                                    ? <img className="ml-1" src="/icon_fragezeichen 1.svg"/>
-                                                                    :""}
+                                                                ? <img className="ml-1" src="/icon_fragezeichen 1.svg"/>
+                                                                :""}
                                                         {   machine.isDatePicked && areDatesConfirmed.filter((obj:any)=>
                                                         {return obj.machine_id == machine.machine_id}).length != 0
                                                         && areDatesConfirmed.filter((obj:any)=>
@@ -576,30 +588,30 @@ const StorageSystemDashboard = () => {
                                                                 :""}
                                                     </a>
                                                 </span>
-                                            }
-                                        </td>
-                                        <td className="text-right">{machine.lastIndicate ?
-                                            machine.lastIndicate : 0} kg</td>
-                                        <td className="text-right">
+                                                    }
+                                                </td>
+                                                <td className="text-right">{machine.lastIndicate ?
+                                                    machine.lastIndicate : 0} kg</td>
+                                                <td className="text-right">
                                                     {machine.price_list && machine.price_list.prices[moment().year()]
-                                                         ?
+                                                        ?
                                                         machine.price_list.prices
                                                             // @ts-ignore
                                                             [moment().year()][monthsList[moment().month()]] : "0,00"} €
-                                        </td>
-                                        <td className="text-right">{machine.price_list &&
-                                        machine.price_list.prices[moment().year()]
-                                            ? ((machine.lastIndicate) *
-                                            parseInt(machine.price_list.prices
-                                            // @ts-ignore
-                                            [moment().year()][monthsList[moment().month()]]) /1000)
-                                            .toFixed(2)
-                                            .replace(".",",") : "0,00"} €</td>
-                                    </tr>
-                            )
-                            : ""
-                        }
-                        </tbody>
+                                                </td>
+                                                <td className="text-right">{machine.price_list &&
+                                                machine.price_list.prices[moment().year()]
+                                                    ? ((machine.lastIndicate) *
+                                                        parseInt(machine.price_list.prices
+                                                            // @ts-ignore
+                                                            [moment().year()][monthsList[moment().month()]]) /1000)
+                                                        .toFixed(2)
+                                                        .replace(".",",") : "0,00"} €</td>
+                                            </tr>
+                                    )
+                                : ""
+                            }
+                            </tbody>
                     </table>
                     <PopupFilling
                         machineID={machineID}
@@ -648,7 +660,11 @@ const StorageSystemDashboard = () => {
                         isDatePicked={isDatePicked}
                     />
                 </div>
-            </div>
+            </div>}
+            {!isDataLoaded ?
+                <SkeletonTheme baseColor={"#F9FAFB"} highlightColor={"#ffffff"}>
+                    <Skeleton className="mt-5 sm:rounded-lg shadow-md flex-row h-40"/>
+                </SkeletonTheme> :
             <div id="summary"
                  className="mt-5 overflow-auto sm:rounded-lg shadow-md border flex-row text-center
                  py-7 mt-1 text-xs">
@@ -732,6 +748,7 @@ const StorageSystemDashboard = () => {
                         </p>
                 </div>
             </div>
+            }
         </div>
     )
 }

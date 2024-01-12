@@ -24,7 +24,7 @@ const Navigation = () => {
     }, []);
 
     return (
-        <div id="navigation" className="mb-2 flex">
+        <div id="navigation" className="mb-2 flex mx-[1rem]">
             <Logo/>
             <NavigationLinks/>
             { userPermissions.admin ?

@@ -3,6 +3,8 @@ import API from "axios";
 import moment from "moment";
 import PDF from "../components/helpers/pdf";
 import Link from "next/link";
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css'
 
 const ControlDocuments = () => {
     const [company, setCompany] = useState({
@@ -16,6 +18,7 @@ const ControlDocuments = () => {
     const [waretypes, setWaretypes] = useState<any>();
     const [certificates, setCertificates] = useState<any>({set:false});
     const [refresh, setRefresh] = useState<any>({set: false})
+    const [isDataLoaded, setIsDataLoaded] = useState<any>(false)
 
     useEffect(() => {
         setCompany(JSON.parse(sessionStorage.getItem('company') as string));
@@ -60,6 +63,9 @@ const ControlDocuments = () => {
                 .catch((error) => {
                     console.log(error.response);
                 });
+            if (refresh.set == true) {
+                setIsDataLoaded(true)
+            }
         }
 
         fetchData()
@@ -68,24 +74,28 @@ const ControlDocuments = () => {
 
     return(
         <div id="content-page" className="overflow-auto h-full px-48 m-auto">
-            <p className="mt-9 text-3xl font-bold mb-10">Kontrollbelege</p>
-            <div className="sm:rounded-lg shadow-md border overflow-auto max-h-96">
-                <table className="table-auto w-full overflow-auto">
+            <p className="my-9 text-3xl font-bold mb-9">Kontrollbelege</p>
+            {!isDataLoaded ?
+                <SkeletonTheme baseColor={"#F9FAFB"} highlightColor={"#ffffff"}>
+                    <Skeleton className=" sm:rounded-lg shadow-md flex-row min-h-[29.9rem] max-h-[29.9rem]"/>
+                </SkeletonTheme> :
+            <div className="sm:rounded-lg shadow-md border overflow-auto min-h-[29.9rem] max-h-[29.9rem]">
+                <table className="table-fixed w-full overflow-auto">
                     <thead>
                     <tr className="text-xs text-gray-500 border-b text-left">
                         <th className="font-normal">Maschine</th>
                         <th className="font-normal">PDF</th>
                         <th className="font-normal">Wiegenr.</th>
-                        <th className="font-normal">Datum</th>
+                        <th className="font-normal w-[9.1rem]">Datum</th>
                         <th className="font-normal">Warenart</th>
                         <th className="font-normal">Bruttogewitcht</th>
                         <th className="font-normal">Taragewitcht</th>
                         <th className="font-normal">Nettogewicht</th>
                         <th className="font-normal">Standzeit</th>
                         <th className="font-normal">Prod.-<br/>Zeit</th>
-                        <th className="font-normal">kg / h</th>
+                        <th className="font-normal w-[4rem]">kg / h</th>
                         <th className="font-normal">Bemerkung</th>
-                        <th className="font-normal">W.<br/>Schein</th>
+                        <th className="font-normal">W. Schein</th>
                     </tr>
                     </thead>
                     <tbody className="bg-gray-50">
@@ -147,7 +157,7 @@ const ControlDocuments = () => {
                     )}
                     </tbody>
                 </table>
-            </div>
+            </div>}
         </div>
     )
 }
