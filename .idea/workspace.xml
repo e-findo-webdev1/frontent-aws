@@ -5,7 +5,28 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="46e0077f-1afc-4c07-b20b-cd300e9edac7" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/public/calendar-clock-svgrepo-com.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/calendar-day-svgrepo-com.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/car-accident-car-crash-scrap-metal-svgrepo-com.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/graph-infographic-data-index-element-svgrepo-com.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/pdf-svgrepo-com.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/sales-amount-svgrepo-com.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/truck-trash-svgrepo-com.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/frontent-aws.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/frontent-aws.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+<<<<<<< HEAD
+=======
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/components/navigation/Navigation.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/components/navigation/Navigation.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/components/navigation/NavigationButtons.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/components/navigation/NavigationButtons.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/components/start/StorageSystemDashboard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/components/start/StorageSystemDashboard.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/kalkulation.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/kalkulation.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/master-data.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/master-data.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/reporting.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/reporting.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/reporting/control-documents.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/reporting/control-documents.tsx" afterDir="false" />
+>>>>>>> develop
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,8 +52,75 @@
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
   </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/node_modules/react-loading-skeleton/dist/skeleton.css" root0="SKIP_INSPECTION" />
+  </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
+  </component>
+  <component name="PackageJsonUpdateNotifier">
+    <dismissed value="$PROJECT_DIR$/node_modules/@eslint/eslintrc/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/@isaacs/cliui/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/@manypkg/find-root/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/@manypkg/tools/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/@mapbox/node-pre-gyp/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/@octokit/plugin-rest-endpoint-methods/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/@typescript-eslint/typescript-estree/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/acorn-node/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/ajv-formats/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/browser-resolve/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/chokidar/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/concat-stream/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/duplexer2/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/editorconfig/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/es6-set/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/escodegen/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/eslint-import-resolver-node/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/eslint-import-resolver-typescript/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/eslint-plugin-import/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/eslint-plugin-react/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/eslint-utils/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/eslint/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/ext/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/fast-glob/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/foreground-child/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/fs-minipass/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/fstream/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/jest-worker/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/js-beautify/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/log-symbols/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/merge-source-map/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/minizlib/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/next/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/normalize-package-data/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/npm/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/ora/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/path-scurry/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/pkg-dir/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/react-email/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/read-cache/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/read-yaml-file/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/regjsparser/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/resend/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/router/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/schema-utils/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/source-map-support/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/static-eval/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/static-module/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/string-width-cjs/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/string-width/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/sucrase/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/tar/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/terser-webpack-plugin/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/terser/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/through2/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/tree-node-cli/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/tsconfig-paths/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/tsutils/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/unzipper/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/webpack/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/wrap-ansi-cjs/package.json" />
+    <dismissed value="$PROJECT_DIR$/node_modules/wrap-ansi/package.json" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
@@ -136,7 +224,19 @@
       <workItem from="1704229764929" duration="454000" />
       <workItem from="1704230266264" duration="789000" />
       <workItem from="1704285215581" duration="4628000" />
+<<<<<<< HEAD
       <workItem from="1704373338623" duration="1690000" />
+=======
+      <workItem from="1704373338623" duration="692000" />
+      <workItem from="1704465564141" duration="369000" />
+      <workItem from="1704466164428" duration="7964000" />
+      <workItem from="1704713172071" duration="3672000" />
+      <workItem from="1704718760371" duration="96000" />
+      <workItem from="1704718862679" duration="3986000" />
+      <workItem from="1704894431558" duration="3867000" />
+      <workItem from="1704967994881" duration="8521000" />
+      <workItem from="1705064229423" duration="1456000" />
+>>>>>>> develop
     </task>
     <servers />
   </component>
