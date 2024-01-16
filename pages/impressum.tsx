@@ -1,9 +1,9 @@
 const Impressum = () => {
     return(
         <div className="overflow-auto h-full px-48 overflow-auto h-full text-justify" id="content-page">
-            <p className="my-9 text-3xl font-bold">Impressum</p>
+            <p className="my-9 text-2xl font-bold">Impressum</p>
             <div className="text-xs mt-3 max-w-xl">
-                <span className="font-semibold text-lg">Verantwortlich für den Inhalt und Inhaber der Website:</span><br/>
+                <span className="font-semibold text-sm">Verantwortlich für den Inhalt und Inhaber der Website:</span><br/>
                 <br/>
                 <span className="text-xs font-light">
                 e-findo GmbH<br/>
@@ -19,10 +19,10 @@ const Impressum = () => {
                 www.e-findo.de<br/>
                 </span>
                 <br/>
-                <span className="font-semibold text-lg">Haftungsbeschränkung für externe Links und Urheberrecht:</span>
+                <span className="font-semibold text-sm">Haftungsbeschränkung für externe Links und Urheberrecht:</span>
                 <br/>
                 <br/>
-                <div className="font-light">
+                <div className="font-light text-xs">
                     Unsere Webseite enthält Verknüpfungen zu anderen Webseiten. Da wir auf die Inhalte dieser Webseiten
                     keinen Einfluss haben, kann für diese fremden Inhalte keine Gewähr übernommen werden. Für die
                     rechtskonformen Inhalte und die Richtigkeit der Informationen ist immer der verantwortliche

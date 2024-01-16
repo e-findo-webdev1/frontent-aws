@@ -126,7 +126,7 @@ const MasterDataSummary = () => {
                         bg-accent-color-4
                     hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs ml-2">+ Neuer Kunde</button>
                     </Link>
-                    <p className="my-9 text-3xl font-bold">Stammdaten</p>
+                    <p className="my-9 text-2xl font-bold">Stammdaten</p>
                 </div>
                 {!isDataLoaded ?
                     <SkeletonTheme baseColor={"#F9FAFB"} highlightColor={"#ffffff"}>

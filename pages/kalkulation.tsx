@@ -6,11 +6,11 @@ const Kalkulation = () => {
     if (JSON.parse(sessionStorage.getItem('user') as string).calculationPermission) {
         return(
             <div id="content-page" className="overflow-auto h-full px-48 m-auto">
-                <p className="my-9 text-3xl font-bold">Indexgruppen</p>
+                <p className="my-9 text-2xl font-bold">Indexgruppen</p>
                 <div className="flex h-[28rem] m-auto space-x-10 text-sm">
                     <div className="m-x-auto space-y-12 w-1/2">
                         <Link href="kalkulation/index-management">
-                            <button className="w-[12.5rem] h-[12.5rem] border-accent-color-1 bg-accent-color-4 hover:bg-accent-color-5
+                            <button className="w-[10.5rem] h-[10.5rem] border bg-gray-50 hover:bg-white
                             sm:rounded-lg shadow-md border">
                                 <IndexSVG/>
                                 Indexverwaltung

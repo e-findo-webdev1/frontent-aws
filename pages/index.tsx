@@ -159,14 +159,13 @@ const Home: NextPage = () => {
     return (
         <div id="content-page" className="overflow-auto h-full px-28 m-auto">
             <div className="grid grid-cols-3 mt-7 min-w-max">
-                <div className="px-6 border-r mr-5">
+                <div className="px-6 border-r mr-5 mt-2">
                     <Header/>
-                    <img src="/esb_start2.jpg" className="h-40 mx-auto mt-7 rounded-lg shadow-md" />
+                    <img src="/esb_start2.jpg" className="h-40 m-auto mt-5 rounded-lg shadow-md" />
                     <div className={JSON.parse(sessionStorage.getItem('user') as string).admin ?
                         "flex mt-7" : "hidden"}>
                             <button className="border mx-auto p-2 px-3.5
-                              border-accent-color-1 bg-accent-color-4 font-medium
-                              hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs"
+                              border bg-gray-50 hover:bg-white sm:rounded-lg shadow-md text-xs"
                                 onClick={sendEmail}
                             >
                                 Email Arbeitszeiten senden
@@ -182,47 +181,45 @@ const Home: NextPage = () => {
                             Email Arbeitszeiten senden
                         </button>
                     </div>
-                    <p className="mb-5 mt-5 text-2xl font-bold text-center">Reporting</p>
+                    <p className="mb-5 mt-7 text-2xl font-bold text-center">Reporting</p>
                     <div className="flex-row text-sm mx-5">
-                        <div className="flex space-x-2 justify-center">
+                        <div className="flex space-x-1 justify-center">
                             <Link href="reporting/control-documents" className="w-3/5">
-                                <button className="w-full p-2 border-accent-color-1
-                            bg-accent-color-4 hover:bg-accent-color-5 font-medium
+                                <button className="w-full p-2 border bg-gray-50 hover:bg-white font-medium
                         sm:rounded-lg shadow-md border text-xs">
                                     Kontrollbelege
                                 </button>
                             </Link>
                             <Link href="/reporting/monthly-evaluation" className="w-3/5">
-                                <button className="w-full p-2 border-accent-color-1
-                            bg-accent-color-4 hover:bg-accent-color-5 font-medium
+                                <button className="w-full p-2 border bg-gray-50 hover:bg-white
+                                 hover:bg-accent-color-5 font-medium
                         sm:rounded-lg shadow-md border text-xs">
                                     Monatsauswertung</button>
                             </Link>
                         </div>
-                        <div className="flex space-x-2 justify-center mt-2">
+                        <div className="flex space-x-1 justify-center mt-1">
                             <Link href="/reporting/annual-evaluation" className="w-3/5">
-                                <button className="w-full p-2 border-accent-color-1
-                            bg-accent-color-4 hover:bg-accent-color-5 font-medium
+                                <button className="w-full p-2 border bg-gray-50 hover:bg-white
+                                 hover:bg-accent-color-5 font-medium
                         sm:rounded-lg shadow-md border text-xs">
                                     Jahresauswertung</button>
                             </Link>
                             <Link href="/reporting/annual-revenues" className="w-3/5">
-                                <button className="w-full p-2 border-accent-color-1
-                            bg-accent-color-4 hover:bg-accent-color-5 font-medium
+                                <button className="w-full p-2 border bg-gray-50 hover:bg-white
+                                 hover:bg-accent-color-5 font-medium
                         sm:rounded-lg shadow-md border text-xs">
                                     Jahreserlöse</button>
                             </Link>
                         </div>
-                        <div className="flex space-x-2 justify-center mt-2">
+                        <div className="flex space-x-1 justify-center mt-1">
                             <Link href="/reporting/co2-evaluation" className="w-3/5">
-                                <button className="w-full p-2 border-accent-color-1
-                            bg-accent-color-4 hover:bg-accent-color-5 font-medium
+                                <button className="w-full p-2 border bg-gray-50 hover:bg-white
+                                 font-medium
                         sm:rounded-lg shadow-md border text-xs">
                                     CO<sub>2</sub>-Auswertung</button>
                             </Link>
                             <Link href="/reporting/waste-balance" className="w-3/5">
-                                <button className="w-full p-2 border-accent-color-1
-                            bg-accent-color-4 hover:bg-accent-color-5 font-medium
+                                <button className="w-full p-2 border bg-gray-50 hover:bg-white font-medium
                         sm:rounded-lg shadow-md border text-xs">
                                     Abfallbilanz</button>
                             </Link>

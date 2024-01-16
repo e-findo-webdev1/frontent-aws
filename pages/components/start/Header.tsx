@@ -1,7 +1,7 @@
 const Header = () => {
     return (
         <div id="header" className="text-center">
-            <span className="font-bold text-2xl font-serif">Money Control System</span>
+            <span className="font-bold text-xl mb-2 font-serif">Money Control System</span>
             <br/>
             <span className="text-sm">für</span>
             <br/>
