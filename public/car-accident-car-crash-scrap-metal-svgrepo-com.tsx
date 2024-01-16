@@ -1,6 +1,6 @@
 const ScrapSVG = () => {
     return(
-        <svg className="w-1/2 h-1/2 mb-5 flex m-auto" version="1.2" baseProfile="tiny" id="Jankyard"
+        <svg  className="w-1/2 h-1/2 mb-5 flex m-auto" version="1.2" baseProfile="tiny" id="Jankyard"
              xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
 <path id="_x37_" d="M161,145.2l-35.4,9.9l-24.4-20.4c-5.2-4.5-14-5.6-19.7-2.8l-51.2,25.5c-5.7,2.9-10,10.7-9.5,17.4l1.7,31.8
 	l-9.1,9.2c-4.4,4.5-5.8,11.9-3.4,16.5l8.6,17c2.4,4.6,8.2,6.7,13.6,3.9l6.7-3.3l0,0c-5.7-11.4-1-25.3,10.4-31

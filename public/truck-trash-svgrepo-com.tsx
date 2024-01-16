@@ -1,7 +1,7 @@
 const Co2SVG = () => {
     return(
         <svg  className="w-1/2 h-1/2 flex m-auto mb-5" version="1.1" id="Layer_1"
-             viewBox="0 0 512 512">
+			 viewBox="0 0 512 512">
 <g>
 	<g>
 		<path d="M281.207,306.15c-1.323-16.12-5.06-27.938-10.231-37.137c8.107-12.117,11.656-27.136,9.762-44.314

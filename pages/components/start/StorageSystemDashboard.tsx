@@ -420,9 +420,9 @@ const StorageSystemDashboard = () => {
                             <th className="font-normal w-32">Material</th>
                             <th className="font-normal w-40">Füllgrad</th>
                             <th className="font-normal w-36">Plandatum<br/>Abholdatum</th>
-                            <th className="font-normal text-right">Netto (kg)</th>
-                            <th className="font-normal text-right">Monatspreis<br/>(in € / t)</th>
-                            <th className="font-normal text-right">Summe<br/>(in €)</th>
+                            <th className="font-normal w-20 text-right">Netto (kg)</th>
+                            <th className="font-normal w-20 text-right">Monatspreis<br/>(in € / t)</th>
+                            <th className="font-normal w-20 text-right">Summe<br/>(in €)</th>
                         </tr>
                         </thead>
                             <tbody className="bg-gray-50">
