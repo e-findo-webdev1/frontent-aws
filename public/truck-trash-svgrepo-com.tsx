@@ -1,6 +1,6 @@
 const Co2SVG = () => {
     return(
-        <svg  className="w-1/2 h-1/2 flex m-auto mb-5" version="1.1" id="Layer_1"
+        <svg  className="w-1/2 h-1/2 flex m-auto " version="1.1" id="Layer_1"
 			 viewBox="0 0 512 512">
 <g>
 	<g>

@@ -6,6 +6,12 @@ import emailjs from "@emailjs/browser";
 import { useEffect, useState } from "react";
 import API from "axios";
 import 'react-loading-skeleton/dist/skeleton.css'
+import PDFSVG from "../public/pdf-svgrepo-com";
+import CalendarSVG from "../public/calendar-day-svgrepo-com";
+import CalendarYearSVG from "../public/calendar-clock-svgrepo-com";
+import AnnualSVG from "../public/sales-amount-svgrepo-com";
+import Co2SVG from "../public/truck-trash-svgrepo-com";
+import ScrapSVG from "../public/car-accident-car-crash-scrap-metal-svgrepo-com";
 
 const Home: NextPage = () => {
 
@@ -158,14 +164,16 @@ const Home: NextPage = () => {
 
     return (
         <div id="content-page" className="overflow-auto h-full px-28 m-auto">
-            <div className="grid grid-cols-3 mt-7 min-w-max">
-                <div className="px-6 border-r mr-5 mt-2">
+            <div className="grid grid-cols-3 mt-4 ">
+                <div className="border-r mt-2">
                     <Header/>
-                    <img src="/esb_start2.jpg" className="h-40 m-auto mt-5 rounded-lg shadow-md" />
+                    <img src="/esb_start2.jpg" className="h-40 min-w-[10rem] max-w-[15rem] w-full m-auto mt-5 rounded-lg shadow-md" />
                     <div className={JSON.parse(sessionStorage.getItem('user') as string).admin ?
                         "flex mt-7" : "hidden"}>
                             <button className="border mx-auto p-2 px-3.5
-                              border bg-gray-50 hover:bg-white sm:rounded-lg shadow-md text-xs"
+                             border-accent-color-1
+                            bg-accent-color-4
+                    hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs"
                                 onClick={sendEmail}
                             >
                                 Email Arbeitszeiten senden
@@ -181,53 +189,51 @@ const Home: NextPage = () => {
                             Email Arbeitszeiten senden
                         </button>
                     </div>
-                    <p className="mb-5 mt-7 text-2xl font-bold text-center">Reporting</p>
-                    <div className="flex-row text-sm mx-5">
+                    <p className="mb-5 mt-5 text-xl font-bold text-center">Reporting</p>
+                    <div className="flex-row m-auto text-sm mx-5 px-12">
                         <div className="flex space-x-1 justify-center">
-                            <Link href="reporting/control-documents" className="w-3/5">
-                                <button className="w-full p-2 border bg-gray-50 hover:bg-white font-medium
+                            <Link href="reporting/control-documents" className="">
+                                <button className="min-w-[4.5rem] min-h-[4.5rem] w-full h-full max-w-[4.5rem] max-h-[4.5rem] border bg-gray-50 hover:bg-white font-medium
                         sm:rounded-lg shadow-md border text-xs">
-                                    Kontrollbelege
+                                    <PDFSVG/>
                                 </button>
                             </Link>
-                            <Link href="/reporting/monthly-evaluation" className="w-3/5">
-                                <button className="w-full p-2 border bg-gray-50 hover:bg-white
+                            <Link href="/reporting/monthly-evaluation" className="">
+                                <button className="min-w-[4.5rem] min-h-[4.5rem] w-full h-full max-w-[4.5rem] max-h-[4.5rem] border bg-gray-50 hover:bg-white
                                  hover:bg-accent-color-5 font-medium
                         sm:rounded-lg shadow-md border text-xs">
-                                    Monatsauswertung</button>
+                                   <CalendarSVG/></button>
+                            </Link>
+                            <Link href="/reporting/annual-evaluation" className="">
+                                <button className="min-w-[4.5rem] min-h-[4.5rem] w-full h-full max-w-[4.5rem] max-h-[4.5rem] border bg-gray-50 hover:bg-white
+                                 hover:bg-accent-color-5 font-medium
+                        sm:rounded-lg shadow-md border text-xs">
+                                    <CalendarYearSVG/></button>
                             </Link>
                         </div>
                         <div className="flex space-x-1 justify-center mt-1">
-                            <Link href="/reporting/annual-evaluation" className="w-3/5">
-                                <button className="w-full p-2 border bg-gray-50 hover:bg-white
+                            <Link href="/reporting/annual-revenues" className="">
+                                <button className="min-w-[4.5rem] min-h-[4.5rem] w-full h-full max-w-[4.5rem] max-h-[4.5rem] border bg-gray-50 hover:bg-white
                                  hover:bg-accent-color-5 font-medium
                         sm:rounded-lg shadow-md border text-xs">
-                                    Jahresauswertung</button>
+                                    <AnnualSVG/></button>
                             </Link>
-                            <Link href="/reporting/annual-revenues" className="w-3/5">
-                                <button className="w-full p-2 border bg-gray-50 hover:bg-white
-                                 hover:bg-accent-color-5 font-medium
-                        sm:rounded-lg shadow-md border text-xs">
-                                    Jahreserlöse</button>
-                            </Link>
-                        </div>
-                        <div className="flex space-x-1 justify-center mt-1">
-                            <Link href="/reporting/co2-evaluation" className="w-3/5">
-                                <button className="w-full p-2 border bg-gray-50 hover:bg-white
+                            <Link href="/reporting/co2-evaluation" className="">
+                                <button className="min-w-[4.5rem] min-h-[4.5rem] w-full h-full max-w-[4.5rem] max-h-[4.5rem] border bg-gray-50 hover:bg-white
                                  font-medium
                         sm:rounded-lg shadow-md border text-xs">
-                                    CO<sub>2</sub>-Auswertung</button>
+                                    <Co2SVG/></button>
                             </Link>
-                            <Link href="/reporting/waste-balance" className="w-3/5">
-                                <button className="w-full p-2 border bg-gray-50 hover:bg-white font-medium
-                        sm:rounded-lg shadow-md border text-xs">
-                                    Abfallbilanz</button>
+                            <Link href="/reporting/waste-balance" className="">
+                                <button className="min-w-[4.5rem] min-h-[4.5rem] w-full h-full max-w-[4.5rem] max-h-[4.5rem] border bg-gray-50 hover:bg-white font-medium
+                        sm:rounded-lg shadow-md border  text-xs">
+                                    <ScrapSVG/></button>
                             </Link>
                         </div>
                     </div>
                 </div>
 
-                    <div className="col-span-2 ml-1">
+                    <div className="col-span-2 pl-10 flex">
                                     <StorageSystemDashboard/>
                     </div>
             </div>

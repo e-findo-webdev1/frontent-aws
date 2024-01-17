@@ -6,7 +6,8 @@ import Chart from 'chart.js/auto';
 import PDF from "../components/helpers/pdf";
 import PDFLink from "../components/helpers/pdfLink";
 import Proforma from "../components/helpers/proforma";
-
+import 'react-loading-skeleton/dist/skeleton.css'
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 const MonthlyEvaluation = () => {
     const monthsList = [
         "Januar",
@@ -37,6 +38,8 @@ const MonthlyEvaluation = () => {
     const [selectedCategory, setSelectedCategory] = useState<any>('Gewichtentwicklung');
     const [priceMatrices, setPriceMatrices] = useState<any>();
     const [sorts, setSorts] = useState<any>();
+    const [isDataLoaded, setIsDataLoaded] = useState<any>(false);
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -92,6 +95,8 @@ const MonthlyEvaluation = () => {
                                     return a
                                 }
                             }, [])
+
+
 
                             if (selectedCategory == 'Gewichtentwicklung') {
                                 const data = {
@@ -278,6 +283,9 @@ const MonthlyEvaluation = () => {
                                 }
                             }, [])
 
+
+                            /// !!!!!!
+
                             // Add indexes unassigned to any machine to display prices for each month
                             const datasetPriceMatrices = priceMatrices.filter((matrix: any) =>
                                  matrix.indeces && matrix.indeces != '' && matrix.prices != undefined
@@ -298,9 +306,8 @@ const MonthlyEvaluation = () => {
                             for (let dataset in datasetPriceMatrices) {
                                 datasetsIndex.push(datasetPriceMatrices[dataset])
                             }
-
-
                             //
+
 
                             if (selectedCategory == 'Monatspreis') {
                                 const data: any = {
@@ -643,7 +650,7 @@ const MonthlyEvaluation = () => {
                 .catch((error) => {
                     console.log(error.response);
                 });
-
+            setIsDataLoaded(true)
         }
         fetchData()
     }, [controlDocuments.set, selectedMonth, myChart.set, selectedMachine, selectedCategory, certificates.set]);
@@ -691,7 +698,7 @@ const MonthlyEvaluation = () => {
                     : ""}
                 </select>
             </div>
-            <div className="font-bold justify-center flex space-x-10 mt-5 mb-3">
+            <div className="font-bold justify-center flex space-x-10 mb-3">
                 <button onClick={()=> {
                     if(monthsList.indexOf(selectedMonth) > 0) {
                         setSelectedMonth(monthsList[monthsList.indexOf(selectedMonth) - 1])
@@ -745,8 +752,13 @@ const MonthlyEvaluation = () => {
                 : selectedCategory == 'Erlösentwicklung' ? 'Erlösentwicklung' : ''}
             </p>
 
+            {!isDataLoaded ?
+                <SkeletonTheme baseColor={"#F9FAFB"} highlightColor={"#ffffff"}>
+                    <Skeleton className="min-h-[62rem] mt-5 mb-5 w-10/12 sm:rounded-lg shadow-md"/>
+                </SkeletonTheme> :
+                <div className='min-h-[62rem] min-w-10/12 mt-5 mb-5'>
             <div className="mb-10 mt-5 w-10/12" id="line-chart"/>
-            <div className="mb-10 mt-5 w-10/12" id="line-chart2"/>
+            <div className="mb-10 mt-5 w-10/12" id="line-chart2"/></div>}
             <div id="popup" className={ popupCertificate ?
                 "border ml-[40rem]  w-max shadow-md mb-2 rounded"
                 : "border ml-[40rem]w-max shadow-md mb-2 rounded hidden"}>

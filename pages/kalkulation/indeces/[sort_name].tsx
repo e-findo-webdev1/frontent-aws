@@ -51,6 +51,7 @@ const IndecesManegement = () => {
 
 
     }, [pid]);
+
     const deleteIndex = async (index: any) => {
         let indeces
         {priceMatrix.indeces ? indeces = priceMatrix.indeces : indeces = []}
@@ -67,6 +68,8 @@ const IndecesManegement = () => {
             });
         window.location.replace("/kalkulation/indeces/" + pid.sort_name);
     }
+
+
 
     return(
         <div className="overflow-auto h-full px-48 m-auto">
@@ -114,7 +117,7 @@ const IndecesManegement = () => {
                                     </Link>
                                 </td>
                                 <td className={"text-right"}>{machines ? machines.filter((machine: any) =>
-                                    machine.index == index).length : ""}</td>
+                                    machine.index == sort.sort_name + ' - ' + sort.indexgroup_name + ' - ' + index).length : ""}</td>
                                 <td className={"text-right"}>
                                     <button
                                     className="p-2 font-bold text-xs border-accent-color-1

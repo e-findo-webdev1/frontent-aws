@@ -403,7 +403,7 @@ const StorageSystemDashboard = () => {
     }
 
     return (
-        <div id="storage-system" className="mr-10">
+        <div id="storage-system" className="min-w-full mr-10">
             <span className="text-xs uppercase font-bold text-gray-500">
                   Lagersysteme
             </span>
@@ -411,18 +411,18 @@ const StorageSystemDashboard = () => {
                 <SkeletonTheme baseColor={"#F9FAFB"} highlightColor={"#ffffff"}>
                 <Skeleton className="min-h-80 max-h-80 sm:rounded-lg shadow-md"/>
                 </SkeletonTheme> :
-            <div className="sm:rounded-lg shadow-md  overflow-auto">
+            <div className="sm:rounded-lg shadow-md overflow-auto">
                 <div className="sm:rounded-lg shadow-md border overflow-auto min-h-80 max-h-80 bg-gray-50">
                     <table className="flex-row table-fixed w-full min-h-80 overflow-auto min-w-full max-w-52">
                         <thead className="bg-gray-50">
                         <tr className="text-xs text-gray-500 border-b text-left bg-white">
-                            <th className="font-normal w-24">Masch.-ID<br/>Max Netto</th>
-                            <th className="font-normal w-32">Material</th>
-                            <th className="font-normal w-40">Füllgrad</th>
-                            <th className="font-normal w-36">Plandatum<br/>Abholdatum</th>
-                            <th className="font-normal w-20 text-right">Netto (kg)</th>
-                            <th className="font-normal w-20 text-right">Monatspreis<br/>(in € / t)</th>
-                            <th className="font-normal w-20 text-right">Summe<br/>(in €)</th>
+                            <th className="font-normal max-w-24">Masch.-ID<br/>Max Netto</th>
+                            <th className="font-normal max-w-32">Material</th>
+                            <th className="font-normal max-w-40">Füllgrad</th>
+                            <th className="font-normal max-w-36">Plandatum<br/>Abholdatum</th>
+                            <th className="font-normal max-w-24 text-right">Netto (kg)</th>
+                            <th className="font-normal max-w-20 text-right">Monatspreis<br/>(in € / t)</th>
+                            <th className="font-normal max-w-20 text-right">Summe<br/>(in €)</th>
                         </tr>
                         </thead>
                             <tbody className="bg-gray-50">
