@@ -754,9 +754,9 @@ const MonthlyEvaluation = () => {
 
             {!isDataLoaded ?
                 <SkeletonTheme baseColor={"#F9FAFB"} highlightColor={"#ffffff"}>
-                    <Skeleton className="min-h-[62rem] mt-5 mb-5 w-10/12 sm:rounded-lg shadow-md"/>
+                    <Skeleton className="min-h-[37rem] mt-5 mb-5 w-10/12 sm:rounded-lg shadow-md"/>
                 </SkeletonTheme> :
-                <div className='min-h-[62rem] min-w-10/12 mt-5 mb-5'>
+                <div className='min-h-[37rem] min-w-10/12 mt-5 mb-5'>
             <div className="mb-10 mt-5 w-10/12" id="line-chart"/>
             <div className="mb-10 mt-5 w-10/12" id="line-chart2"/></div>}
             <div id="popup" className={ popupCertificate ?

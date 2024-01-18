@@ -24,7 +24,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         if (loggedIn == false) {
                 return (
                     <div id="background" className="bg-accent-color-1 h-screen py-20 px-44">
-                        <div id="template" className="m-auto bg-white h-full min-w-[67rem] rounded-3xl pb-32 p-3">
+                        <div id="template" className="m-auto bg-white h-full min-w-[67rem] rounded-3xl pb-36 p-3">
                             <div className="mb-2">
                                 <Logo/>
                             </div>
@@ -37,7 +37,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         else {
             return (
                 <div id="background" className="bg-accent-color-1 h-screen py-20 px-44">
-                    <div id="template" className="m-auto bg-white h-full min-w-[67rem] rounded-3xl pb-32 p-3">
+                    <div id="template" className="m-auto bg-white h-full min-w-[67rem] rounded-3xl pb-36 p-3">
                         <Navigation/>
                         <hr/>
                         <Breadcrumbs/>
