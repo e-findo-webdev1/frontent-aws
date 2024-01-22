@@ -4,6 +4,8 @@ import Link from "next/link";
 import {useRouter} from "next/router";
 import fromHex from "../../components/helpers/fromHex";
 import toHex from "../../components/helpers/toHex";
+import 'react-loading-skeleton/dist/skeleton.css'
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 
 const IndecesManegement = () => {
     const router = useRouter()
@@ -16,6 +18,7 @@ const IndecesManegement = () => {
     });
     const [priceMatrix, setPriceMatrix] = useState<any>();
     const [machines, setMachines] = useState<any>();
+    const [isDataLoaded, setIsDataLoaded] = useState<any>(false)
 
     useEffect(() => {
         const getData = async() => {
@@ -45,6 +48,7 @@ const IndecesManegement = () => {
                 .catch((error) => {
                     console.log(error.response);
                 });
+            setIsDataLoaded(true)
         }
 
         getData()
@@ -88,10 +92,14 @@ const IndecesManegement = () => {
             </div>
             <p className="text-lg font-bold mb-3 pb-12">
                 {sort ? "Indexe zu der Sorte '" + sort.indexgroup_name + ' - ' + sort.sort_name + "'" : ''}</p>
-                <div className="mb-3 sm:rounded-lg shadow-md border overflow-auto max-h-full w-3/5 mt-3">
-                    <table className="flex-row w-full table-fixed">
+            {!isDataLoaded ?
+                <SkeletonTheme baseColor={"#F9FAFB"} highlightColor={"#ffffff"}>
+                    <Skeleton className="h-[13.5rem] max-w-[45rem] mt-5 mb-5 sm:rounded-lg shadow-md"/>
+                </SkeletonTheme> :
+                <div className="h-[13.5rem] mb-3 sm:rounded-lg shadow-md border overflow-auto bg-gray-50 max-h-full w-3/5 mt-3">
+                    <table className="flex-row w-full h-full table-fixed">
                         <thead>
-                        <tr className="text-xs text-gray-500 border-b text-left">
+                        <tr className="text-xs text-gray-500 bg-white border-b text-left">
                             <th className="font-normal">Indexname</th>
                             <th className="font-normal text-right">Verknüpfte Maschinen</th>
                             <th></th>
@@ -131,7 +139,7 @@ const IndecesManegement = () => {
                         ) : ""}
                         </tbody>
                     </table>
-                </div>
+                </div>}
         </div>
     )
 }
