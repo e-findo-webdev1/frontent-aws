@@ -126,20 +126,24 @@ const AnnualRevenues = () => {
                     }
                     {
                         // @ts-ignore
-                        <a key={Math.max((workingYears)) + 1}
+                        <a key={workingYears.sort(function(a,b){ // @ts-ignore
+                            return b-a})[0]}
                            className="cursor-pointer"
                            onClick={(e)=>{
                                // @ts-ignore
-                               setCurrentYear(Math.max(workingYears) + 1);}
+                               setCurrentYear(parseInt(workingYears.sort(function(a,b){ // @ts-ignore
+                                   return b-a})[0]) + 1);}
                            }
                         >
                             <span className={
                                 // @ts-ignore
-                                currentYear == Math.max(workingYears) + 1
+                                currentYear == parseInt(workingYears.sort(function(a,b){ // @ts-ignore
+                                    return b-a})[0]) + 1
                                     ? 'font-bold underline' : ''
                             }>
                                 {// @ts-ignore
-                                    workingYears.length > 0 ? Math.max(workingYears) + 1
+                                    workingYears.length > 0 ? parseInt(workingYears.sort(function(a,b){ // @ts-ignore
+                                        return b-a})[0]) + 1
                                         : ''
                                 }
                             </span>

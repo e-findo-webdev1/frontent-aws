@@ -3,6 +3,8 @@ import Chart from 'chart.js/auto';
 import moment from "moment";
 import API from "axios";
 import Link from "next/link";
+import 'react-loading-skeleton/dist/skeleton.css'
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 
 const AnnualEvaluation = () => {
     const monthsList = [
@@ -29,6 +31,7 @@ const AnnualEvaluation = () => {
     const [selectedCategory, setSelectedCategory] = useState<any>('');
     const [priceMatrices, setPriceMatrices] = useState<any>({set: false});
     const [sorts, setSorts] = useState<any>({set: false});
+    const [isDataLoaded, setIsDataLoaded] = useState<any>(false);
 
     useEffect(()=>{
 
@@ -561,6 +564,7 @@ const AnnualEvaluation = () => {
                 .catch((error) => {
                     console.log(error.response);
                 });
+            setIsDataLoaded(true)
         }
         fetchData()
 
@@ -629,7 +633,13 @@ const AnnualEvaluation = () => {
                         : selectedCategory == 'Monatspreis' ? 'Indexpreis-Verlauf'
                             : selectedCategory == 'Erlösentwicklung' ? 'Erlösentwicklung' : ''}
                 </p>
-                <div className="mb-10 mt-5 w-10/12" id="line-chart"/>
+                {!isDataLoaded ?
+                    <SkeletonTheme baseColor={"#F9FAFB"} highlightColor={"#ffffff"}>
+                        <Skeleton className="min-h-[50.7rem] mt-5 mb-5 min-w-10/12 sm:rounded-lg shadow-md"/>
+                    </SkeletonTheme> :
+                    <div className='min-h-[20.2rem] min-w-10/12 mt-5 mb-5'>
+                        <div className="mb-10 mt-5 w-10/12" id="line-chart"/>
+                        </div>}
             </div>
 
             <div className="sm:rounded-lg shadow-md border mb-10">

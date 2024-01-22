@@ -5,6 +5,8 @@ import PDF from "../components/helpers/pdf";
 import Link from "next/link";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import 'react-loading-skeleton/dist/skeleton.css'
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 
 const WasteBalance = () => {
 
@@ -22,7 +24,8 @@ const WasteBalance = () => {
     const [endDate, setEndDate] = useState(
         moment().set({hour: 23, minute: 59, second: 59}).toDate()
     );
-    const [filterDates, setFilterDates] = useState<any>(false);
+    const [filterDates, setFilterDates] = useState<any>(false)
+    const [isDataLoaded, setIsDataLoaded] = useState<any>(false)
 
     useEffect(() => {
 
@@ -63,7 +66,7 @@ const WasteBalance = () => {
                 .then((response) => {
                     setWeighingCertificates(response.data.Items.filter((certificate: any) =>
                     certificate.client_id == JSON.parse(sessionStorage.getItem('company') as string).client_id))})
-
+            setIsDataLoaded(true)
         }
 
         fetchData()
@@ -158,9 +161,13 @@ const WasteBalance = () => {
                 >
                     x</button>
             </div>
-            <div className="sm:rounded-lg shadow-md overflow-auto mt-5 w-max">
+            {!isDataLoaded ?
+                <SkeletonTheme baseColor={"#F9FAFB"} highlightColor={"#ffffff"}>
+                    <Skeleton className="min-h-[37rem] max-w-[45rem] mt-5 mb-5 sm:rounded-lg shadow-md"/>
+                </SkeletonTheme> :
+            <div className="sm:rounded-lg shadow-md overflow-auto mt-5 w-[45rem]">
                 <div className="rounded-lg shadow-md border overflow-auto">
-                    <table className="flex-row table-auto">
+                    <table className="flex-row table-auto w-full">
                         <thead>
                         <tr className="text-xs text-gray-500 text-center border-b">
                             <th className="font-normal ">Datum</th>
@@ -238,7 +245,7 @@ const WasteBalance = () => {
                         </tbody>
                     </table>
                 </div>
-            </div>
+            </div>}
             <p className="font-bold text-sm mb-10 mt-4">Gesamtmenge: {
                 controlDocuments && controlDocuments.set != false && controlDocuments.set != true ?
                 (controlDocuments
