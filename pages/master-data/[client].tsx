@@ -7,6 +7,9 @@ import getFillerStyle from "../components/helpers/getFillerStyle";
 import Popup from "../components/start/Popup";
 import "react-datepicker/dist/react-datepicker.css";
 import {useRouter} from "next/router";
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css'
+
 
 const MasterData = () => {
 
@@ -27,6 +30,8 @@ const MasterData = () => {
 
     const [clientId, setClientId] = useState<any>();
     const [clients, setClients] = useState<any>({set: false});
+
+    const [isDataLoaded, setIsDataLoaded] = useState<any>(false);
 
     useEffect(() => {
 
@@ -103,6 +108,7 @@ const MasterData = () => {
                 .catch((error) => {
                     console.log(error.response);
                 });
+            setIsDataLoaded(true)
         }
 
         getData()
@@ -439,9 +445,21 @@ const MasterData = () => {
                         <p><span className="font-bold">E-Mail:</span> {data.email}<br/></p>
                         <p><span className="font-bold">Ansprechpartner:</span> {data.spokesperson}</p>
                     </div>
-                ) : ''}
+                ) :
+                    <div key='' className="text-xs space-y-2.5">
+                        <p><span className="font-bold">KundenNr.:</span></p>
+                        <p><span className="font-bold">Firma:</span><br/></p>
+                        <p><span className="font-bold">PLZ:</span><br/></p>
+                        <p><span className="font-bold">Stadt:</span><br/></p>
+                        <p><span className="font-bold">Straße:</span><br/></p>
+                        <p><span className="font-bold">Bundesland (D):</span><br/></p>
+                        <p><span className="font-bold">Telefon:</span><br/></p>
+                        <p><span className="font-bold">E-Mail:</span><br/></p>
+                        <p><span className="font-bold">Ansprechpartner:</span></p>
+                    </div>
+                }
             </div>
-            <div className="flex">
+            <div className="w-max ml-auto">
                 <Link href="/master-data/new-machine"><button className="border ml-auto p-1.5 px-3.5 font-bold
                               border-accent-color-1 bg-accent-color-4
                               hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs">
@@ -452,10 +470,14 @@ const MasterData = () => {
             <span className="text-xs uppercase font-bold text-gray-500">
                   Lagersysteme
             </span>
-            <div className="mb-10 sm:rounded-lg shadow-md border overflow-auto">
-                <table className="flex-row w-full table-auto">
+            {!isDataLoaded ?
+                <SkeletonTheme baseColor={"#F9FAFB"} highlightColor={"#ffffff"}>
+                    <Skeleton className="min-h-[15rem] max-h-[15rem] shadow-md"/>
+                </SkeletonTheme> :
+            <div className="mb-10 min-h-[15rem] sm:rounded-lg shadow-md border overflow-auto bg-gray-50">
+                <table className="flex-row w-full overflow-auto h-[15rem] table-auto">
                     <thead>
-                    <tr className="text-xs text-gray-500 border-b text-left">
+                    <tr className="text-xs text-gray-500 border-b bg-white text-left">
                         <th className="font-normal">Masch.-ID<br/>Max Netto</th>
                         <th className="font-normal">Material</th>
                         <th className="font-normal">Füllgrad</th>
@@ -478,8 +500,8 @@ const MasterData = () => {
                         </Link></span><br/>
                                         <span>{machine.maxNetto} kg</span></td>
                                     <td>{machine.waretype}</td>
-                                    <td className="flex">
-                                        <div className="border border-black bg-white w-32 mr-1.5">
+                                    <td className="flex py-9 m-auto">
+                                        <div className="border h-4 border-black bg-white min-w-32 mr-1.5">
 
                                             <div
                                                 // @ts-ignore
@@ -533,6 +555,7 @@ const MasterData = () => {
                     setPickupDate={setPickupDate}
                 />
             </div>
+            }
             <div className=" grid grid-cols-2 gap-x-5">
                 <div className="col-span-1 h-max">
                     <Link href="/master-data/shift-manager">
@@ -544,10 +567,14 @@ const MasterData = () => {
                     <p className="text-xs uppercase font-bold text-gray-500">
                         Schichten
                     </p>
-                    <div className="sm:rounded-lg shadow-md border overflow-auto h-max">
+                    {!isDataLoaded ?
+                        <SkeletonTheme baseColor={"#F9FAFB"} highlightColor={"#ffffff"}>
+                            <Skeleton className="min-h-[9.4rem] max-h-[9.4rem] shadow-md"/>
+                        </SkeletonTheme> :
+                    <div className="h-[9.4rem] sm:rounded-lg shadow-md border bg-gray-50 overflow-auto h-max">
                         <table className="flex-row w-full table-auto">
                             <thead>
-                            <tr className="text-xs text-gray-500 border-b text-left">
+                            <tr className="text-xs bg-white text-gray-500 border-b text-left">
                                 <th/>
                                 <th className="font-normal">Start</th>
                                 <th className="font-normal">Ende</th>
@@ -586,7 +613,7 @@ const MasterData = () => {
 
                             </tbody>
                         </table>
-                    </div>
+                    </div>}
                 </div>
 
                 <div className="col-span-1">
@@ -598,10 +625,14 @@ const MasterData = () => {
                     <p className="text-xs uppercase font-bold text-gray-500">
                       Mitarbeiter
                 </p>
-                    <div className="sm:rounded-lg shadow-md border overflow-auto h-max">
+                    {!isDataLoaded ?
+                        <SkeletonTheme baseColor={"#F9FAFB"} highlightColor={"#ffffff"}>
+                            <Skeleton className="min-h-[9.4rem] max-h-[9.4rem] shadow-md"/>
+                        </SkeletonTheme> :
+                    <div className="h-[9.4rem] bg-gray-50 sm:rounded-lg shadow-md border overflow-auto h-max">
                         <table className="flex-row w-full table-auto">
                             <thead>
-                            <tr className="text-xs text-gray-500 border-b text-left">
+                            <tr className="text-xs bg-white text-gray-500 border-b text-left">
                                 <th className="font-normal">Mitarbeiter</th>
                                 <th className="font-normal">Kürzel</th>
                                 <th className="font-normal">Email</th>
@@ -624,10 +655,10 @@ const MasterData = () => {
                             }
                             </tbody>
                         </table>
-                    </div>
+                    </div>}
                 </div>
             </div>
-            <div className="flex mt-5">
+            <div className="flex mt-10 w-max ml-auto">
                 <Link href="/master-data/shift-calendar">
                     <button className="border ml-auto p-1.5 px-3.5 font-bold border-accent-color-1 bg-accent-color-4
                         hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs">Zeiten Bearbeiten
@@ -637,10 +668,14 @@ const MasterData = () => {
             <span className="text-xs uppercase font-bold text-gray-500">
                   Arbeitszeiten
             </span>
-            <div className="mb-10 sm:rounded-lg shadow-md border overflow-auto">
+            {!isDataLoaded ?
+                <SkeletonTheme baseColor={"#F9FAFB"} highlightColor={"#ffffff"}>
+                    <Skeleton className="min-h-[18.55rem] max-h-[18.55rem] shadow-md"/>
+                </SkeletonTheme> :
+            <div className="h-[18.55rem] bg-gray-50 mb-10 sm:rounded-lg shadow-md border overflow-auto">
                 <table className="flex-row w-full table-auto">
                     <thead>
-                    <tr className="text-xs text-gray-500 border-b text-left">
+                    <tr className="text-xs bg-white text-gray-500 border-b text-left">
                         <th/>
                         <th className="font-normal">Schicht 1</th>
                         <th className="font-normal">Schicht 2</th>
@@ -924,7 +959,7 @@ const MasterData = () => {
                     </tr>
                     </tbody>
                 </table>
-            </div>
+            </div>}
         </div>
     )
 }
