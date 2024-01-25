@@ -130,9 +130,9 @@ const MasterDataSummary = () => {
                 </div>
                 {!isDataLoaded ?
                     <SkeletonTheme baseColor={"#F9FAFB"} highlightColor={"#ffffff"}>
-                        <Skeleton className="min-h-[11.7rem] max-h-[11.7rem] shadow-md"/>
+                        <Skeleton className="min-h-[11.7rem] shadow-md"/>
                     </SkeletonTheme> :
-                <div className="sm:rounded-lg min-h-[11.7rem] max-h-[11.7rem] shadow-md border overflow-auto bg-gray-50">
+                <div className="sm:rounded-lg min-h-[11.7rem] shadow-md border overflow-auto bg-gray-50">
                     <table className="flex-row text-gray-500 table-fixed w-full bg-">
                         <thead>
                         <tr className="text-xs text-gray-500 bg-white border-b text-left">
