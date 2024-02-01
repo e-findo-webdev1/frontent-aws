@@ -416,13 +416,13 @@ const StorageSystemDashboard = () => {
                     <table className="flex-row table-fixed w-full min-h-80 overflow-auto min-w-full max-w-52">
                         <thead className="bg-gray-50">
                         <tr className="text-xs text-gray-500 border-b text-left bg-white">
-                            <th className="font-normal max-w-24">Masch.-ID<br/>Max Netto</th>
-                            <th className="font-normal max-w-32">Material</th>
-                            <th className="font-normal max-w-40">Füllgrad</th>
-                            <th className="font-normal max-w-36">Plandatum<br/>Abholdatum</th>
-                            <th className="font-normal max-w-24 text-right">Netto (kg)</th>
-                            <th className="font-normal max-w-20 text-right">Monatspreis<br/>(in € / t)</th>
-                            <th className="font-normal max-w-20 text-right">Summe<br/>(in €)</th>
+                            <th className="font-normal w-[5.6rem]">Masch.-ID<br/>Max Netto</th>
+                            <th className="font-normal w-[7rem]">Material</th>
+                            <th className="font-normal w-[9.1rem]">Füllgrad</th>
+                            <th className="font-normal w-[6rem]">Plandatum<br/>Abholdatum</th>
+                            <th className="font-normal w-[4rem]">Netto (kg)</th>
+                            <th className="font-normal w-[6.5rem] text-right">Monatspreis<br/>(in € / t)</th>
+                            <th className="font-normal w-[5rem] text-right">Summe<br/>(in €)</th>
                         </tr>
                         </thead>
                             <tbody className="bg-gray-50">
