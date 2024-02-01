@@ -149,36 +149,21 @@ const MachineStorageHistory = () => {
     }
 
     const updatePageList = (page: number) => {
-        const lastPage = Math.ceil(listLength/100)
-        if (page < 5 && lastPage > 4) {
-            const newPageList = []
-            if (pageList.length == 0) {
-                for (let i = 1; i < Math.ceil(listLength/100) + 1; i++) {
-                    newPageList.push(i)
-                }
-                setPageList(newPageList)
-            }
-        }
-        if (page == 4 && lastPage > 4) {
-            const newPageList = []
-            if (pageList.length == 0) {
-                for (let i = 1; i < Math.ceil(listLength/100) + 1; i++) {
-                    newPageList.push(i)
-                }
-                setPageList(newPageList)
-            }
-        }
+        const lastPage = Math.ceil(listLength / 100);
+        const visiblePages = [];
 
-        if (page > 3 && page + 2 < lastPage) {
-            setPageList([1, page - 2, page -1, page, page + 1, page +2])
+        if (lastPage > 4) {
+            if (page <= 4) {
+                visiblePages.push(1, 2, 3, 4, 5);
+            } else if (page >= lastPage - 2) {
+                visiblePages.push(lastPage - 3, lastPage - 2, lastPage - 1, lastPage);
+            } else {
+                visiblePages.push(page - 1, page, page + 1);
+            }
+
+            setPageList(visiblePages);
         }
-        if (page > 4 && page + 1 < lastPage) {
-            setPageList([page - 2, page -1, page, page + 1, page + 2])
-        }
-        if (page > 4 && page  == lastPage) {
-            setPageList([lastPage - 3, lastPage -2, lastPage -1, lastPage])
-        }
-    }
+    };
 
     return(
         <div id="content-page" className="overflow-auto h-full px-48 m-auto">
