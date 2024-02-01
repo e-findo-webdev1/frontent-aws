@@ -83,19 +83,19 @@ const ControlDocuments = () => {
                 <table className="table-fixed w-full overflow-auto">
                     <thead>
                     <tr className="text-xs text-gray-500 border-b text-left">
-                        <th className="font-normal">Maschine</th>
-                        <th className="font-normal">PDF</th>
-                        <th className="font-normal">Wiegenr.</th>
+                        <th className="font-normal w-[4rem]">Maschine</th>
+                        <th className="font-normal w-[4rem]">PDF</th>
+                        <th className="font-normal w-[4rem]">Wiegenr.</th>
                         <th className="font-normal w-[9.1rem]">Datum</th>
-                        <th className="font-normal">Warenart</th>
-                        <th className="font-normal">Bruttogewitcht</th>
-                        <th className="font-normal">Taragewitcht</th>
-                        <th className="font-normal">Nettogewicht</th>
-                        <th className="font-normal">Standzeit</th>
-                        <th className="font-normal">Prod.-<br/>Zeit</th>
+                        <th className="font-normal w-[9.1rem]">Warenart</th>
+                        <th className="font-normal w-[6rem]">Bruttogewitcht</th>
+                        <th className="font-normal w-[6rem]">Taragewitcht</th>
+                        <th className="font-normal w-[6rem]">Nettogewicht</th>
+                        <th className="font-normal w-[4rem]">Standzeit</th>
+                        <th className="font-normal w-[4rem]">Prod.-<br/>Zeit</th>
                         <th className="font-normal w-[4rem]">kg / h</th>
-                        <th className="font-normal">Bemerkung</th>
-                        <th className="font-normal">W. Schein</th>
+                        <th className="font-normal w-[6rem]">Bemerkung</th>
+                        <th className="font-normal w-[4rem]">W. Schein</th>
                     </tr>
                     </thead>
                     <tbody className="bg-gray-50">
