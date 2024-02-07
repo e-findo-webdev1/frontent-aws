@@ -293,27 +293,27 @@ const MachineStorageHistory = () => {
                 </p>
             </div>
 
-            <div className="shadow-md border h-[20rem] overflow-auto mt-5">
+            <div className="shadow-md border h-[20rem] overflow-auto mt-5 rounded">
                 <table className="flex-row w-full table-auto">
                     <thead className="sticky top-0 bg-white rounded-lg">
                     <tr className="text-xs text-gray-500 border-b text-left text-center">
-                        <th className="font-normal">Masch.-ID</th>
-                        <th className="font-normal">Typ</th>
-                        <th className="font-normal">Datum erfasst</th>
+                        <th className="font-normal p-0.5">Masch.-ID</th>
+                        <th className="font-normal p-0.5">Typ</th>
+                        <th className="font-normal p-0.5">Datum erfasst</th>
                         <th className="font-normal">Brutto</th>
                         <th className="font-normal">Tara (Log)</th>
                         <th className="font-normal">Tara (Masch)</th>
                         <th className="font-normal">Netto (Log)</th>
                         <th className="font-normal">Netto (Masch)</th>
-                        <th className="font-normal">kg/h</th>
-                        <th className="font-normal">Warenart</th>
-                        <th className="font-normal">Netto</th>
-                        <th className="font-normal">Positiv</th>
-                        <th className="font-normal">Übergew.</th>
-                        <th className="font-normal">Stabil</th>
-                        <th className="font-normal">Print</th>
-                        <th className="font-normal">Printausgabe</th>
-                        <th className="font-normal">Status Maschine</th>
+                        <th className="font-normal p-0.5">kg/h</th>
+                        <th className="font-normal p-0.6">Warenart</th>
+                        <th className="font-normal p-0.6">Netto</th>
+                        <th className="font-normal p-0.5">Positiv</th>
+                        <th className="font-normal p-0.6">Übergew.</th>
+                        <th className="font-normal p-0.5">Stabil</th>
+                        <th className="font-normal p-0.5">Print</th>
+                        <th className="font-normal p-[0.4px]">Printausgabe</th>
+                        <th className="font-normal p-0.5">Status Maschine</th>
                     </tr>
                     </thead>
                     <tbody className="bg-gray-50 text-center">
