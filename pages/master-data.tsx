@@ -133,7 +133,7 @@ const MasterDataSummary = () => {
                         <Skeleton className="min-h-[11.7rem] shadow-md"/>
                     </SkeletonTheme> :
                 <div className="sm:rounded-lg min-h-[11.7rem] shadow-md border overflow-auto bg-gray-50">
-                    <table className="flex-row text-gray-500 table-fixed w-full bg-">
+                    <table className="flex-row table-fixed w-full bg-">
                         <thead>
                         <tr className="text-xs text-gray-500 bg-white border-b text-left">
                             <th className="font-normal w-[12rem]">Firma</th>
@@ -200,7 +200,7 @@ const MasterDataSummary = () => {
                                             .map((priceMatrix: any) =>
                                                 priceMatrix.indeces.map((index: any) =>
                                                     <tr key={priceMatrix.price_matrix + index}
-                                                        className="text-xs text-gray-500 border-b">
+                                                        className="text-xs border-b">
                                                         <Link href={"/master-data/edit-index/" +
                                                             toHex(priceMatrix.indexgroup_name + " - "
                                                                 + priceMatrix.price_matrix + " - " + index)}>
@@ -250,7 +250,7 @@ const MasterDataSummary = () => {
                                 <tbody className="bg-gray-50">
                                 {qualities ? qualities.map((quality: any) =>
                                     <tr key={quality.quality_id}
-                                        className="text-xs text-gray-500 border-b text-left underline">
+                                        className="text-xs border-b text-left underline">
                                         <Link href={"/master-data/edit-quality/" +
                                             quality.quality_id}>
                                             <td className="underline cursor-pointer">{quality.quality_name}</td>
@@ -293,7 +293,7 @@ const MasterDataSummary = () => {
                                             return a.waretype_id - b.waretype_id})
                                             .map((material: any) =>
                                                 <tr key={material.waretype_id}
-                                                    className="text-xs text-gray-500 border-b text-left">
+                                                    className="text-xs border-b text-left">
                                                     <Link href={"/master-data/edit-material/" +
                                                         material.waretype_id}>
                                                         <td className="underline cursor-pointer">{material.name_waretype}</td>
@@ -337,7 +337,7 @@ const MasterDataSummary = () => {
                                                 return a.machine_type_id - b.machine_type_id})
                                                 .map((machineType: any) =>
                                                     <tr key={machineType.machine_type_id}
-                                                        className="text-xs text-gray-500 border-b text-left">
+                                                        className="text-xs border-b text-left">
                                                         <Link href={"/master-data/edit-machine-type/"
                                                             + machineType.machine_type_id}>
                                                             <td className="underline cursor-pointer">
@@ -376,7 +376,7 @@ const MasterDataSummary = () => {
                                     <tbody className="bg-gray-50">
                                     {workers ? workers.map((worker: any) =>
                                         <tr key={worker.userName}
-                                            className="text-xs text-gray-500 border-b text-left">
+                                            className="text-xs border-b text-left">
                                             <Link href={"/master-data/edit-worker/" + worker.loginName}>
                                                 <td className="underline cursor-pointer">
                                                     {worker.userName}</td>
@@ -421,7 +421,7 @@ const MasterDataSummary = () => {
                                     contractors ?
                                         contractors.map((contractor: any) =>
                                             <tr key={contractor.contractor_id}
-                                                className="text-xs text-gray-500 border-b text-left">
+                                                className="text-xs border-b text-left">
                                                 <Link href={"/master-data/edit-contractor/" + contractor.contractor_id}>
                                                     <td className="underline cursor-pointer">
                                                         {contractor.contractor_name}</td>

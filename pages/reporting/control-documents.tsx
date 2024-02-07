@@ -19,6 +19,8 @@ const ControlDocuments = () => {
     const [certificates, setCertificates] = useState<any>({set:false});
     const [refresh, setRefresh] = useState<any>({set: false})
     const [isDataLoaded, setIsDataLoaded] = useState<any>(false)
+    const [rowsPerPage, setRowsPerPage] = useState<any>(25);
+    const [currentPage, setCurrentPage] = useState<any>(1);
 
     useEffect(() => {
         setCompany(JSON.parse(sessionStorage.getItem('company') as string));
