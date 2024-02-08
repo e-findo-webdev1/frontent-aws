@@ -204,12 +204,12 @@ const EditMachine = () => {
                                        onChange={(e)=>
                                            setData({...data, machine_id: parseInt(e.target.value)})}/>
                             </td>
-                            <td className="p-1 pl-3">Durchsatz Durchschnitt</td>
+                            <td className="p-1 pl-3 w-[11rem]">Max. Netto</td>
                             <td className="p-1 pl-0">
                                 <input className="border rounded w-full pl-2.5 py-0.5"
-                                       value={data ? Math.floor(data.averageThroughput) : ''}
-                                       onChange={(e)=>
-                                           setData({...data, averageThroughput: parseInt(e.target.value)})}/>
+                                       value={data ? data.maxNetto : 0}
+                                       onChange={ (e)=>
+                                           setData({...data, maxNetto: parseInt(e.target.value)})}/>
                             </td>
                         </tr>
                         <tr className="h-8">
@@ -227,13 +227,20 @@ const EditMachine = () => {
                                     <option>Silo</option>
                                 </select>
                             </td>
-                            <td className="p-1 pl-3">Man. Tara (Maschine)</td>
+                            <td className="p-1 pl-3">Min. Container Gewicht</td>
+                            <td className="p-1 pl-0">
+                                <input className="border rounded w-full pl-2.5 py-0.5"
+                                       value={data ? data.minContainer_weight : 0}
+                                       onChange={(e)=>
+                                           setData({...data, minContainer_weight: parseInt(e.target.value)})}/>
+                            </td>
+                            {/*<td className="p-1 pl-3">Man. Tara (Maschine)</td>
                             <td className="p-1 pl-0">
                                 <input className="border rounded w-full pl-2.5 py-0.5"
                                        value={data ? data.manualTara : '0'}
                                        onChange={(e)=>
                                            setData({...data, manualTara: parseInt(e.target.value)})}/>
-                            </td>
+                            </td>*/}
                         </tr>
                         <tr>
                             <td className="p-1 pl-0 pr-12">Machinenbezeichnung</td>
@@ -244,29 +251,36 @@ const EditMachine = () => {
                                        onChange={(e)=>
                                            setData({...data, machineName: e.target.value})}/>
                             </td>
-                            <td className="p-1 pl-3">Min. Füllmenge für Füll-Start</td>
+                            <td className="p-1 pl-3">Max. Container Gewicht</td>
                             <td className="p-1 pl-0">
+                                <input className="border rounded w-full pl-2.5 py-0.5"
+                                       value={data ? data.maxContainer_weight : 0}
+                                       onChange={(e)=>
+                                           setData({...data, maxContainer_weight: parseInt(e.target.value)})}/>
+                            </td>
+                            {/*<td className="p-1 pl-3 invisible">Min. Füllmenge für Füll-Start</td>
+                            <td className="p-1 pl-0 invisible">
                                 <input className="border rounded w-full pl-2.5 py-0.5"
                                        defaultValue={data ? data.minForFullStart : '0'}
                                        onChange={(e)=>
                                            setData({...data, minForFullStart: parseInt(e.target.value)})}/>
-                            </td>
+                            </td>*/}
                         </tr>
                         <tr>
-                            <td className="p-1 pl-0">Gruppierung</td>
-                            <td className="p-1 pl-0">
+                            {/*<td className="p-1 pl-0 invisible">Gruppierung</td>
+                            <td className="p-1 pl-0 invisible">
                                 <input className="border rounded w-full pl-2.5 py-0.5"
                                        defaultValue={data ? data.group : ''}
                                        onChange={(e)=>
                                            setData({...data, group: e.target.value})}/>
                             </td>
-                            <td className="p-1 pl-3 pr-12">Neue Berechnung FT-111 (automatisch)</td>
-                            <td className="p-1 pl-0.5">
+                            <td className="p-1 pl-3 pr-12 invisible">Neue Berechnung FT-111 (automatisch)</td>
+                            <td className="p-1 pl-0.5 invisible">
                                 <input type="checkbox"
                                        checked={data ? data.newFT111 : false}
                                        onChange={(e)=>
                                            setData({...data, newFT111: e.target.checked})}/>
-                            </td>
+                            </td>*/}
                         </tr>
                         <tr>
                             <td className="p-1 pl-0">Warentyp</td>
@@ -296,13 +310,20 @@ const EditMachine = () => {
                                         : ''}
                                 </select>
                             </td>
-                            <td className="p-1 pl-3">Einmaliges Tarieren</td>
-                            <td className="p-1 pl-0.5">
+                            <td className="p-1 pl-3">Durchsatz Durchschnitt</td>
+                            <td className="p-1 pl-0">
+                                <input className="border rounded w-full pl-2.5 py-0.5"
+                                       value={data ? Math.floor(data.averageThroughput) : ''}
+                                       onChange={(e)=>
+                                           setData({...data, averageThroughput: parseInt(e.target.value)})}/>
+                            </td>
+                            {/*<td className="p-1 pl-3 invisible">Einmaliges Tarieren</td>
+                            <td className="p-1 pl-0.5 invisible">
                                 <input type="checkbox"
                                        checked={data ? data.automaticTara : false}
                                        onChange={(e)=>
                                            setData({...data, automaticTara: e.target.checked})}/>
-                            </td>
+                            </td>*/}
                         </tr>
                         <tr>
                             <td className="p-1 pl-0">Warenqualität</td>
@@ -320,62 +341,6 @@ const EditMachine = () => {
                                         </option>
                                     ) : ''}
                                 </select>
-                            </td>
-                            <td className="p-1 pl-3">Befüllart</td>
-                            <td className="p-1 pl-0">
-                                <select className="w-full pl-2.5 py-0.5 appearance-none
-                                border rounded
-                                bg-[url('https://www.svgrepo.com/show/80156/down-arrow.svg')]
-                                bg-no-repeat bg-[length:15px] [background-position-x:95%]
-                                [background-position-y:5px]"
-                                        value={data ? data.fillingType : ''}
-                                        onChange={(e)=>
-                                            setData({...data, fillingType: e.target.value})}>
-                                    <option>Automatisch</option>
-                                    <option>Manuell</option>
-                                </select>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td className="p-1 pl-0">Index</td>
-                            <td className="p-1 pl-0">
-                                <select className="w-full pl-2.5 py-0.5 appearance-none
-                                border rounded
-                                bg-[url('https://www.svgrepo.com/show/80156/down-arrow.svg')]
-                                bg-no-repeat bg-[length:15px] [background-position-x:95%]
-                                [background-position-y:5px]"
-                                        value={ data ? data.index : ''}
-                                        onChange={(e) =>
-                                            setData({...data, index: e.target.value})}>
-                                    <option key={"noIndex"}>{"- kein Index -"}</option>
-                                    {priceMatrices && indeces.set != false ? indeces.map((index: any) =>
-                                        <option key={index}>{index}</option>
-                                    ): ""}
-
-                                </select>
-                            </td>
-                            <td className="p-1 pl-3">Plandatum Berechnung</td>
-                            <td className="p-1 pl-0">
-                                <select className="w-full pl-2.5 py-0.5
-                                appearance-none border rounded
-                                bg-[url('https://www.svgrepo.com/show/80156/down-arrow.svg')]
-                                bg-no-repeat bg-[length:15px] [background-position-x:95%]
-                                [background-position-y:5px]"
-                                        value={data ? data.plandateCalculation : ''}
-                                        onChange={(e)=>
-                                            setData({...data, plandateCalculation: e.target.value})}>
-                                    <option>Plandatum V.1</option>
-                                    <option>Plandatum V.2</option>
-                                </select>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td className="p-1 pl-0">Max Netto</td>
-                            <td className="p-1 pl-0">
-                                <input className="border rounded w-full pl-2.5 py-0.5"
-                                       value={data ? data.maxNetto : 0}
-                                       onChange={ (e)=>
-                                           setData({...data, maxNetto: parseInt(e.target.value)})}/>
                             </td>
                             <td className="p-1 pl-3">Status</td>
                             <td className="p-1 pl-0">
@@ -397,14 +362,38 @@ const EditMachine = () => {
                                     <option>Containertausch (8)</option>
                                 </select>
                             </td>
+                            {/*<td className="p-1 pl-3 invisible">Befüllart</td>
+                            <td className="p-1 pl-0 ivisible">
+                                <select className="w-full pl-2.5 py-0.5 appearance-none
+                                border rounded
+                                bg-[url('https://www.svgrepo.com/show/80156/down-arrow.svg')]
+                                bg-no-repeat bg-[length:15px] [background-position-x:95%]
+                                [background-position-y:5px]"
+                                        value={data ? data.fillingType : ''}
+                                        onChange={(e)=>
+                                            setData({...data, fillingType: e.target.value})}>
+                                    <option>Automatisch</option>
+                                    <option>Manuell</option>
+                                </select>
+                            </td>*/}
                         </tr>
                         <tr>
-                            <td className="p-1 pl-0">Min Container Gewicht</td>
+                            <td className="p-1 pl-0">Index</td>
                             <td className="p-1 pl-0">
-                                <input className="border rounded w-full pl-2.5 py-0.5"
-                                       value={data ? data.minContainer_weight : 0}
-                                       onChange={(e)=>
-                                           setData({...data, minContainer_weight: parseInt(e.target.value)})}/>
+                                <select className="w-full pl-2.5 py-0.5 appearance-none
+                                border rounded
+                                bg-[url('https://www.svgrepo.com/show/80156/down-arrow.svg')]
+                                bg-no-repeat bg-[length:15px] [background-position-x:95%]
+                                [background-position-y:5px]"
+                                        value={ data ? data.index : ''}
+                                        onChange={(e) =>
+                                            setData({...data, index: e.target.value})}>
+                                    <option key={"noIndex"}>{"- kein Index -"}</option>
+                                    {priceMatrices && indeces.set != false ? indeces.map((index: any) =>
+                                        <option key={index}>{index}</option>
+                                    ): ""}
+
+                                </select>
                             </td>
                             <td className="p-1 pl-3">Kunde</td>
                             <td className="p-1 pl-0">
@@ -420,15 +409,30 @@ const EditMachine = () => {
                                         <option key={item.client_id}>{item.client_name}</option>) : ''}
                                 </select>
                             </td>
+                            {/*<td className="p-1 pl-3 invisible">Plandatum Berechnung</td>
+                            <td className="p-1 pl-0 invisible">
+                                <select className="w-full pl-2.5 py-0.5
+                                appearance-none border rounded
+                                bg-[url('https://www.svgrepo.com/show/80156/down-arrow.svg')]
+                                bg-no-repeat bg-[length:15px] [background-position-x:95%]
+                                [background-position-y:5px]"
+                                        value={data ? data.plandateCalculation : ''}
+                                        onChange={(e)=>
+                                            setData({...data, plandateCalculation: e.target.value})}>
+                                    <option>Plandatum V.1</option>
+                                    <option>Plandatum V.2</option>
+                                </select>
+                            </td>*/}
                         </tr>
                         <tr>
-                            <td className="p-1 pl-0">Max Container Gewicht</td>
-                            <td className="p-1 pl-0">
-                                <input className="border rounded w-full pl-2.5 py-0.5"
-                                       value={data ? data.maxContainer_weight : 0}
-                                       onChange={(e)=>
-                                           setData({...data, maxContainer_weight: parseInt(e.target.value)})}/>
-                            </td>
+
+
+                        </tr>
+                        <tr>
+
+                        </tr>
+                        <tr>
+
                         </tr>
                         <tr>
                             <td/>
