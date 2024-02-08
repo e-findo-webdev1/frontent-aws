@@ -96,8 +96,8 @@ const IndecesManegement = () => {
                 <SkeletonTheme baseColor={"#F9FAFB"} highlightColor={"#ffffff"}>
                     <Skeleton className="h-[13.5rem] max-w-[45rem] mt-5 mb-5 sm:rounded-lg shadow-md"/>
                 </SkeletonTheme> :
-                <div className="h-[13.5rem] mb-3 sm:rounded-lg shadow-md border overflow-auto bg-gray-50 max-h-full w-3/5 mt-3">
-                    <table className="flex-row w-full h-full table-fixed">
+                <div className="max-h-[13.5rem] mb-3 sm:rounded-lg shadow-md border overflow-auto bg-gray-50 max-h-full w-3/5 mt-3">
+                    <table className="flex-row w-full  table-fixed">
                         <thead>
                         <tr className="text-xs text-gray-500 bg-white border-b text-left">
                             <th className="font-normal">Indexname</th>

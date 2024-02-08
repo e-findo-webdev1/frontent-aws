@@ -412,8 +412,8 @@ const StorageSystemDashboard = () => {
                 <Skeleton className="min-h-80 max-h-80 sm:rounded-lg shadow-md"/>
                 </SkeletonTheme> :
             <div className="sm:rounded-lg shadow-md overflow-auto">
-                <div className="sm:rounded-lg shadow-md border overflow-auto min-h-80 max-h-80 bg-gray-50">
-                    <table className="flex-row table-fixed w-full min-h-80 overflow-auto min-w-full max-w-52">
+                <div className="sm:rounded-lg shadow-md border overflow-auto max-h-80 bg-gray-50">
+                    <table className="flex-row table-fixed w-full overflow-auto min-w-full max-w-52">
                         <thead className="bg-gray-50">
                         <tr className="text-xs text-gray-500 border-b text-left bg-white">
                             <th className="font-normal w-[5.6rem]">Masch.-ID<br/>Max Netto</th>
