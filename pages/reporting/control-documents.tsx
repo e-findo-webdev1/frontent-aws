@@ -1,12 +1,23 @@
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import API from "axios";
 import moment from "moment";
 import PDF from "../components/helpers/pdf";
 import Link from "next/link";
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css'
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const ControlDocuments = () => {
+
+    const [startDate, setStartDate] = useState(new Date());
+    const [endDate, setEndDate] = useState(new Date());
+    const [newEndDate, setNewEndDate] = useState(new Date());
+
+    const [page, setPage] = useState<any>(1);
+    const [listLength, setListLength] = useState<any>();
+    const [pageList, setPageList] = useState<any[]>([]);
+
     const [company, setCompany] = useState({
         address_id: '', automatic_email: false, city: "", client_id: 0, client_name: "",
         client_number: "", client_status: 1, co_distance: 0, co_orig_amount: 0, co_orig_trips: 0,
@@ -25,17 +36,35 @@ const ControlDocuments = () => {
     useEffect(() => {
         setCompany(JSON.parse(sessionStorage.getItem('company') as string));
 
+        const newEndDate = new Date();
+        startDate.setDate(startDate.getDate())
+        setStartDate(startDate)
+        newEndDate.setDate(endDate.getDate() + 1)
+        newEndDate.setHours(0, 0, 0, 0);
+        setNewEndDate(newEndDate)
+        startDate.setHours(0, 0, 0, 0)
+
         const fetchData = async () => {
 
             await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines')
                 .then((response) => {
-                    setMachines(response.data.Items.filter((machine: any) => machine.client ==
-                        JSON.parse(sessionStorage.getItem('company') as string).client_name))
+                    setMachines(response.data.Items.filter((machine:any) =>
+                        machine.client == JSON.parse(sessionStorage.getItem('company') as string).client_name
+                    ))
+                    if (machines) {
+                        API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/control-documents')
+                            .then((response) => {
+                                    setControlDocuments(response.data.Items.filter((document: any) =>
+                                        machines.reduce( function(a: any, b: any){
+                                            a.push(b['machine_id']);
+                                            return a
+                                        }, []).includes(document.machine_id))
+                                    )
+                            })
+                    } else {
+                        setRefresh({set: true})
+                    }
                 })
-                .catch((error) => {
-                    console.log(error.response);
-                });
-
             await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/certificates')
                 .then((response) => {
                     setCertificates(response.data.Items)
@@ -52,36 +81,49 @@ const ControlDocuments = () => {
                     console.log(error.response);
                 });
 
-            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/control-documents')
-                .then((response) => {
-                    if (machines) {
-                        setControlDocuments(response.data.Items.filter((document: any) => machines.map((machine: any) =>
-                            machine.machine_id).includes(document.machine_id)));
-                    } else {
-                        setRefresh({set: true})
-                    }
 
-                })
-                .catch((error) => {
-                    console.log(error.response);
-                });
             if (refresh.set == true) {
                 setIsDataLoaded(true)
             }
         }
-
         fetchData()
+    console.log(machines)
+        console.log(controlDocuments)
 
     }, [refresh.set]);
+
+    const changePage = (page: number) => {
+        updatePageList(page)
+        setPage(page)
+
+    }
+
+    const updatePageList = (page: number) => {
+        const lastPage = Math.ceil(listLength / 100);
+        const visiblePages = [];
+
+        if (lastPage > 4) {
+            if (page <= 4) {
+                visiblePages.push(1, 2, 3, 4, 5);
+            } else if (page >= lastPage - 2) {
+                visiblePages.push(lastPage - 3, lastPage - 2, lastPage - 1, lastPage);
+            } else {
+                visiblePages.push(page - 1, page, page + 1);
+            }
+
+            setPageList(visiblePages);
+        }
+    };
 
     return(
         <div id="content-page" className="overflow-auto h-full px-48 m-auto">
             <p className="my-9 text-3xl font-bold mb-9">Kontrollbelege</p>
+
             {!isDataLoaded ?
                 <SkeletonTheme baseColor={"#F9FAFB"} highlightColor={"#ffffff"}>
                     <Skeleton className=" sm:rounded-lg shadow-md flex-row min-h-[29.9rem] max-h-[29.9rem]"/>
                 </SkeletonTheme> :
-            <div className="sm:rounded-lg shadow-md border overflow-auto min-h-[29.9rem] max-h-[29.9rem]">
+            <div className="mt-4 sm:rounded-lg shadow-md border overflow-auto min-h-[29.9rem] max-h-[29.9rem]">
                 <table className="table-fixed w-full overflow-auto">
                     <thead>
                     <tr className="text-xs text-gray-500 border-b text-left">
@@ -89,7 +131,7 @@ const ControlDocuments = () => {
                         <th className="font-normal w-[4rem]">PDF</th>
                         <th className="font-normal w-[4rem]">Wiegenr.</th>
                         <th className="font-normal w-[9.1rem]">Datum</th>
-                        <th className="font-normal w-[9.1rem]">Warenart</th>
+                        <th className="font-normal w-[8.6rem]">Warenart</th>
                         <th className="font-normal w-[6rem]">Bruttogewitcht</th>
                         <th className="font-normal w-[6rem]">Taragewitcht</th>
                         <th className="font-normal w-[6rem]">Nettogewicht</th>

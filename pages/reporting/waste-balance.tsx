@@ -42,12 +42,12 @@ const WasteBalance = () => {
                                     setControlDocuments(response.data.Items.filter((document: any) =>
                                         machines.reduce( function(a: any, b: any){
                                             return a + (b['machine_id']);
-                                        }).includes(document.machine_id))
+                                        }, []).includes(document.machine_id))
 
                                     ) : setControlDocuments(response.data.Items.filter((document: any) =>
                                         machines.reduce( function(a: any, b: any){
                                             return a + (b['machine_id']);
-                                        }).includes(document.machine_id))
+                                        }, []).includes(document.machine_id))
                                         .filter((document: any) =>
                                             document.endOfCycle != undefined &&
                                             new Date(document.endOfCycle) > startDate &&
@@ -132,6 +132,8 @@ const WasteBalance = () => {
                          : ""
                     }
                 </select>
+            </div>
+            <div className="mt-2.5 flex space-x-2 text-sm">
                 <span>Datum von:</span>
                 <DatePicker
                     dateFormat="d.MM.yyyy"
