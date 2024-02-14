@@ -41,7 +41,9 @@ const Breadcrumbs = () => {
                     </Link>
                 </li>
                 {routerArray.map((route: any, key: any) =>
-                        <li key="key" className="inline-flex items-center capitalize">
+                        <li key="key" className={route == routerArray[routerArray.length-1] ?
+                            "inline-flex items-center capitalize pointer-events-none"
+                            : "inline-flex items-center capitalize"}>
                             <Link legacyBehavior href={"/"+route
                                 .replace("/", "")
                                 .replace("[id]", pid.id as string)

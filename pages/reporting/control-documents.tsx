@@ -80,8 +80,6 @@ const ControlDocuments = () => {
                 .catch((error) => {
                     console.log(error.response);
                 });
-
-
             if (refresh.set == true) {
                 setIsDataLoaded(true)
             }
@@ -118,7 +116,24 @@ const ControlDocuments = () => {
     return(
         <div id="content-page" className="overflow-auto h-full px-48 m-auto">
             <p className="my-9 text-3xl font-bold mb-9">Kontrollbelege</p>
-
+            <div className="text-sm flex">
+                <div className="flex space-x-9 mt-4 mb-2">
+                    <div className="flex space-x-2">
+                        <span className="m-auto">Von:</span>
+                        <DatePicker className="shadow-md border text-center p-0.5 w-full"
+                                    dateFormat="yyyy/MM/dd"
+                                    selected={startDate}
+                                    onChange={(date:Date) => setStartDate(date)}/>
+                    </div>
+                    <div className="flex space-x-2">
+                        <span className="m-auto">Bis:</span>
+                        <DatePicker className="shadow-md border text-center p-0.5 m-0"
+                                    dateFormat="yyyy/MM/dd"
+                                    selected={endDate}
+                                    onChange={(date:Date) => setEndDate(date)}/>
+                    </div>
+                </div>
+            </div>
             {!isDataLoaded ?
                 <SkeletonTheme baseColor={"#F9FAFB"} highlightColor={"#ffffff"}>
                     <Skeleton className=" sm:rounded-lg shadow-md flex-row min-h-[29.9rem] max-h-[29.9rem]"/>
