@@ -23,9 +23,10 @@ const NewMachine = () => {
     const [fillingType, setFillingType] = useState<any>("Automatisch");
     const [plandateCalculation, setPlandateCalculation] = useState<any>("Plandatum V.1");
     const [status, setStatus] = useState<any>("Wird befüllt (1)");
-    const [client, setClient] = useState<any>("e-findo GmbH");
+    const [client, setClient] = useState<any>(JSON.parse(sessionStorage.getItem('company') as string).client_name);
     const [total_working_time, setTotalWorkingTime] = useState<any>(0);
     const [total_working_weight, setTotalWorkingWeight] = useState<any>(0);
+    const [clients, setClients] = useState<any>();
 
     const responseBody = {machine_id: 0, machineType: "", machineName: "", group: "", waretype: "", quality: "",
     index: "", maxNetto: 0, minContainer: 0, maxContainer: 0, averageThroughput: 0, manualTara: "", minForFullStart: 0,
@@ -51,15 +52,28 @@ const NewMachine = () => {
     }
 
     useEffect(() => {
-        const apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/waretypes';
 
-        API.get(apiName)
-            .then((response) => {
-                setData(response.data.Items);
-            })
-            .catch((error) => {
-                console.log(error.response);
-            });
+        const fetchData = async () => {
+            const apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/waretypes';
+
+            await API.get(apiName)
+                .then((response) => {
+                    setData(response.data.Items);
+                })
+                .catch((error) => {
+                    console.log(error.response);
+                });
+
+            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/clients')
+                .then((response) => {
+                    setClients(response.data.Items);
+                })
+                .catch((error) => {
+                    console.log(error.response);
+                });
+        }
+        fetchData()
+
     }, []);
 
     const onSubmitHandler = (event: React.FormEvent<HTMLFormElement>) => {
@@ -91,6 +105,7 @@ const NewMachine = () => {
     }
 
     const sendData = async (responseBody: any) => {
+        event?.preventDefault()
         await API.put('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines',
             responseBody)
             .then(function (response) {
@@ -99,8 +114,7 @@ const NewMachine = () => {
             .catch(function (error) {
                 console.log(error);
             });
-        window.location.replace('/');
-    }
+        window.location.replace('/')}
 
 
     return(
@@ -116,12 +130,11 @@ const NewMachine = () => {
                                 onChange={(e)=>setMachineID(parseInt(e.target.value))}
                                 required={true}
                                 /></td>
-                            <td className="p-1 pl-3">Durchsatz Durchschnitt</td>
+                            <td className="p-1 pl-3">Max. Netto</td>
                             <td className="p-1 pl-0"><input className="border rounded w-full pl-2.5 py-0.5"
                                                             defaultValue="0"
-                                                            onChange={(e)=>
-                                                                setAverageTroughput(e.target.value)}
-                           /></td>
+                                                            onChange={(e)=>setMaxNetto(e.target.value)}/></td>
+
                         </tr>
                         <tr className="h-8">
                             <td className="p-1 pl-0">Maschinentyp</td>
@@ -136,11 +149,15 @@ const NewMachine = () => {
                                     <option>Silo</option>
                                 </select>
                             </td>
-                            <td className="p-1 pl-3">Man. Tara (Maschine)</td>
+                            <td className="p-1 pl-3">Min. Container Gewicht</td>
                             <td className="p-1 pl-0"><input className="border rounded w-full pl-2.5 py-0.5"
+                                                            defaultValue={0}
+                                                            onChange={(e)=>setMinContainer(e.target.value)}/></td>
+                            { /* <td className="p-1 pl-3 invisible">Man. Tara (Maschine)</td>
+                            <td className="p-1 pl-0 invisible"><input className="border rounded w-full pl-2.5 py-0.5"
                                                             defaultValue="0"
                                                             onChange={(e)=>
-                                                                setManualTara(e.target.value)}/></td>
+                                                                setManualTara(e.target.value)}/></td> */}
                         </tr>
                         <tr>
                             <td className="p-1 pl-0 pr-12">Machinenbezeichnung</td>
@@ -148,21 +165,27 @@ const NewMachine = () => {
                                                             className="border rounded w-full pl-2.5 py-0.5"
                                                             required={true}
                             onChange={(e)=>setMachineName(e.target.value)}/></td>
-                            <td className="p-1 pl-3">Min. Füllmenge für Füll-Start</td>
+                            <td className="p-1 pl-3">Max. Container Gewicht</td>
                             <td className="p-1 pl-0"><input className="border rounded w-full pl-2.5 py-0.5"
+                                                            defaultValue={0}
+                                                            onChange={(e)=>
+                                                                setMaxContainer(e.target.value)}/>
+                            </td>
+                            { /* <td className="p-1 pl-3 invisible">Min. Füllmenge für Füll-Start</td>
+                            <td className="p-1 pl-0 invisible"><input className="border rounded w-full pl-2.5 py-0.5"
                                                             defaultValue="0"
                                                             onChange={(e)=>
-                                                                setMinForFullStart(e.target.value)}/></td>
+                                                                setMinForFullStart(e.target.value)}/></td> */}
                         </tr>
-                        <tr>
-                            <td className="p-1 pl-0">Gruppierung</td>
-                            <td className="p-1 pl-0"><input className="border rounded w-full pl-2.5 py-0.5"
+                        {/* <tr>
+                            <td className="p-1 pl-0 invisible">Gruppierung</td>
+                            <td className="p-1 pl-0 invisible"><input className="border rounded w-full pl-2.5 py-0.5"
                             onChange={(e)=>setGroup(e.target.value)}/></td>
-                            <td className="p-1 pl-3 pr-12">Neue Berechnung FT-111 (automatisch)</td>
-                            <td className="p-1 pl-0.5"><input type="checkbox"
+                            <td className="p-1 pl-3 pr-12 invisible">Neue Berechnung FT-111 (automatisch)</td>
+                            <td className="p-1 pl-0.5 invisible"><input type="checkbox"
                                                               onChange={(e)=>
                                                                   setNewFT111(e.target.checked)}/></td>
-                        </tr>
+                        </tr> */}
                         <tr>
                             <td className="p-1 pl-0">Warentyp</td>
                             <td className="p-1 pl-0"><select className="w-full pl-2.5 py-0.5 appearance-none
@@ -189,10 +212,16 @@ const NewMachine = () => {
                                 }
                             </select>
                             </td>
-                            <td className="p-1 pl-3">Einmaliges Tarieren</td>
-                            <td className="p-1 pl-0.5"><input type="checkbox"
+                            <td className="p-1 pl-3">Durchsatz Durchschnitt</td>
+                            <td className="p-1 pl-0"><input className="border rounded w-full pl-2.5 py-0.5"
+                                                            defaultValue="0"
+                                                            onChange={(e)=>
+                                                                setAverageTroughput(e.target.value)}
+                            /></td>
+                            {/* <td className="p-1 pl-3 invisible">Einmaliges Tarieren</td>
+                            <td className="p-1 pl-0.5 invisible"><input type="checkbox"
                                                               onChange={(e)=>
-                                                                  setAutomaticTara(e.target.checked)}/></td>
+                                                                  setAutomaticTara(e.target.checked)}/></td> */}
                         </tr>
                         <tr>
                             <td className="p-1 pl-0">Warenqualität</td>
@@ -206,8 +235,8 @@ const NewMachine = () => {
                                     <option>gebrochen</option>
                                 </select>
                             </td>
-                            <td className="p-1 pl-3">Befüllart</td>
-                            <td className="p-1 pl-0"><select className="w-full pl-2.5 py-0.5 appearance-none
+                            {/*<td className="p-1 pl-3 invisible">Befüllart</td>
+                            <td className="p-1 pl-0 invisible"><select className="w-full pl-2.5 py-0.5 appearance-none
                             border rounded
                                 bg-[url('https://www.svgrepo.com/show/80156/down-arrow.svg')]
                                 bg-no-repeat bg-[length:15px] [background-position-x:95%]
@@ -216,6 +245,23 @@ const NewMachine = () => {
                                                                  setFillingType(e.target.value)}>
                                 <option>Automatisch</option>
                                 <option>Manuell</option>
+                            </select></td> */}
+                            <td className="p-1 pl-3">Status</td>
+                            <td className="p-1 pl-0"><select className="w-full pl-2.5 py-0.5
+                            appearance-none border rounded
+                                bg-[url('https://www.svgrepo.com/show/80156/down-arrow.svg')]
+                                bg-no-repeat bg-[length:15px] [background-position-x:95%]
+                                [background-position-y:5px]"
+                                                             onChange={(e)=>
+                                                                 setStatus(e.target.value)}>
+                                <option>Wird befüllt (1)</option>
+                                <option>kein Container (2)</option>
+                                <option>Container tariert (3)</option>
+                                <option>Übergewicht (4)</option>
+                                <option>Fertig (5)</option>
+                                <option>Abholung (6)</option>
+                                <option>Stillstand (7)</option>
+                                <option>Containertausch (8)</option>
                             </select></td>
                         </tr>
                         <tr>
@@ -238,8 +284,22 @@ const NewMachine = () => {
                                 <option>Süd</option>
                                 <option>West</option>
                             </select></td>
-                            <td className="p-1 pl-3">Plandatum Berechnung</td>
-                            <td className="p-1 pl-0"><select className="w-full pl-2.5 py-0.5
+                            <td className="p-1 pl-3">Kunde</td>
+                            <td className="p-1 pl-0">
+                                <select className="w-full pl-2.5 py-0.5
+                                appearance-none border rounded
+                                bg-[url('https://www.svgrepo.com/show/80156/down-arrow.svg')]
+                                bg-no-repeat bg-[length:15px] [background-position-x:95%]
+                                [background-position-y:5px]"
+                                        value={data ? JSON.parse(sessionStorage.getItem('company') as string).client_name : ''}
+                                        onChange={(e)=>
+                                            setClient(e.target.value)}>
+                                    {clients ? clients.map((item: any)=>
+                                        <option key={item.client_id}>{item.client_name}</option>) : ''}
+                                </select>
+                            </td>
+                            { /* <td className="p-1 pl-3 invisible">Plandatum Berechnung</td>
+                            <td className="p-1 pl-0 invisible"><select className="w-full pl-2.5 py-0.5
                             appearance-none border rounded
                                 bg-[url('https://www.svgrepo.com/show/80156/down-arrow.svg')]
                                 bg-no-repeat bg-[length:15px] [background-position-x:95%]
@@ -248,63 +308,13 @@ const NewMachine = () => {
                                                                  setPlandateCalculation(e.target.value)}>
                                 <option>Plandatum V.1</option>
                                 <option>Plandatum V.2</option>
-                            </select></td>
-                        </tr>
-                        <tr>
-                            <td className="p-1 pl-0">Max Netto</td>
-                            <td className="p-1 pl-0"><input className="border rounded w-full pl-2.5 py-0.5"
-                                                            defaultValue="0"
-                            onChange={(e)=>setMaxNetto(e.target.value)}/></td>
-                            <td className="p-1 pl-3">Status</td>
-                            <td className="p-1 pl-0"><select className="w-full pl-2.5 py-0.5
-                            appearance-none border rounded
-                                bg-[url('https://www.svgrepo.com/show/80156/down-arrow.svg')]
-                                bg-no-repeat bg-[length:15px] [background-position-x:95%]
-                                [background-position-y:5px]"
-                                                             onChange={(e)=>
-                                                                 setStatus(e.target.value)}>
-                                <option>Wird befüllt (1)</option>
-                                <option>kein Container (2)</option>
-                                <option>Container tariert (3)</option>
-                                <option>Übergewicht (4)</option>
-                                <option>Fertig (5)</option>
-                                <option>Abholung (6)</option>
-                                <option>Stillstand (7)</option>
-                                <option>Containertausch (8)</option>
-                            </select></td>
-                        </tr>
-                        <tr>
-                            <td className="p-1 pl-0">Min Container Gewicht</td>
-                            <td className="p-1 pl-0"><input className="border rounded w-full pl-2.5 py-0.5"
-                                                            defaultValue={0}
-                            onChange={(e)=>setMinContainer(e.target.value)}/></td>
-                            <td className="p-1 pl-3">Kunde</td>
-                            <td className="p-1 pl-0"><select className="w-full pl-2.5 py-0.5
-                            appearance-none border rounded
-                                bg-[url('https://www.svgrepo.com/show/80156/down-arrow.svg')]
-                                bg-no-repeat bg-[length:15px] [background-position-x:95%]
-                                [background-position-y:5px]"
-                                                             onChange={(e)=>
-                                                                 setClient(e.target.value)}>
-                                <option>e-findo GmbH</option>
-                            </select></td>
-                        </tr>
-                        <tr>
-                            <td className="p-1 pl-0">Max Container Gewicht</td>
-                            <td className="p-1 pl-0"><input className="border rounded w-full pl-2.5 py-0.5"
-                                                            defaultValue={0}
-                                                            onChange={(e)=>
-                                                                setMaxContainer(e.target.value)}/>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td/>
+                            </select></td> */}
                         </tr>
                         <tr>
                             <td/>
                             <td/>
                             <td/>
-                            <td className="p-1 pl-0">
+                            <td className="pt-10 px-0">
                                 <input className="float-right border p-1.5 px-3.5
                                  font-bold border-accent-color-1 bg-accent-color-4
                         hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs" type="submit" value="Speichern"></input>

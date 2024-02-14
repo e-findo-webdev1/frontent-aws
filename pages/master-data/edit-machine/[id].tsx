@@ -86,8 +86,6 @@ const EditMachine = () => {
 
     }, [pid, indeces.set] );
 
-    console.log(indeces)
-
     const responseBody = {
         automaticTara: false,
         averageThroughput: 0,
@@ -155,7 +153,7 @@ const EditMachine = () => {
         responseBody.waretype = data.waretype
         await sendData(responseBody)
 
-        window.location.replace('/master-data/' + JSON.parse(sessionStorage.getItem('company') as string).client_id);//
+        window.location.replace('/master-data/' + JSON.parse(sessionStorage.getItem('company') as string).client_id)
     }
 
     const sendData = async (responseBody: any) => {
@@ -170,6 +168,7 @@ const EditMachine = () => {
     }
 
     const deleteMachine = async () => {
+        event?.preventDefault()
         await API.delete('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines',
             { data: { machine_id: data.machine_id } })
             .then(function (response) {
@@ -178,7 +177,7 @@ const EditMachine = () => {
             .catch(function (error) {
                 console.log(error);
             });
-        window.location.replace('/');
+        window.location.replace('/')
     }
 
     return(

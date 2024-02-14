@@ -653,7 +653,8 @@ const MonthlyEvaluation = () => {
             setIsDataLoaded(true)
         }
         fetchData()
-    }, [controlDocuments.set, selectedMonth, myChart.set, selectedMachine, selectedCategory, certificates.set]);
+        console.log('data')
+    }, [myChart.set, selectedMachine, selectedCategory]);
 
     const handlePopupSend = async () => {
         let certificate = certificates.filter((certificate: any)=> certificate.document_id == popupCertificate)[0]
