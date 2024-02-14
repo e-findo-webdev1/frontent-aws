@@ -193,7 +193,12 @@ const ControlDocuments = () => {
                             <td>{document.netto}</td>
                             <td>{ document.startOfCycle ?
                                 ((moment(document.endOfCycle).unix()-moment(document.startOfCycle).unix())
-                                    /3600).toFixed(2) + 'h' : '-'
+                                    /3600).toFixed(2) + 'h' :
+                                ((moment(document.endOfCycle).unix()-(moment(controlDocuments
+                                        .filter((page: any)=>page.document_id == document.document_id-1)[0]
+                                        // @ts-ignore
+                                        .timestamp)).unix())
+                                    /3600).toFixed(2) + 'h'
                             }</td>
                             <td>{(document.totalProductionTime/3600000).toFixed(2)}h</td>
                             <td>{controlDocuments ? (document.averageThroughput).toFixed(2) : ''}</td>
