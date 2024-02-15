@@ -2,6 +2,9 @@
 const nextConfig = {
   reactStrictMode: false,
   swcMinify: false,
+  experimental: {
+    serverActions: true,
+  },
 
 }
 

@@ -9,7 +9,8 @@ import PopupFilling from "./PopupFilling";
 import 'react-loading-skeleton/dist/skeleton.css'
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 
-const StorageSystemDashboard = () => {
+export default function StorageSystemDashboard() {
+
     const [machinesData, setMachinesData] = useState<any>();
     const [shifts, setShift] = useState<any>();
     const [machineID, setMachineID] = useState<any>("");
@@ -753,4 +754,3 @@ const StorageSystemDashboard = () => {
     )
 }
 
-export default StorageSystemDashboard
