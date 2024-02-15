@@ -13,11 +13,9 @@ import AnnualSVG from "../public/sales-amount-svgrepo-com";
 import Co2SVG from "../public/truck-trash-svgrepo-com";
 import ScrapSVG from "../public/car-accident-car-crash-scrap-metal-svgrepo-com";
 
-import { create } from '../pages/api/fetchData'
-
 const Home: NextPage = () => {
 
-    create()
+
 
     const [workingHours, setWorkingHours] = useState<any>();
     const [shifts, setShifts] = useState<any>();
