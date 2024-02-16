@@ -1,18 +1,7 @@
 import React from 'react';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import type { NextPage } from 'next'
-import Header from "../components/start/Header";
-import StorageSystemDashboard from "../components/start/StorageSystemDashboard";
 import Link from "next/link";
-import emailjs from "@emailjs/browser";
-import API from "axios";
 import 'react-loading-skeleton/dist/skeleton.css'
-import PDFSVG from "../../public/pdf-svgrepo-com";
-import CalendarSVG from "../../public/calendar-day-svgrepo-com";
-import CalendarYearSVG from "../../public/calendar-clock-svgrepo-com";
-import AnnualSVG from "../../public/sales-amount-svgrepo-com";
-import Co2SVG from "../../public/truck-trash-svgrepo-com";
-import ScrapSVG from "../../public/car-accident-car-crash-scrap-metal-svgrepo-com";
 import PDF from "../components/helpers/pdf";
 import moment from "moment";
 
