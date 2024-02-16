@@ -1,117 +1,85 @@
-import React, {useEffect, useState} from "react";
-import API from "axios";
-import moment from "moment";
-import PDF from "../components/helpers/pdf";
+import React from 'react';
+import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import type { NextPage } from 'next'
+import Header from "../components/start/Header";
+import StorageSystemDashboard from "../components/start/StorageSystemDashboard";
 import Link from "next/link";
-import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
+import emailjs from "@emailjs/browser";
+import API from "axios";
 import 'react-loading-skeleton/dist/skeleton.css'
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import PDFSVG from "../../public/pdf-svgrepo-com";
+import CalendarSVG from "../../public/calendar-day-svgrepo-com";
+import CalendarYearSVG from "../../public/calendar-clock-svgrepo-com";
+import AnnualSVG from "../../public/sales-amount-svgrepo-com";
+import Co2SVG from "../../public/truck-trash-svgrepo-com";
+import ScrapSVG from "../../public/car-accident-car-crash-scrap-metal-svgrepo-com";
+import PDF from "../components/helpers/pdf";
+import moment from "moment";
 
-const ControlDocuments = () => {
+export const getServerSideProps: GetServerSideProps = async () => {
 
-    const [startDate, setStartDate] = useState(new Date());
-    const [endDate, setEndDate] = useState(new Date());
-    const [newEndDate, setNewEndDate] = useState(new Date());
+    const [
 
-    const [page, setPage] = useState<any>(1);
-    const [listLength, setListLength] = useState<any>();
-    const [pageList, setPageList] = useState<any[]>([]);
+        machinesRes,
+        controlDataRes,
+        certificatesRes,
+        waretypesRes,
 
-    const [company, setCompany] = useState({
-        address_id: '', automatic_email: false, city: "", client_id: 0, client_name: "",
-        client_number: "", client_status: 1, co_distance: 0, co_orig_amount: 0, co_orig_trips: 0,
-        co_orig_year: 0, co_show: 1, contact: "", email: "", land_id: 0, logo_url: "", next_pdf_nr: 0,
-        spokesperson: "", street: "", telefon: "", worktime_mail: 0, worktime_status: 0, zip_code: ""
-    });
-    const [controlDocuments, setControlDocuments] = useState([]);
-    const [machines, setMachines] = useState<any>();
-    const [waretypes, setWaretypes] = useState<any>();
-    const [certificates, setCertificates] = useState<any>({set:false});
-    const [refresh, setRefresh] = useState<any>({set: false})
-    const [isDataLoaded, setIsDataLoaded] = useState<any>(false)
-    const [rowsPerPage, setRowsPerPage] = useState<any>(25);
-    const [currentPage, setCurrentPage] = useState<any>(1);
 
-    useEffect(() => {
-        setCompany(JSON.parse(sessionStorage.getItem('company') as string));
+    ] = await Promise.all([
 
-        const newEndDate = new Date();
-        startDate.setDate(startDate.getDate())
-        setStartDate(startDate)
-        newEndDate.setDate(endDate.getDate() + 1)
-        newEndDate.setHours(0, 0, 0, 0);
-        setNewEndDate(newEndDate)
-        startDate.setHours(0, 0, 0, 0)
+        fetch('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines'),
+        fetch('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/control-documents'),
+        fetch('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/certificates'),
+        fetch('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/waretypes')
 
-        const fetchData = async () => {
 
-            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines')
-                .then((response) => {
-                    setMachines(response.data.Items.filter((machine:any) =>
-                        machine.client == JSON.parse(sessionStorage.getItem('company') as string).client_name
-                    ))
-                    if (machines) {
-                        API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/control-documents')
-                            .then((response) => {
-                                    setControlDocuments(response.data.Items.filter((document: any) =>
-                                        machines.reduce( function(a: any, b: any){
-                                            a.push(b['machine_id']);
-                                            return a
-                                        }, []).includes(document.machine_id))
-                                    )
-                            })
-                    } else {
-                        setRefresh({set: true})
-                    }
-                })
-            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/certificates')
-                .then((response) => {
-                    setCertificates(response.data.Items)
-                })
-                .catch((error) => {
-                    console.log(error.response);
-                });
+    ]);
 
-            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/waretypes')
-                .then((response) => {
-                    setWaretypes(response.data.Items);
-                })
-                .catch((error) => {
-                    console.log(error.response);
-                });
-            if (refresh.set == true) {
-                setIsDataLoaded(true)
-            }
-        }
-        fetchData()
+    const [
 
-    }, [refresh.set]);
+        machines,
+        controlDocuments,
+        certificates,
+        waretypes,
 
-    const changePage = (page: number) => {
-        updatePageList(page)
-        setPage(page)
+    ] = await Promise.all([
 
-    }
+        machinesRes.json(),
+        controlDataRes.json(),
+        certificatesRes.json(),
+        waretypesRes.json(),
 
-    const updatePageList = (page: number) => {
-        const lastPage = Math.ceil(listLength / 100);
-        const visiblePages = [];
+    ]);
 
-        if (lastPage > 4) {
-            if (page <= 4) {
-                visiblePages.push(1, 2, 3, 4, 5);
-            } else if (page >= lastPage - 2) {
-                visiblePages.push(lastPage - 3, lastPage - 2, lastPage - 1, lastPage);
-            } else {
-                visiblePages.push(page - 1, page, page + 1);
-            }
+    return { props: {
 
-            setPageList(visiblePages);
-        }
-    };
+        machines,
+        controlDocuments,
+        certificates,
+        waretypes
 
-    return(
+    } }
+};
+
+function ControlDocuments({
+                   machines,
+                   controlDocuments,
+                   certificates,
+                   waretypes,
+
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+    const company = JSON.parse(sessionStorage.getItem('company') as string)
+    const companyMachines = machines.Items.filter((machine:any) =>
+        machine.client == company.client_name
+    )
+    const companyControlDocuments = controlDocuments.Items.filter((document: any) =>
+        companyMachines.reduce( function(a: any, b: any){
+            a.push(b['machine_id']);
+            return a
+        }, []).includes(document.machine_id))
+
+    return (
         <div id="content-page" className="overflow-auto h-full px-48 m-auto">
             <p className="my-9 text-3xl font-bold mb-9">Kontrollbelege</p>
             {/* <div className="text-sm flex">
@@ -132,96 +100,96 @@ const ControlDocuments = () => {
                     </div>
                 </div>
             </div> */}
-            {!isDataLoaded ?
+            {/*{!isDataLoaded ?
                 <SkeletonTheme baseColor={"#F9FAFB"} highlightColor={"#ffffff"}>
                     <Skeleton className=" sm:rounded-lg shadow-md flex-row min-h-[29.9rem] max-h-[29.9rem]"/>
-                </SkeletonTheme> :
-            <div className="mt-4 sm:rounded-lg shadow-md border overflow-auto min-h-[29.9rem] max-h-[29.9rem]">
-                <table className="table-fixed w-full overflow-auto">
-                    <thead>
-                    <tr className="text-xs text-gray-500 border-b text-left">
-                        <th className="font-normal w-[4rem]">Maschine</th>
-                        <th className="font-normal w-[4rem]">PDF</th>
-                        <th className="font-normal w-[4rem]">Wiegenr.</th>
-                        <th className="font-normal w-[9.1rem]">Datum</th>
-                        <th className="font-normal w-[8.6rem]">Warenart</th>
-                        <th className="font-normal w-[6rem]">Bruttogewitcht</th>
-                        <th className="font-normal w-[6rem]">Taragewitcht</th>
-                        <th className="font-normal w-[6rem]">Nettogewicht</th>
-                        <th className="font-normal w-[4rem]">Standzeit</th>
-                        <th className="font-normal w-[4rem]">Prod.-<br/>Zeit</th>
-                        <th className="font-normal w-[4rem]">kg / h</th>
-                        <th className="font-normal w-[6rem]">Bemerkung</th>
-                        <th className="font-normal w-[4rem]">W. Schein</th>
-                    </tr>
-                    </thead>
-                    <tbody className="bg-gray-50">
-                    {controlDocuments.sort(function(a: any, b: any){
-                        // @ts-ignore
-                        return moment(b.endOfCycle).unix() - moment(a.endOfCycle).unix()})
-                        .map((document: any) =>
-                        <tr key={document.document_id} className="text-xs border-t">
-                            <td>{document.machine_id}</td>
-                            <td>
-                                <PDF
-                                    endOfCycle = {document.endOfCycle}
-                                    document_id = {document.document_id}
-                                    brutto = {document.brutto}
-                                    netto = {document.netto}
-                                    timestamp = {document.timestamp}
-                                    tara = {document.tara}
-                                    machine_id = {document.machine_id}
-                                    company = {company}
-                                    waretype = {machines != undefined
-                                        ? machines.filter((item: any) =>
-                                            // item.machine_id == document.machine_id)[0].waretype
-                                            item.machine_id == document.machine_id).waretype
-                                        : ''}
-                                    sort = {
-                                    machines != undefined
-                                    && waretypes
-                                        ? waretypes.filter((ware: any) =>
-                                            ware.name_waretype == document.waretype).waretype_number
-                                        : ''}
-                                />
-                            </td>
-                            <td>{company.client_number}-<br/>{parseInt(company.client_number) + document.document_id}</td>
-                            <td>{moment(document.timestamp).format('DD.MM.yyyy HH:mm')}</td>
-                            <td>{document.waretype}</td>
-                            <td>{document.netto + document.tara}</td>
-                            <td>{document.tara}</td>
-                            <td>{document.netto}</td>
-                            <td>{ document.startOfCycle ?
-                                ((moment(document.endOfCycle).unix()-moment(document.startOfCycle).unix())
-                                    /3600).toFixed(2) + 'h' :
-                                ((moment(document.endOfCycle).unix()-(moment(controlDocuments
-                                        .filter((page: any)=>page.document_id == document.document_id-1)[0]
-                                        // @ts-ignore
-                                        .timestamp)).unix())
-                                    /3600).toFixed(2) + 'h'
-                            }</td>
-                            <td>{(document.totalProductionTime/3600000).toFixed(2)}h</td>
-                            <td>{controlDocuments ? (document.averageThroughput).toFixed(2) : ''}</td>
-                            <td>{}</td>
-                            <td>
-                                <Link href={"/reporting/control-documents/" + document.document_id}>
-                                    <button className="m-auto flex">
-                                        <img className="h-5" src={
-                                            certificates && certificates.filter((certificate: any) =>
-                                                certificate.document_id == document.document_id).length == 0
-
-                                            || certificates.filter((certificate: any) =>
-                                                certificate.document_id == document.document_id).pdf_data == '' ?
-                                                "/upload-svgrepo-com.svg" : '/document.png'}/></button>
-                                </Link>
-                            </td>
+                </SkeletonTheme> :*/}
+                <div className="mt-4 sm:rounded-lg shadow-md border overflow-auto min-h-[29.9rem] max-h-[29.9rem]">
+                    <table className="table-fixed w-full overflow-auto">
+                        <thead>
+                        <tr className="text-xs text-gray-500 border-b text-left">
+                            <th className="font-normal w-[4rem]">Maschine</th>
+                            <th className="font-normal w-[4rem]">PDF</th>
+                            <th className="font-normal w-[4rem]">Wiegenr.</th>
+                            <th className="font-normal w-[9.1rem]">Datum</th>
+                            <th className="font-normal w-[8.6rem]">Warenart</th>
+                            <th className="font-normal w-[6rem]">Bruttogewitcht</th>
+                            <th className="font-normal w-[6rem]">Taragewitcht</th>
+                            <th className="font-normal w-[6rem]">Nettogewicht</th>
+                            <th className="font-normal w-[4rem]">Standzeit</th>
+                            <th className="font-normal w-[4rem]">Prod.-<br/>Zeit</th>
+                            <th className="font-normal w-[4rem]">kg / h</th>
+                            <th className="font-normal w-[6rem]">Bemerkung</th>
+                            <th className="font-normal w-[4rem]">W. Schein</th>
                         </tr>
-                    )}
-                    </tbody>
-                </table>
-            </div>}
+                        </thead>
+                        <tbody className="bg-gray-50">
+                        {companyControlDocuments.sort(function(a: any, b: any){
+                            // @ts-ignore
+                            return moment(b.endOfCycle).unix() - moment(a.endOfCycle).unix()})
+                            .map((document: any) =>
+                                <tr key={document.document_id} className="text-xs border-t">
+                                    <td>{document.machine_id}</td>
+                                    <td>
+                                        <PDF
+                                            endOfCycle = {document.endOfCycle}
+                                            document_id = {document.document_id}
+                                            brutto = {document.brutto}
+                                            netto = {document.netto}
+                                            timestamp = {document.timestamp}
+                                            tara = {document.tara}
+                                            machine_id = {document.machine_id}
+                                            company = {company}
+                                            waretype = {machines != undefined
+                                                ? companyMachines.filter((item: any) =>
+                                                    // item.machine_id == document.machine_id)[0].waretype
+                                                    item.machine_id == document.machine_id).waretype
+                                                : ''}
+                                            sort = {
+                                                machines != undefined
+                                                && waretypes
+                                                    ? waretypes.Items.filter((ware: any) =>
+                                                        ware.name_waretype == document.waretype).waretype_number
+                                                    : ''}
+                                        />
+                                    </td>
+                                    <td>{company.client_number}-<br/>{parseInt(company.client_number) + document.document_id}</td>
+                                    <td>{moment(document.timestamp).format('DD.MM.yyyy HH:mm')}</td>
+                                    <td>{document.waretype}</td>
+                                    <td>{document.netto + document.tara}</td>
+                                    <td>{document.tara}</td>
+                                    <td>{document.netto}</td>
+                                    <td>{ document.startOfCycle ?
+                                        ((moment(document.endOfCycle).unix()-moment(document.startOfCycle).unix())
+                                            /3600).toFixed(2) + 'h' :
+                                        ((moment(document.endOfCycle).unix()-(moment(companyControlDocuments
+                                                .filter((page: any)=>page.document_id == document.document_id-1)[0]
+                                                // @ts-ignore
+                                                .timestamp)).unix())
+                                            /3600).toFixed(2) + 'h'
+                                    }</td>
+                                    <td>{(document.totalProductionTime/3600000).toFixed(2)}h</td>
+                                    <td>{companyControlDocuments ? (document.averageThroughput).toFixed(2) : ''}</td>
+                                    <td>{}</td>
+                                    <td>
+                                        <Link href={"/reporting/control-documents/" + document.document_id}>
+                                            <button className="m-auto flex">
+                                                <img className="h-5" src={
+                                                    certificates && certificates.Items.filter((certificate: any) =>
+                                                        certificate.document_id == document.document_id).length == 0
+
+                                                    || certificates.Items.filter((certificate: any) =>
+                                                        certificate.document_id == document.document_id).pdf_data == '' ?
+                                                        "/upload-svgrepo-com.svg" : '/document.png'}/></button>
+                                        </Link>
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
         </div>
     )
 }
 
-export default ControlDocuments
+export default ControlDocuments;

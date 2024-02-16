@@ -1,4 +1,3 @@
-'use server'
 import { useEffect, useState, use} from "react";
 import Link from "next/link";
 import getFillerStyle from "../helpers/getFillerStyle";
@@ -9,22 +8,9 @@ import "react-datepicker/dist/react-datepicker.css";
 import PopupFilling from "./PopupFilling";
 import 'react-loading-skeleton/dist/skeleton.css'
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
+import React from 'react';
 
-async function getData() {
-    const res = await fetch('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines')
-    // The return value is *not* serialized
-    // You can return Date, Map, Set, etc.
-
-    if (!res.ok) {
-        // This will activate the closest `error.js` Error Boundary
-        throw new Error('Failed to fetch data')
-    }
-
-    return res.json()
-}
-export default async function StorageSystemDashboard() {
-    const testData = await getData()
-    console.log(testData)
+export default function StorageSystemDashboard() {
     const [machinesData, setMachinesData] = useState<any>();
     const [shifts, setShift] = useState<any>();
     const [machineID, setMachineID] = useState<any>("");
