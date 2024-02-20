@@ -5,8 +5,9 @@ import LoginForm from "./components/login/LoginForm";
 import Navigation from "./components/navigation/Navigation";
 import Logo from "./components/navigation/Logo";
 import Breadcrumbs from "./components/navigation/Breadcrumbs";
-
+import Layout from "./components/layout";
 export default function MyApp({ Component, pageProps }: AppProps) {
+
     const [loggedIn, setLoggedIn] = useState(false);
     const [userToken, setUserToken] = useState('');
 
@@ -37,10 +38,9 @@ export default function MyApp({ Component, pageProps }: AppProps) {
             return (
                 <div id="background" className="bg-accent-color-1 h-screen py-20 px-44">
                     <div id="template" className="m-auto bg-white h-full min-w-[67rem] rounded-3xl pb-36 p-3">
-                        <Navigation/>
-                        <hr/>
-                        <Breadcrumbs/>
-                        <Component {...pageProps} />
+                        <Layout>
+                            <Component {...pageProps} />
+                        </Layout>
                     </div>
                 </div>
             )
