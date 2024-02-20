@@ -27,7 +27,7 @@ const EditIndex = () => {
             });
 
 
-    }, []);
+    }, [pid.index_name]);
 
     const onSubmitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
         let indeces = priceMatrix.indeces

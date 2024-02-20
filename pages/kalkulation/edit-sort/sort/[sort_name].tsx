@@ -26,7 +26,7 @@ const SortEdit = () => {
                 console.log(error.response);
             });
 
-    }, []);
+    }, [pid.sort_name]);
 
     const responseBody = {sort_name: "", description: "", indexgroup_name: ""}
 

@@ -89,7 +89,7 @@ export default function StorageSystemDashboard() {
         }
         fetchData()
 
-    }, [pickupDates, pageReload]);
+    }, [pickupDates, pageReload, machinesData]);
 
     let SHIFT_CALENDAR = {
         'Sunday': {

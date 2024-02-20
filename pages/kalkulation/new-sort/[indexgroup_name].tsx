@@ -17,7 +17,7 @@ const NewSort = () => {
 
     useEffect(() => {
         setIndexgroupName(fromHex(pid.indexgroup_name))
-    }, );
+    }, [pid.indexgorup_name]);
 
     const responseBody = {sort_name: "", description: "", indexgroup_name: "", prices: {}}
 

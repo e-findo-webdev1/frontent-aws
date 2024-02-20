@@ -82,7 +82,7 @@ const PriceMatrix = () => {
         }
         fetchData()
 
-    }, [currentYear]);
+    }, [currentYear, pid.sort_name, priceMatrix]);
 
     const monthsList = [
         'Januar',

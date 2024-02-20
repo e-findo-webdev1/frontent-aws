@@ -21,6 +21,9 @@ const MachineStorageHistory = () => {
     const [test, setTest] = useState<any>({test: false})
     const [status, setStatus] = useState<any>('- Alle -')
 
+    const router = useRouter()
+    const pid = router.query
+
     useEffect(() => {
 
         const newEndDate = new Date();
@@ -77,7 +80,7 @@ const MachineStorageHistory = () => {
         }
         getData()
 
-    }, [startDate, pageList, endDate, page, test.test, status]);
+    }, [startDate, pageList, endDate, page, test.test, status, listLength, pid.id]);
 
     setTimeout(() => {
         if (test.test) {
@@ -88,26 +91,23 @@ const MachineStorageHistory = () => {
         }, 1000 * 130);
 
 
-    const router = useRouter()
-    const pid = router.query
-
     let averageThroughputInLastHour
     data !== undefined
         ? averageThroughputInLastHour = data
-            .filter(item => item.id == pid.id )
-            .filter(item =>
-                new Date(item.published_at) > moment().subtract(1, 'h').toDate() &&
-                new Date(item.published_at) < moment().toDate())
-            .reduce((acc, cur)=>((acc = acc + cur.averageThroughput), acc), 0)
+                .filter(item => item.id == pid.id )
+                .filter(item =>
+                    new Date(item.published_at) > moment().subtract(1, 'h').toDate() &&
+                    new Date(item.published_at) < moment().toDate())
+                .reduce((acc, cur)=>((acc = acc + cur.averageThroughput), acc), 0)
             /
             data
-            .filter(item => item.id == pid.id )
-            .filter(item =>
-                new Date(item.published_at) > moment().subtract(1, 'h').toDate() &&
-                new Date(item.published_at) < moment().toDate()).length
+                .filter(item => item.id == pid.id )
+                .filter(item =>
+                    new Date(item.published_at) > moment().subtract(1, 'h').toDate() &&
+                    new Date(item.published_at) < moment().toDate()).length
         : ''
     const manualTara = () => {
-       // set the isNetto from last item to true
+        // set the isNetto from last item to true
         let newData = data
             .filter(item => item.id == pid.id )
             .filter(item =>
