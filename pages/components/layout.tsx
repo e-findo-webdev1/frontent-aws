@@ -1,3 +1,4 @@
+'use client'
 import {Suspense, useState} from "react";
 import React from 'react';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
