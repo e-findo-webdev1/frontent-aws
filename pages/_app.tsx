@@ -1,14 +1,10 @@
 import '../styles/globals.css'
 import type { AppProps } from 'next/app'
 import {useEffect, useState} from "react";
-
 import LoginForm from "./components/login/LoginForm";
 import Navigation from "./components/navigation/Navigation";
 import Logo from "./components/navigation/Logo";
 import Breadcrumbs from "./components/navigation/Breadcrumbs";
-import user from "./master-data/edit-worker/[user]";
-
-
 
 export default function MyApp({ Component, pageProps }: AppProps) {
     const [loggedIn, setLoggedIn] = useState(false);

@@ -5,7 +5,6 @@ import AnnualSVG from "../public/sales-amount-svgrepo-com";
 import CalendarYearSVG from "../public/calendar-clock-svgrepo-com"
 import Co2SVG from "../public/truck-trash-svgrepo-com";
 import ScrapSVG from "../public/car-accident-car-crash-scrap-metal-svgrepo-com";
-
 const Reporting = () => {
     return(
         <div id="content-page" className="overflow-auto h-full px-48 m-auto">
