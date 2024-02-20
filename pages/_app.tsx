@@ -6,7 +6,6 @@ import Navigation from "./components/navigation/Navigation";
 import Logo from "./components/navigation/Logo";
 import Breadcrumbs from "./components/navigation/Breadcrumbs";
 export default function MyApp({ Component, pageProps }: AppProps) {
-
     const [loggedIn, setLoggedIn] = useState(false);
     const [userToken, setUserToken] = useState('');
 
