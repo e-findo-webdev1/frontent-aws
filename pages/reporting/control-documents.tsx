@@ -6,9 +6,7 @@ import PDF from "../components/helpers/pdf";
 import moment from "moment";
 import Image from "next/image";
 
-import type { InferGetStaticPropsType, GetStaticProps } from 'next'
-
-export const getStaticProps: GetStaticProps = async () => {
+export const getServerSideProps: GetServerSideProps = async () => {
 
     const [
 
@@ -45,13 +43,13 @@ export const getStaticProps: GetStaticProps = async () => {
     ]);
 
     return { props: {
+        fallback: {'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/control-documents': controlDocuments},
         machines,
         controlDocuments,
         certificates,
         waretypes
-    },
-        revalidate: 10,
-    }
+
+    } }
 };
 
 function ControlDocuments({
@@ -60,7 +58,7 @@ function ControlDocuments({
                    certificates,
                    waretypes,
 
-}: InferGetStaticPropsType<typeof getStaticProps>) {
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
 
     const company = JSON.parse(sessionStorage.getItem('company') as string)
     const companyMachines = machines.Items.filter((machine:any) =>

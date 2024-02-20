@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import API from "axios";
-import {useRouter} from "next/router";
+import {useRouter} from "next/router"
 
 const ClientPage = () => {
     const [data, setData] = useState<any>([]);
