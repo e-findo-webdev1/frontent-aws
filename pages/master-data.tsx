@@ -1,3 +1,4 @@
+'use client'
 import {useEffect, useState} from "react";
 import API from "axios";
 import Link from "next/link";
@@ -5,102 +6,49 @@ import moment from "moment";
 import toHex from "./components/helpers/toHex";
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css'
+import useSWR from "swr";
 
+const fetcher = (url:  string) => fetch(url).then(r => r.json())
 const MasterDataSummary = () => {
-    const [machinesData, setMachinesData] = useState<any>();
-    const [clients, setClients] = useState<any>();
-    const [materials, setMaterials] = useState<any>();
-    const [machineTypes, setMachineTypes] = useState<any>();
-    const [priceMatrices, setPriceMatrices] = useState<any>();
-    const [contractors, setContractors] = useState<any>();
-    const [emailTexts, setEmailTexts] = useState<any>();
-    const [qualities, setQualities] = useState<any>();
-    const [workers, setWorkers] = useState<any>();
-    const [isDataLoaded, setIsDataLoaded] = useState<any>(false);
+    const [dataLoading, setDataLoading] = useState<any>(true);
+    const [companyWorkers, setCompanyWorkers] = useState<any>();
 
+    const {data: machines, error: machinesError, isLoading: machinesLoading} = useSWR
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines', fetcher)
+    const {data: clients, error: clientsError, isLoading: clientsLoading} = useSWR
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/clients', fetcher)
+    const {data: machineTypes, error: machineTypesError, isLoading: machineTypesLoading} = useSWR
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machine-types', fetcher)
+    const {data: priceMatrices, error: priceMatricesError, isLoading: priceMatricesLoading} = useSWR
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/price-matrices', fetcher)
+    const {data: contractors, error: contractorsError, isLoading: contractorsLoading} = useSWR
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/contractors', fetcher)
+    const {data: qualities, error: qualitiesError, isLoading: qualitiesLoading} = useSWR
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/qualities', fetcher)
+    const {data: accounts, error: accountsError, isLoading: accountsLoading} = useSWR
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/accounts', fetcher)
+    const {data: materials, error: materialsError, isLoading: materialsLoading} = useSWR
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/waretypes', fetcher)
 
-    useEffect(() => {
-
-        const fetchData = async () => {
-            let apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines';
-
-            await API.get(apiName)
-                .then((response) => {
-                    setMachinesData(response.data.Items)
-                })
-                .catch((error) => {
-                    console.log(error); //
-                });
-
-            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/clients')
-                .then((response) => {
-                    setClients(response.data.Items)
-                })
-                .catch((error) => {
-                    console.log(error); //
-                });
-
-            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/waretypes')
-                .then((response) => {
-                    setMaterials(response.data.Items)
-                })
-                .catch((error) => {
-                    console.log(error); //
-                });
-
-            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machine-types')
-                .then((response) => {
-                    setMachineTypes(response.data.Items)
-                })
-                .catch((error) => {
-                    console.log(error); //
-                });
-
-            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/price-matrices')
-                .then((response) => {
-                    setPriceMatrices(response.data.Items)
-                })
-                .catch((error) => {
-                    console.log(error); //
-                });
-
-            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/contractors')
-                .then((response) => {
-                    setContractors(response.data.Items)
-                })
-                .catch((error) => {
-                    console.log(error); //
-                });
-
-            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/email-texts')
-                .then((response) => {
-                    setEmailTexts(response.data.Items)
-                })
-                .catch((error) => {
-                    console.log(error); //
-                });
-
-            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/qualities')
-                .then((response) => {
-                    setQualities(response.data.Items)
-                })
-                .catch((error) => {
-                    console.log(error); //
-                });
-
-            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/accounts')
-                .then((response) => {
-                    setWorkers(response.data.Items)
-                })
-                .catch((error) => {
-                    console.log(error); //
-                });
-            setIsDataLoaded(true)
+    const company = JSON.parse(sessionStorage.getItem('company') as string)
+    const getCompanyWorkers = () => {
+        if (!accountsLoading && !companyWorkers) {
+            const companyWorkers = accounts.Items.filter((account:any) =>
+                account.client_id == company.client_id
+            )
+            setCompanyWorkers(companyWorkers)
         }
+    }
+    const isDataLoaded = () => {
+        if (!materialsLoading && !machinesLoading && !clientsLoading && !machineTypesLoading
+            && !priceMatricesLoading && !contractorsLoading && !qualitiesLoading && !accountsLoading
+            && !materialsLoading && dataLoading) {
+            setDataLoading(false);
+        }
+    }
 
-        fetchData()
-
-    }, []);
+    getCompanyWorkers();
+    isDataLoaded();
 
     const monthsList = [
         "Januar",
@@ -128,9 +76,9 @@ const MasterDataSummary = () => {
                     </Link>
                     <p className="my-9 text-2xl font-bold">Stammdaten</p>
                 </div>
-                {!isDataLoaded ?
+                {dataLoading  ?
                     <SkeletonTheme baseColor={"#F9FAFB"} highlightColor={"#ffffff"}>
-                        <Skeleton className="min-h-[11.7rem] shadow-md"/>
+                        <Skeleton className="border h-[15.7rem] shadow-md"/>
                     </SkeletonTheme> :
                 <div className="sm:rounded-lg min-h-[11.7rem] shadow-md border overflow-auto bg-gray-50">
                     <table className="flex-row table-fixed w-full bg-">
@@ -148,8 +96,8 @@ const MasterDataSummary = () => {
                         </thead>
                         <tbody className="bg-gray-50">
                         {
-                            machinesData && clients ?
-                                clients.sort(function(a: any, b: any){
+                            !materialsLoading && !machinesLoading && !clientsLoading ?
+                                clients.Items.sort(function(a: any, b: any){
                                     // @ts-ignore
                                     return a.client_id - b.client_id})
                                     .map((client: any) =>
@@ -163,7 +111,7 @@ const MasterDataSummary = () => {
                                             <td>{client.street}</td>
                                             <td>{client.telefon}</td>
                                             <td>{client.email}</td>
-                                            <td className="text-right">{machinesData.filter((machine: any) =>
+                                            <td className="text-right">{machines.Items.filter((machine: any) =>
                                                 machine.client == client.client_name
                                             ).length}</td>
                                         </tr>
@@ -182,9 +130,9 @@ const MasterDataSummary = () => {
                     hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs ml-2">+ Neuer Index</button>
                         </Link>
                         <p className="text-2xl font-bold mb-5">Indexe</p>
-                        {!isDataLoaded ?
+                        {dataLoading ?
                             <SkeletonTheme baseColor={"#F9FAFB"} highlightColor={"#ffffff"}>
-                                <Skeleton className="min-h-[9.3rem] max-h-[9.3rem] sm:rounded-lg shadow-md"/>
+                                <Skeleton className="border min-h-[9.3rem] max-h-[9.3rem] sm:rounded-lg shadow-md"/>
                             </SkeletonTheme> :
                             <div className="min-h-[9.3rem] max-h-[9.3rem] shadow-md sm:rounded-lg border overflow-auto h-full">
                                 <table className="flex-row table-auto w-full">
@@ -195,8 +143,8 @@ const MasterDataSummary = () => {
                                     </tr>
                                     </thead>
                                     <tbody className="bg-gray-50">
-                                    { priceMatrices ?
-                                        priceMatrices.filter((priceMatrix: any) => priceMatrix.indeces != undefined)
+                                    { !dataLoading ?
+                                        priceMatrices.Items.filter((priceMatrix: any) => priceMatrix.indeces != undefined)
                                             .map((priceMatrix: any) =>
                                                 priceMatrix.indeces.map((index: any) =>
                                                     <tr key={priceMatrix.price_matrix + index}
@@ -236,9 +184,9 @@ const MasterDataSummary = () => {
                     hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs ml-2">+ Neue Qualität</button>
                         </Link>
                         <p className="text-2xl font-bold mb-5">Qualität</p>
-                        {!isDataLoaded ?
+                        { dataLoading ?
                             <SkeletonTheme baseColor={"#F9FAFB"} highlightColor={"#ffffff"}>
-                                <Skeleton className="min-h-[9.3rem] max-h-[9.3rem] sm:rounded-lg shadow-md"/>
+                                <Skeleton className="border min-h-[9.3rem] max-h-[9.3rem] sm:rounded-lg shadow-md"/>
                             </SkeletonTheme> :
                         <div className="sm:rounded-lg border shadow-md overflow-auto min-h-[9.3rem] max-h-[9.3rem] bg-gray-50">
                             <table className="flex-row table-auto w-full">
@@ -248,7 +196,7 @@ const MasterDataSummary = () => {
                                 </tr>
                                 </thead>
                                 <tbody className="bg-gray-50">
-                                {qualities ? qualities.map((quality: any) =>
+                                { !dataLoading ? qualities.Items.map((quality: any) =>
                                     <tr key={quality.quality_id}
                                         className="text-xs border-b text-left underline">
                                         <Link href={"/master-data/edit-quality/" +
@@ -272,9 +220,9 @@ const MasterDataSummary = () => {
                     hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs ml-2">+ Neues Material</button>
                     </Link>
                     <p className="text-2xl font-bold mb-5 mt-5">Material</p>
-                    {!isDataLoaded ?
+                    { dataLoading ?
                         <SkeletonTheme baseColor={"#F9FAFB"} highlightColor={"#ffffff"}>
-                            <Skeleton className="min-h-[9.3rem] max-h-[9.3rem] sm:rounded-lg shadow-md"/>
+                            <Skeleton className="border min-h-[9.3rem] max-h-[9.3rem] sm:rounded-lg shadow-md"/>
                         </SkeletonTheme> :
                         <div className="sm:rounded-lg border shadow-md overflow-auto min-h-[9.3rem] max-h-[9.3rem] bg-gray-50">
                             <table className="flex-row table-auto w-full">
@@ -286,9 +234,8 @@ const MasterDataSummary = () => {
                                 </tr>
                                 </thead>
                                 <tbody className="bg-gray-50">
-                                {
-                                    materials ?
-                                        materials.sort(function(a: any, b: any){
+                                { !dataLoading ?
+                                        materials.Items.sort(function(a: any, b: any){
                                             // @ts-ignore
                                             return a.waretype_id - b.waretype_id})
                                             .map((material: any) =>
@@ -317,9 +264,9 @@ const MasterDataSummary = () => {
                     hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs ml-2">+ Neuer Maschinentyp</button>
                             </Link>
                             <p className="text-2xl font-bold mb-5">Maschinentypen</p>
-                            {!isDataLoaded ?
+                            { dataLoading ?
                                 <SkeletonTheme baseColor={"#F9FAFB"} highlightColor={"#ffffff"}>
-                                    <Skeleton className="min-h-[9.3rem] max-h-[9.3rem] sm:rounded-lg shadow-md"/>
+                                    <Skeleton className="border min-h-[9.3rem] max-h-[9.3rem] sm:rounded-lg shadow-md"/>
                                 </SkeletonTheme> :
                             <div className="min-h-[9.3rem] max-h-[9.3rem] shadow-md sm:rounded-lg border overflow-auto h-full">
                                 <table className="flex-row table-auto w-full">
@@ -331,8 +278,8 @@ const MasterDataSummary = () => {
                                     </thead>
                                     <tbody className="bg-gray-50">
                                     {
-                                        machineTypes ?
-                                            machineTypes.sort(function(a: any, b: any){
+                                        !dataLoading ?
+                                            machineTypes.Items.sort(function(a: any, b: any){
                                                 // @ts-ignore
                                                 return a.machine_type_id - b.machine_type_id})
                                                 .map((machineType: any) =>
@@ -360,9 +307,9 @@ const MasterDataSummary = () => {
                     hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs ml-2">+ Neuer Mitarbeiter</button>
                             </Link>
                             <p className="text-2xl font-bold mb-5 mt-5">Mitarbeiter</p>
-                        {!isDataLoaded ?
+                        {dataLoading ?
                             <SkeletonTheme baseColor={"#F9FAFB"} highlightColor={"#ffffff"}>
-                                <Skeleton className="min-h-[9.3rem] max-h-[9.3rem] sm:rounded-lg shadow-md"/>
+                                <Skeleton className="border min-h-[9.3rem] max-h-[9.3rem] sm:rounded-lg shadow-md"/>
                             </SkeletonTheme> :
                             <div className="min-h-[9.3rem] max-h-[9.3rem] shadow-md sm:rounded-lg border overflow-auto">
                                 <table className="flex-row table-auto w-full">
@@ -374,7 +321,7 @@ const MasterDataSummary = () => {
                                     </tr>
                                     </thead>
                                     <tbody className="bg-gray-50">
-                                    {workers ? workers.map((worker: any) =>
+                                    {!dataLoading && companyWorkers.length !=0 ? companyWorkers.map((worker: any) =>
                                         <tr key={worker.userName}
                                             className="text-xs border-b text-left">
                                             <Link href={"/master-data/edit-worker/" + worker.loginName}>
@@ -384,7 +331,23 @@ const MasterDataSummary = () => {
                                             <td>{worker.initials}</td>
                                             <td>{worker.email}</td>
                                         </tr>
-                                    ) : ''}
+                                    ) :  <><tr key='noWorkers1' className="text-xs text-left">
+                                        <td className="text-gray-500">Keine Mitarbeiter hinzugefügt...</td>
+                                        <td/>
+                                        <td/>
+                                    </tr>
+                                    <tr key='noWorkers2' className="text-xs text-left">
+                                        <td className="text-gray-50">...</td>
+                                        <td/>
+                                        <td/>
+                                    </tr>
+                                    <tr key='noWorkers3' className="text-xs text-left">
+                                    <td className="text-gray-50">No workers added...</td>
+                                    <td/>
+                                    <td/>
+                                    </tr>
+                                    </>
+                                    }
 
                                     </tbody>
                                 </table>
@@ -400,9 +363,9 @@ const MasterDataSummary = () => {
                     hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs ml-2">+ Neuer Auftragnehmer</button>
                         </Link>
                         <p className="text-2xl mt-7 font-bold mb-5">Auftragnehmer</p>
-                        {!isDataLoaded ?
+                        {dataLoading ?
                             <SkeletonTheme baseColor={"#F9FAFB"} highlightColor={"#ffffff"}>
-                                <Skeleton className="min-h-[11.7rem] max-h-[11.7rem] sm:rounded-lg shadow-md"/>
+                                <Skeleton className="border min-h-[11.7rem] max-h-[11.7rem] sm:rounded-lg shadow-md"/>
                             </SkeletonTheme> :
                         <div className="sm:rounded-lg shadow-md border overflow-auto min-h-[11.7rem] max-h-[11.7rem] mb-20">
                             <table className="flex-row table-auto w-full">
@@ -418,8 +381,8 @@ const MasterDataSummary = () => {
                                 </thead>
                                 <tbody className="bg-gray-50">
                                 {
-                                    contractors ?
-                                        contractors.map((contractor: any) =>
+                                    !dataLoading ?
+                                        contractors.Items.map((contractor: any) =>
                                             <tr key={contractor.contractor_id}
                                                 className="text-xs border-b text-left">
                                                 <Link href={"/master-data/edit-contractor/" + contractor.contractor_id}>

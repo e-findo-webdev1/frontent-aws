@@ -1,3 +1,4 @@
+'use client'
 import {useEffect, useState} from "react";
 import moment from "moment";
 import "moment-timezone"
@@ -9,88 +10,80 @@ import "react-datepicker/dist/react-datepicker.css";
 import {useRouter} from "next/router";
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css'
+import useSWR from "swr";
 
-
+const fetcher = (url:  string) => fetch(url).then(r => r.json())
 const MasterData = () => {
+    const [clientData, setClientData] = useState<any>();
+    const [companyMachines, setCompanyMachines] = useState<any>();
+    const [companyShifts, setCompanyShifts] = useState<any>();
+    const [companyWorkingHours, setCompanyWorkingHours] = useState<any>();
+    const [companyWorkers, setCompanyWorkers] = useState<any>();
+
+    const {data: clients, error: clientsError, isLoading: clientsLoading} = useSWR
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/clients', fetcher)
+    const {data: machines, error: machinesError, isLoading: machinesLoading} = useSWR
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines', fetcher)
+    const {data: shiftsData, error: shiftsDataError, isLoading: shiftsDataLoading} = useSWR
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/shifts', fetcher)
+    const {data: users, error: usersError, isLoading: usersLoading} = useSWR
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/users', fetcher)
 
     const router = useRouter()
     const pid = router.query
 
+    const company = JSON.parse(sessionStorage.getItem('company') as string)
+    const getClientData = () => {
+        if (!clientsLoading && !clientData) {
+            const clientData = clients.Items
+                .filter( (client: any) => client.client_id == pid.client)
+            setClientData(clientData[0])
+        }
+    }
+    const getCompanyMachines = () => {
+        if (!machinesLoading && !companyMachines) {
+            const companyMachines = machines.Items.filter((machine:any) =>
+                machine.client == JSON.parse(sessionStorage.getItem('company') as string).client_name
+            )
+            setCompanyMachines(companyMachines)
+        }
+    }
+    const getCompanyShifts = () => {
+        if (!shiftsDataLoading && !companyShifts) {
+            const companyShifts = shiftsData.Items.filter((shift:any) =>
+                shift.shift_id == company.client_number
+            )
+            setCompanyShifts(companyShifts[0].shifts)
+            setCompanyWorkingHours(companyShifts[0].shiftHours)
+        }
+    }
+    const getCompanyWorkers = () => {
+        if (!usersLoading && !companyWorkers) {
+            const companyWorkers = users.Items.filter((account:any) =>
+                account.client_id == company.client_id
+            )
+            setCompanyWorkers(companyWorkers)
+        }
+    }
+
+    getClientData();
+    getCompanyMachines();
+    getCompanyShifts();
+    getCompanyWorkers();
+
+
+
     const [data, setData] = useState<any>();
-    const [machinesData, setMachinesData] = useState<any>();
-    const [shifts, setShift] = useState<any>();
-    const [workers, setWorkers] = useState<any>();
     const [lands, setLands] = useState<any>();
-    const [shiftHours, setShiftHours] = useState<any>();
 
     const [machineID, setMachineID] = useState<any>("");
     const [plannedDate, setPlannedDate] = useState<any>(moment());
     const [pickupDate, setPickupDate] = useState<any>("");
-    const [shiftsReady, setShiftsReady] = useState<any>(false);
-
-    const [clientId, setClientId] = useState<any>();
-    const [clients, setClients] = useState<any>({set: false});
-
     const [isDataLoaded, setIsDataLoaded] = useState<any>(false);
 
     useEffect(() => {
 
         const getData = async () => {
-
-            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/clients')
-                .then((response) => {
-                    setData(
-                        response.data.Items
-                            .filter( (client: any) => client.client_id == pid.client)
-                    );
-                })
-                .catch((error) => {
-                    console.log(error.response);
-                });
-
-            let apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines';
-
-            await API.get(apiName)
-                .then((response) => {
-                    setMachinesData(response.data.Items
-                        .filter((machine: { client: string; }) =>
-                            machine.client == data[0].client_name))
-                    if (sessionStorage.getItem('company')) {
-                        setClientId(JSON.parse(sessionStorage.getItem("company") as string).client_id)
-                    }
-                    if (clients.set == false) {
-                        setClients(true)
-                    }
-                })
-                .catch((error) => {
-                    console.log(error.response);
-                });
-
-            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/shifts')
-                .then((response) => {
-                    setShift(
-                        response.data.Items
-                            .filter( (shift: any) => shift.shift_id == JSON.parse(sessionStorage
-                                .getItem('company') as string).client_number )[0].shifts
-                    );
-                    setShiftHours(
-                        response.data.Items
-                            .filter( (shift: any) => shift.shift_id == JSON.parse(sessionStorage
-                                .getItem('company') as string).client_number)[0].shiftHours
-                    );
-                })
-                .catch((error) => {
-                    console.log(error.response);
-                });
-
-            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/users')
-                .then((response) => {
-                    setWorkers(
-                        response.data.Items.filter((obj: any) => obj.client_id == pid.client));
-                })
-                .catch((error) => {
-                    console.log(error.response);
-                });
 
             await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/lands')
                 .then((response) => {
@@ -101,26 +94,17 @@ const MasterData = () => {
                     console.log(error.response);
                 });
 
-            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/clients')
-                .then((response) => {
-                    setClients(response.data.Items);
-                })
-                .catch((error) => {
-                    console.log(error.response);
-                });
             setIsDataLoaded(true)
         }
 
         getData()
-        if (shifts != undefined) {
+        if (!shiftsDataLoading) {
             // @ts-ignore
-            SHIFT_CALENDAR = capitalizeDays(shifts)
+            SHIFT_CALENDAR = capitalizeDays(companyShifts)
             calculatePlannedDate( '2023/02/14', '10:00')
-        } else {
-            setShiftsReady('true')
         }
 
-    },[pid, clientId, clients.set] );
+    },[] );
 
     const monthsList = {
         0: "Januar",
@@ -431,21 +415,25 @@ const MasterData = () => {
                 <p className="mt-5 text-2xl font-bold mb-5">Stammdaten</p>
             </div>
             <div className="mb-10">
-                {data ? data.map((data: any) =>
-                    <div key={data.client_id} className="text-xs space-y-2.5">
-                        <p><span className="font-bold">KundenNr.:</span> {data.client_number}</p>
-                        <p><span className="font-bold">Firma:</span> {data.client_name}<br/></p>
-                        <p><span className="font-bold">PLZ:</span> {data.zip_code}<br/></p>
-                        <p><span className="font-bold">Stadt:</span> {data.city}<br/></p>
-                        <p><span className="font-bold">Straße:</span> {data.street}<br/></p>
+                {!clientsLoading && clientData ?
+                    <div key={clientData.client_id} className="text-xs space-y-2.5">
+                        <p><span className="font-bold">KundenNr.:</span> {clientData.client_number}</p>
+                        <p><span className="font-bold">Firma:</span> {clientData.client_name}<br/></p>
+                        <p><span className="font-bold">PLZ:</span> {clientData.zip_code}<br/></p>
+                        <p><span className="font-bold">Stadt:</span> {clientData.city}<br/></p>
+                        <p><span className="font-bold">Straße:</span> {clientData.street}<br/></p>
                         <p><span className="font-bold">Bundesland (D):</span> {
-                            data && lands ? lands.filter((land: any)=>land.land_id==data.land_id)[0].land_name : ''}
+                            clientData && lands ? lands.filter((land: any)=>
+                                land.land_id==clientData.land_id)[0].land_name : ''}
                             <br/></p>
-                        <p><span className="font-bold">Telefon:</span> {data.telefon}<br/></p>
-                        <p><span className="font-bold">E-Mail:</span> {data.email}<br/></p>
-                        <p><span className="font-bold">Ansprechpartner:</span> {data.spokesperson}</p>
+                        <p><span className="font-bold">Telefon:</span>
+                            {clientData.telefon ? clientData.telefon : ' -'}<br/></p>
+                        <p><span className="font-bold">E-Mail:</span>
+                            {clientData.email? clientData.email : ' -'}<br/></p>
+                        <p><span className="font-bold">Ansprechpartner:</span>
+                            {clientData.spokesperson ? clientData.spokesperson : ' -'}</p>
                     </div>
-                ) :
+                 :
                     <div key='' className="text-xs space-y-2.5">
                         <p><span className="font-bold">KundenNr.:</span></p>
                         <p><span className="font-bold">Firma:</span><br/></p>
@@ -470,9 +458,9 @@ const MasterData = () => {
             <span className="text-xs uppercase font-bold text-gray-500">
                   Lagersysteme
             </span>
-            {!isDataLoaded ?
+            { !companyMachines ?
                 <SkeletonTheme baseColor={"#F9FAFB"} highlightColor={"#ffffff"}>
-                    <Skeleton className="min-h-[15rem] max-h-[15rem] shadow-md"/>
+                    <Skeleton className="mb-10 border min-h-[15rem] max-h-[15rem] shadow-md"/>
                 </SkeletonTheme> :
             <div className="mb-10 min-h-[15rem] sm:rounded-lg shadow-md border overflow-auto bg-gray-50">
                 <table className="flex-row w-full overflow-auto h-[15rem] table-auto">
@@ -487,8 +475,8 @@ const MasterData = () => {
                     </tr>
                     </thead>
                     <tbody className="bg-gray-50">
-                    {machinesData
-                        ? machinesData.sort(function(a: any, b: any){
+                    {!machinesLoading && companyMachines
+                        ? companyMachines.sort(function(a: any, b: any){
                             // @ts-ignore
                             return a.machine_id - b.machine_id})
                             .map((machine: any) =>
@@ -567,9 +555,9 @@ const MasterData = () => {
                     <p className="text-xs uppercase font-bold text-gray-500">
                         Schichten
                     </p>
-                    {!isDataLoaded ?
+                    {!companyWorkingHours ?
                         <SkeletonTheme baseColor={"#F9FAFB"} highlightColor={"#ffffff"}>
-                            <Skeleton className="min-h-[9.4rem] max-h-[9.4rem] shadow-md"/>
+                            <Skeleton className=" border min-h-[9.4rem] max-h-[9.4rem] shadow-md"/>
                         </SkeletonTheme> :
                     <div className="h-[9.4rem] sm:rounded-lg shadow-md border bg-gray-50 overflow-auto h-max">
                         <table className="flex-row w-full table-auto">
@@ -583,31 +571,31 @@ const MasterData = () => {
                             <tbody>
                             <tr className="bg-gray-50 text-xs border-b text-left">
                                 <td className="w-24">Schicht 1</td>
-                                <td>{shiftHours ? shiftHours.shift1_start : "00:00"}</td>
-                                <td>{shiftHours ? shiftHours.shift1_end : "00:00"}</td>
+                                <td>{companyWorkingHours ? companyWorkingHours.shift1_start : "00:00"}</td>
+                                <td>{companyWorkingHours ? companyWorkingHours.shift1_end : "00:00"}</td>
                             </tr>
-                            {   shiftHours && shiftHours.shift2_start != undefined &&
-                            shiftHours.shift2_start != "00:00" && shiftHours.shift2_end != "00:00"
+                            {   companyWorkingHours && companyWorkingHours.shift2_start != undefined &&
+                            companyWorkingHours.shift2_start != "00:00" && companyWorkingHours.shift2_end != "00:00"
                                 ? <tr className="bg-gray-50 text-xs border-b text-left">
                                     <td className="w-24">Schicht 2</td>
-                                    <td>{shiftHours ? shiftHours.shift2_start : "00:00"}</td>
-                                    <td>{shiftHours ? shiftHours.shift2_end : "00:00"}</td>
+                                    <td>{companyWorkingHours ? companyWorkingHours.shift2_start : "00:00"}</td>
+                                    <td>{companyWorkingHours ? companyWorkingHours.shift2_end : "00:00"}</td>
                                 </tr>
                                 : ""}
-                            {   shiftHours && shiftHours.shift3_start != undefined &&
-                            shiftHours.shift3_start != "00:00" && shiftHours.shift3_end != "00:00"
+                            {   companyWorkingHours && companyWorkingHours.shift3_start != undefined &&
+                            companyWorkingHours.shift3_start != "00:00" && companyWorkingHours.shift3_end != "00:00"
                                 ? <tr className="bg-gray-50 text-xs border-b text-left">
                                     <td className="w-24">Schicht 3</td>
-                                    <td>{shiftHours ? shiftHours.shift3_start : "00:00"}</td>
-                                    <td>{shiftHours ? shiftHours.shift3_end : "00:00"}</td>
+                                    <td>{companyWorkingHours ? companyWorkingHours.shift3_start : "00:00"}</td>
+                                    <td>{companyWorkingHours ? companyWorkingHours.shift3_end : "00:00"}</td>
                                 </tr>
                                 : ""}
-                            {   shiftHours && shiftHours.shift4_start != undefined &&
-                            shiftHours.shift4_start != "00:00" && shiftHours.shift4_end != "00:00"
+                            {   companyWorkingHours && companyWorkingHours.shift4_start != undefined &&
+                            companyWorkingHours.shift4_start != "00:00" && companyWorkingHours.shift4_end != "00:00"
                                 ? <tr className="bg-gray-50 text-xs border-b text-left">
                                     <td className="w-24">Schicht 4</td>
-                                    <td>{shiftHours ? shiftHours.shift4_start : "00:00"}</td>
-                                    <td>{shiftHours ? shiftHours.shift4_end : "00:00"}</td>
+                                    <td>{companyWorkingHours ? companyWorkingHours.shift4_start : "00:00"}</td>
+                                    <td>{companyWorkingHours ? companyWorkingHours.shift4_end : "00:00"}</td>
                                 </tr>
                                 : ""}
 
@@ -625,9 +613,9 @@ const MasterData = () => {
                     <p className="text-xs uppercase font-bold text-gray-500">
                       Mitarbeiter
                 </p>
-                    {!isDataLoaded ?
+                    {!companyWorkers ?
                         <SkeletonTheme baseColor={"#F9FAFB"} highlightColor={"#ffffff"}>
-                            <Skeleton className="min-h-[9.4rem] max-h-[9.4rem] shadow-md"/>
+                            <Skeleton className="border min-h-[9.4rem] max-h-[9.4rem] shadow-md"/>
                         </SkeletonTheme> :
                     <div className="h-[9.4rem] bg-gray-50 sm:rounded-lg shadow-md border overflow-auto h-max">
                         <table className="flex-row w-full table-auto">
@@ -639,8 +627,8 @@ const MasterData = () => {
                             </tr>
                             </thead>
                             <tbody>
-                            { workers
-                                ? workers.map((worker: any) =>
+                            { companyWorkers.length != 0
+                                ? companyWorkers.map((worker: any) =>
                                     <tr key={worker.email} className="bg-gray-50 text-xs border-b text-left">
                                         <td>
                                             <Link href={'/master-data/edit-worker/' + worker.loginName}>
@@ -651,7 +639,22 @@ const MasterData = () => {
                                         <td>{worker.email}</td>
                                     </tr>
                                 )
-                                : ""
+                                : <><tr key='noWorkers1' className="text-xs text-left">
+                                    <td className="text-gray-500">Keine Mitarbeiter hinzugefügt...</td>
+                                    <td/>
+                                    <td/>
+                                </tr>
+                                    <tr key='noWorkers2' className="text-xs text-left">
+                                        <td className="text-gray-50">...</td>
+                                        <td/>
+                                        <td/>
+                                    </tr>
+                                    <tr key='noWorkers3' className="text-xs text-left">
+                                        <td className="text-gray-50">No workers added...</td>
+                                        <td/>
+                                        <td/>
+                                    </tr>
+                                </>
                             }
                             </tbody>
                         </table>
@@ -668,9 +671,9 @@ const MasterData = () => {
             <span className="text-xs uppercase font-bold text-gray-500">
                   Arbeitszeiten
             </span>
-            {!isDataLoaded ?
+            {!companyShifts ?
                 <SkeletonTheme baseColor={"#F9FAFB"} highlightColor={"#ffffff"}>
-                    <Skeleton className="min-h-[18.55rem] max-h-[18.55rem] shadow-md"/>
+                    <Skeleton className="border min-h-[18.55rem] max-h-[18.55rem] shadow-md"/>
                 </SkeletonTheme> :
             <div className="h-[18.55rem] bg-gray-50 mb-10 sm:rounded-lg shadow-md border overflow-auto">
                 <table className="flex-row w-full table-auto">
@@ -688,37 +691,37 @@ const MasterData = () => {
                         <td>Montag</td>
                         <td>
                             {
-                                shifts
-                                && shifts.monday.shift1.start != null
-                                && shifts.monday.shift1.end != null
-                                    ? shifts.monday.shift1.start + "-" + shifts.monday.shift1.end
+                                companyShifts
+                                && companyShifts.monday.shift1.start != null
+                                && companyShifts.monday.shift1.end != null
+                                    ? companyShifts.monday.shift1.start + "-" + companyShifts.monday.shift1.end
                                     : "-"
                             }
                         </td>
                         <td>
                             {
-                                shifts
-                                && shifts.monday.shift2.start != null
-                                && shifts.monday.shift2.end != null
-                                    ? shifts.monday.shift2.start + "-" + shifts.monday.shift2.end
+                                companyShifts
+                                && companyShifts.monday.shift2.start != null
+                                && companyShifts.monday.shift2.end != null
+                                    ? companyShifts.monday.shift2.start + "-" + companyShifts.monday.shift2.end
                                     : "-"
                             }
                         </td>
                         <td>
                             {
-                                shifts
-                                && shifts.monday.shift3.start != null
-                                && shifts.monday.shift3.end != null
-                                    ? shifts.monday.shift3.start + "-" + shifts.monday.shift3.end
+                                companyShifts
+                                && companyShifts.monday.shift3.start != null
+                                && companyShifts.monday.shift3.end != null
+                                    ? companyShifts.monday.shift3.start + "-" + companyShifts.monday.shift3.end
                                     : "-"
                             }
                         </td>
                         <td>
                             {
-                                shifts
-                                && shifts.monday.shift4.start != null
-                                && shifts.monday.shift4.end != null
-                                    ? shifts.monday.shift4.start + "-" + shifts.monday.shift4.end
+                                companyShifts
+                                && companyShifts.monday.shift4.start != null
+                                && companyShifts.monday.shift4.end != null
+                                    ? companyShifts.monday.shift4.start + "-" + companyShifts.monday.shift4.end
                                     : "-"
                             }
                         </td>
@@ -727,37 +730,37 @@ const MasterData = () => {
                         <td>Dienstag</td>
                         <td>
                             {
-                                shifts
-                                && shifts.tuesday.shift1.start != null
-                                && shifts.tuesday.shift1.end != null
-                                    ? shifts.tuesday.shift1.start + "-" + shifts.tuesday.shift1.end
+                                companyShifts
+                                && companyShifts.tuesday.shift1.start != null
+                                && companyShifts.tuesday.shift1.end != null
+                                    ? companyShifts.tuesday.shift1.start + "-" + companyShifts.tuesday.shift1.end
                                     : "-"
                             }
                         </td>
                         <td>
                             {
-                                shifts
-                                && shifts.tuesday.shift2.start != null
-                                && shifts.tuesday.shift2.end != null
-                                    ? shifts.tuesday.shift2.start + "-" + shifts.tuesday.shift2.end
+                                companyShifts
+                                && companyShifts.tuesday.shift2.start != null
+                                && companyShifts.tuesday.shift2.end != null
+                                    ? companyShifts.tuesday.shift2.start + "-" + companyShifts.tuesday.shift2.end
                                     : "-"
                             }
                         </td>
                         <td>
                             {
-                                shifts
-                                && shifts.tuesday.shift3.start != null
-                                && shifts.tuesday.shift3.end != null
-                                    ? shifts.tuesday.shift3.start + "-" + shifts.tuesday.shift3.end
+                                companyShifts
+                                && companyShifts.tuesday.shift3.start != null
+                                && companyShifts.tuesday.shift3.end != null
+                                    ? companyShifts.tuesday.shift3.start + "-" + companyShifts.tuesday.shift3.end
                                     : "-"
                             }
                         </td>
                         <td>
                             {
-                                shifts
-                                && shifts.tuesday.shift4.start != null
-                                && shifts.tuesday.shift4.end != null
-                                    ? shifts.tuesday.shift4.start + "-" + shifts.tuesday.shift4.end
+                                companyShifts
+                                && companyShifts.tuesday.shift4.start != null
+                                && companyShifts.tuesday.shift4.end != null
+                                    ? companyShifts.tuesday.shift4.start + "-" + companyShifts.tuesday.shift4.end
                                     : "-"
                             }
                         </td>
@@ -766,37 +769,37 @@ const MasterData = () => {
                         <td>Mittwoch</td>
                         <td>
                             {
-                                shifts
-                                && shifts.wednesday.shift1.start != null
-                                && shifts.wednesday.shift1.end != null
-                                    ? shifts.wednesday.shift1.start + "-" + shifts.wednesday.shift1.end
+                                companyShifts
+                                && companyShifts.wednesday.shift1.start != null
+                                && companyShifts.wednesday.shift1.end != null
+                                    ? companyShifts.wednesday.shift1.start + "-" + companyShifts.wednesday.shift1.end
                                     : "-"
                             }
                         </td>
                         <td>
                             {
-                                shifts
-                                && shifts.wednesday.shift2.start != null
-                                && shifts.wednesday.shift2.end != null
-                                    ? shifts.wednesday.shift2.start + "-" + shifts.wednesday.shift2.end
+                                companyShifts
+                                && companyShifts.wednesday.shift2.start != null
+                                && companyShifts.wednesday.shift2.end != null
+                                    ? companyShifts.wednesday.shift2.start + "-" + companyShifts.wednesday.shift2.end
                                     : "-"
                             }
                         </td>
                         <td>
                             {
-                                shifts
-                                && shifts.wednesday.shift3.start != null
-                                && shifts.wednesday.shift3.end != null
-                                    ? shifts.wednesday.shift3.start + "-" + shifts.wednesday.shift3.end
+                                companyShifts
+                                && companyShifts.wednesday.shift3.start != null
+                                && companyShifts.wednesday.shift3.end != null
+                                    ? companyShifts.wednesday.shift3.start + "-" + companyShifts.wednesday.shift3.end
                                     : "-"
                             }
                         </td>
                         <td>
                             {
-                                shifts
-                                && shifts.wednesday.shift4.start != null
-                                && shifts.wednesday.shift4.end != null
-                                    ? shifts.wednesday.shift4.start + "-" + shifts.wednesday.shift4.end
+                                companyShifts
+                                && companyShifts.wednesday.shift4.start != null
+                                && companyShifts.wednesday.shift4.end != null
+                                    ? companyShifts.wednesday.shift4.start + "-" + companyShifts.wednesday.shift4.end
                                     : "-"
                             }
                         </td>
@@ -805,37 +808,37 @@ const MasterData = () => {
                         <td>Donnerstag</td>
                         <td>
                             {
-                                shifts
-                                && shifts.thursday.shift1.start != null
-                                && shifts.thursday.shift1.end != null
-                                    ? shifts.thursday.shift1.start + "-" + shifts.thursday.shift1.end
+                                companyShifts
+                                && companyShifts.thursday.shift1.start != null
+                                && companyShifts.thursday.shift1.end != null
+                                    ? companyShifts.thursday.shift1.start + "-" + companyShifts.thursday.shift1.end
                                     : "-"
                             }
                         </td>
                         <td>
                             {
-                                shifts
-                                && shifts.thursday.shift2.start != null
-                                && shifts.thursday.shift2.end != null
-                                    ? shifts.thursday.shift2.start + "-" + shifts.thursday.shift2.end
+                                companyShifts
+                                && companyShifts.thursday.shift2.start != null
+                                && companyShifts.thursday.shift2.end != null
+                                    ? companyShifts.thursday.shift2.start + "-" + companyShifts.thursday.shift2.end
                                     : "-"
                             }
                         </td>
                         <td>
                             {
-                                shifts
-                                && shifts.thursday.shift3.start != null
-                                && shifts.thursday.shift3.end != null
-                                    ? shifts.thursday.shift3.start + "-" + shifts.thursday.shift3.end
+                                companyShifts
+                                && companyShifts.thursday.shift3.start != null
+                                && companyShifts.thursday.shift3.end != null
+                                    ? companyShifts.thursday.shift3.start + "-" + companyShifts.thursday.shift3.end
                                     : "-"
                             }
                         </td>
                         <td>
                             {
-                                shifts
-                                && shifts.thursday.shift4.start != null
-                                && shifts.thursday.shift4.end != null
-                                    ? shifts.thursday.shift4.start + "-" + shifts.thursday.shift4.end
+                                companyShifts
+                                && companyShifts.thursday.shift4.start != null
+                                && companyShifts.thursday.shift4.end != null
+                                    ? companyShifts.thursday.shift4.start + "-" + companyShifts.thursday.shift4.end
                                     : "-"
                             }
                         </td>
@@ -844,37 +847,37 @@ const MasterData = () => {
                         <td>Freitag</td>
                         <td>
                             {
-                                shifts
-                                && shifts.friday.shift1.start != null
-                                && shifts.friday.shift1.end != null
-                                    ? shifts.friday.shift1.start + "-" + shifts.friday.shift1.end
+                                companyShifts
+                                && companyShifts.friday.shift1.start != null
+                                && companyShifts.friday.shift1.end != null
+                                    ? companyShifts.friday.shift1.start + "-" + companyShifts.friday.shift1.end
                                     : "-"
                             }
                         </td>
                         <td>
                             {
-                                shifts
-                                && shifts.friday.shift2.start != null
-                                && shifts.friday.shift2.end != null
-                                    ? shifts.friday.shift2.start + "-" + shifts.friday.shift2.end
+                                companyShifts
+                                && companyShifts.friday.shift2.start != null
+                                && companyShifts.friday.shift2.end != null
+                                    ? companyShifts.friday.shift2.start + "-" + companyShifts.friday.shift2.end
                                     : "-"
                             }
                         </td>
                         <td>
                             {
-                                shifts
-                                && shifts.friday.shift3.start != null
-                                && shifts.friday.shift3.end != null
-                                    ? shifts.friday.shift3.start + "-" + shifts.friday.shift3.end
+                                companyShifts
+                                && companyShifts.friday.shift3.start != null
+                                && companyShifts.friday.shift3.end != null
+                                    ? companyShifts.friday.shift3.start + "-" + companyShifts.friday.shift3.end
                                     : "-"
                             }
                         </td>
                         <td>
                             {
-                                shifts
-                                && shifts.friday.shift4.start != null
-                                && shifts.friday.shift4.end != null
-                                    ? shifts.friday.shift4.start + "-" + shifts.friday.shift4.end
+                                companyShifts
+                                && companyShifts.friday.shift4.start != null
+                                && companyShifts.friday.shift4.end != null
+                                    ? companyShifts.friday.shift4.start + "-" + companyShifts.friday.shift4.end
                                     : "-"
                             }
                         </td>
@@ -883,37 +886,37 @@ const MasterData = () => {
                         <td>Samstag</td>
                         <td>
                             {
-                                shifts
-                                && shifts.saturday.shift1.start != null
-                                && shifts.saturday.shift1.end != null
-                                    ? shifts.saturday.shift1.start + "-" + shifts.saturday.shift1.end
+                                companyShifts
+                                && companyShifts.saturday.shift1.start != null
+                                && companyShifts.saturday.shift1.end != null
+                                    ? companyShifts.saturday.shift1.start + "-" + companyShifts.saturday.shift1.end
                                     : "-"
                             }
                         </td>
                         <td>
                             {
-                                shifts
-                                && shifts.saturday.shift2.start != null
-                                && shifts.saturday.shift2.end != null
-                                    ? shifts.saturday.shift2.start + "-" + shifts.saturday.shift2.end
+                                companyShifts
+                                && companyShifts.saturday.shift2.start != null
+                                && companyShifts.saturday.shift2.end != null
+                                    ? companyShifts.saturday.shift2.start + "-" + companyShifts.saturday.shift2.end
                                     : "-"
                             }
                         </td>
                         <td>
                             {
-                                shifts
-                                && shifts.saturday.shift3.start != null
-                                && shifts.saturday.shift3.end != null
-                                    ? shifts.saturday.shift3.start + "-" + shifts.saturday.shift3.end
+                                companyShifts
+                                && companyShifts.saturday.shift3.start != null
+                                && companyShifts.saturday.shift3.end != null
+                                    ? companyShifts.saturday.shift3.start + "-" + companyShifts.saturday.shift3.end
                                     : "-"
                             }
                         </td>
                         <td>
                             {
-                                shifts
-                                && shifts.saturday.shift3.start != null
-                                && shifts.saturday.shift3.end != null
-                                    ? shifts.saturday.shift3.start + "-" + shifts.saturday.shift3.end
+                                companyShifts
+                                && companyShifts.saturday.shift3.start != null
+                                && companyShifts.saturday.shift3.end != null
+                                    ? companyShifts.saturday.shift3.start + "-" + companyShifts.saturday.shift3.end
                                     : "-"
                             }
                         </td>
@@ -922,37 +925,37 @@ const MasterData = () => {
                         <td>Sonntag</td>
                         <td>
                             {
-                                shifts
-                                && shifts.sunday.shift1.start != null
-                                && shifts.sunday.shift1.end != null
-                                    ? shifts.sunday.shift1.start + "-" + shifts.sunday.shift1.end
+                                companyShifts
+                                && companyShifts.sunday.shift1.start != null
+                                && companyShifts.sunday.shift1.end != null
+                                    ? companyShifts.sunday.shift1.start + "-" + companyShifts.sunday.shift1.end
                                     : "-"
                             }
                         </td>
                         <td>
                             {
-                                shifts
-                                && shifts.sunday.shift2.start != null
-                                && shifts.sunday.shift2.end != null
-                                    ? shifts.sunday.shift2.start + "-" + shifts.sunday.shift2.end
+                                companyShifts
+                                && companyShifts.sunday.shift2.start != null
+                                && companyShifts.sunday.shift2.end != null
+                                    ? companyShifts.sunday.shift2.start + "-" + companyShifts.sunday.shift2.end
                                     : "-"
                             }
                         </td>
                         <td>
                             {
-                                shifts
-                                && shifts.sunday.shift3.start != null
-                                && shifts.sunday.shift3.end != null
-                                    ? shifts.sunday.shift3.start + "-" + shifts.sunday.shift3.end
+                                companyShifts
+                                && companyShifts.sunday.shift3.start != null
+                                && companyShifts.sunday.shift3.end != null
+                                    ? companyShifts.sunday.shift3.start + "-" + companyShifts.sunday.shift3.end
                                     : "-"
                             }
                         </td>
                         <td>
                             {
-                                shifts
-                                && shifts.sunday.shift4.start != null
-                                && shifts.sunday.shift4.end != null
-                                    ? shifts.sunday.shift4.start + "-" + shifts.sunday.shift4.end
+                                companyShifts
+                                && companyShifts.sunday.shift4.start != null
+                                && companyShifts.sunday.shift4.end != null
+                                    ? companyShifts.sunday.shift4.start + "-" + companyShifts.sunday.shift4.end
                                     : "-"
                             }
                         </td>

@@ -10,9 +10,12 @@ import 'react-loading-skeleton/dist/skeleton.css'
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import React from 'react';
 
-export default function StorageSystemDashboard() {
-    const [machinesData, setMachinesData] = useState<any>();
-    const [shifts, setShift] = useState<any>();
+
+export default function StorageSystemDashboard({
+// @ts-ignore
+   companyMachines, companyControlDocuments, companyShifts, contractors
+}) {
+
     const [machineID, setMachineID] = useState<any>("");
     const [plannedDates, setPlannedDates] = useState<[]>([]);
     const [pickupDate, setPickupDate] = useState<any>("");
@@ -21,10 +24,8 @@ export default function StorageSystemDashboard() {
     const [newPickupDates, setNewPickupDates] = useState<[]>([]);
     const [areDatesConfirmed, setAreDatesConfirmed] = useState<[]>([]);
     const [radioConfirmed, setRadioConfirmed] = useState<any>("");
-    const [controlDocuments, setControlDocuments] = useState<any>();
     const [popupFilling, setPopupFilling] = useState<any>(false);
     const [popup, setPopup] = useState<any>(false);
-    const [contractors, setContractors] = useState<any>();
     const [isDatePicked, setIsDatePicked] = useState<any>(false);
     const [defaultContractor, setDefaultContractor] = useState<any>();
     const [selectedContractor, setSelectedContractor] = useState<any>();
@@ -32,64 +33,6 @@ export default function StorageSystemDashboard() {
     const [userPermissions] = useState(
         JSON.parse(sessionStorage.getItem('user') as string));
     const [isDataLoaded, setIsDataLoaded] = useState<any>(false);
-
-
-    useEffect(() => {
-
-        const fetchData = async () => {
-            let apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines';
-
-            await API.get(apiName)
-                .then((response) => {
-                    setMachinesData(response.data.Items
-                        .filter((machine: { client: string; }) =>
-                            machine.client == JSON.parse(sessionStorage.getItem('company') as string).client_name));
-                    API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/control-documents')
-                        .then((response) => {
-                            setControlDocuments(
-                                response.data.Items
-                                    .filter( (document: any) =>
-                                        machinesData.reduce( function(a: any, b: any){
-                                            return a + (b['machine_id']);
-                                        }).includes(document.machine_id)
-                                    )
-                            );
-                        })
-                        .catch((error) => {
-                            console.log(error.response);
-                        });
-                    setPageReload(true)
-                })
-                .catch((error) => {
-                    console.log(error); //
-                });
-
-            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/shifts')
-                .then((response) => {
-                    setShift(
-                        response.data.Items
-                            .filter( (shift: any) => shift.shift_id
-                                == JSON.parse(sessionStorage.getItem('company') as string).client_number )[0].shifts
-                    );
-                })
-                .catch((error) => {
-                    console.log(error.response);
-                });
-
-            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/contractors')
-                .then((response) => {
-                    setContractors(
-                        response.data.Items
-                    );
-                })
-                .catch((error) => {
-                    console.log(error.response);
-                });
-            setIsDataLoaded(true)
-        }
-        fetchData()
-
-    }, [pickupDates, pageReload, machinesData]);
 
     let SHIFT_CALENDAR = {
         'Sunday': {
@@ -308,7 +251,6 @@ export default function StorageSystemDashboard() {
             currentDate.add(1,'day')
         }
     }
-
     const calculatePlannedDate = (workingHours: any, machineID: any) => {
         let taskDuration = workingHours*60;
         let taskStart = moment()
@@ -370,24 +312,25 @@ export default function StorageSystemDashboard() {
             }
         }
     }
+    if (companyMachines && companyControlDocuments && companyShifts && plannedDates.length == 0) {
 
-    if (machinesData && controlDocuments && shifts && plannedDates.length == 0) {
         // @ts-ignore
-        SHIFT_CALENDAR = capitalizeDays(shifts)
-        for (let machine in machinesData) {
-            const machineID = machinesData[machine].machine_id
+        SHIFT_CALENDAR = capitalizeDays(companyShifts)
+        for (let machine in companyMachines) {
+            const machineID = companyMachines[machine].machine_id
             const averageThroughput = //((controlDocuments.reduce( function(a: any, b: any){
                   //return a + b['averageThroughput'];
                  //}, 0) / controlDocuments.length) * 9550 +
-                (247 * 99.9 + (machinesData[machine].averageThroughput) * 0.1) / 100
-            const currentNetto = machinesData[machine].lastIndicate
-            const maxNetto = machinesData[machine].maxNetto
+                (247 * 99.9 + (companyMachines[machine].averageThroughput) * 0.1) / 100
+            const currentNetto = companyMachines[machine].lastIndicate
+            const maxNetto = companyMachines[machine].maxNetto
             const workingHours = ((maxNetto-currentNetto)/averageThroughput)
             if (averageThroughput) {
                 calculatePlannedDate(workingHours, machineID)
             }
         }
     }
+
     const monthsList = {
         0: "Januar",
         1: "Februar",
@@ -408,7 +351,7 @@ export default function StorageSystemDashboard() {
             <span className="text-xs uppercase font-bold text-gray-500">
                   Lagersysteme
             </span>
-            {!isDataLoaded ?
+            {!companyMachines ?
                 <SkeletonTheme baseColor={"#F9FAFB"} highlightColor={"#ffffff"}>
                 <Skeleton className="min-h-80 max-h-80 sm:rounded-lg shadow-md"/>
                 </SkeletonTheme> :
@@ -427,8 +370,8 @@ export default function StorageSystemDashboard() {
                         </tr>
                         </thead>
                             <tbody className="bg-gray-50">
-                            {machinesData
-                                ? machinesData.sort(function(a: any, b: any){
+                            {companyMachines
+                                ? companyMachines.sort(function(a: any, b: any){
                                     // @ts-ignore
                                     return a.machine_id - b.machine_id})
                                     .map((machine: any) =>
@@ -450,10 +393,10 @@ export default function StorageSystemDashboard() {
                                                            setSelectedContractor(machine.selectedContractor)
                                                            setPopupFilling(true)
                                                            setMachineID(machine.machine_id)
-                                                           if (machinesData && machinesData.filter((obj: any) =>
+                                                           if (companyMachines && companyMachines.filter((obj: any) =>
                                                            {return obj.machine_id == machine.machine_id})[0]
                                                                .pickup_date != "") {
-                                                               setPickupDate(moment(machinesData.filter((obj: any) =>
+                                                               setPickupDate(moment(companyMachines.filter((obj: any) =>
                                                                {return obj.machine_id == machine.machine_id})[0].pickup_date))
                                                            } else if (pickupDates) {
                                                                setPickupDate(pickupDates
@@ -463,10 +406,10 @@ export default function StorageSystemDashboard() {
                                                                    .taskEnd)
                                                            }
 
-                                                           setIsDateConfirmed(machinesData.filter((obj: any) =>
+                                                           setIsDateConfirmed(companyMachines.filter((obj: any) =>
                                                            {return obj.machine_id == machine.machine_id})[0]
                                                                .isDateConfirmed)
-                                                           setRadioConfirmed(machinesData.filter((obj: any) =>
+                                                           setRadioConfirmed(companyMachines.filter((obj: any) =>
                                                            {return obj.machine_id == machine.machine_id})[0]
                                                                .isDateConfirmed)
                                                        }
@@ -515,10 +458,10 @@ export default function StorageSystemDashboard() {
                                                        {
                                                            setPopup(true)
                                                            setMachineID(machine.machine_id)
-                                                           if (machinesData && machinesData.filter((obj: any) =>
+                                                           if (companyMachines && companyMachines.filter((obj: any) =>
                                                            {return obj.machine_id == machine.machine_id})[0]
                                                                .pickup_date != "") {
-                                                               setPickupDate(moment(machinesData.filter((obj: any) =>
+                                                               setPickupDate(moment(companyMachines.filter((obj: any) =>
                                                                {return obj.machine_id == machine.machine_id})[0].pickup_date))
                                                            } else if (pickupDates) {
                                                                setPickupDate(pickupDates
@@ -528,10 +471,10 @@ export default function StorageSystemDashboard() {
                                                                    .taskEnd)
                                                            }
 
-                                                           setIsDateConfirmed(machinesData.filter((obj: any) =>
+                                                           setIsDateConfirmed(companyMachines.filter((obj: any) =>
                                                            {return obj.machine_id == machine.machine_id})[0]
                                                                .isDateConfirmed)
-                                                           setRadioConfirmed(machinesData.filter((obj: any) =>
+                                                           setRadioConfirmed(companyMachines.filter((obj: any) =>
                                                            {return obj.machine_id == machine.machine_id})[0]
                                                                .isDateConfirmed)}
 
@@ -545,7 +488,7 @@ export default function StorageSystemDashboard() {
                                                         : machine.total_working_time !=0
                                                         && pickupDates
                                                         && pickupDates.length != 0
-                                                        && machinesData.filter((obj: any) =>
+                                                        && companyMachines.filter((obj: any) =>
                                                         {return obj.machine_id == machine.machine_id})[0]
                                                             .pickup_date == ""
                                                             ? pickupDates
@@ -557,10 +500,10 @@ export default function StorageSystemDashboard() {
                                                                     </span>
                                                                 )
                                                             : machine.isDatePicked && machine.total_working_time !=0
-                                                            && machinesData.filter((obj: any) =>
+                                                            && companyMachines.filter((obj: any) =>
                                                             {return obj.machine_id == machine.machine_id})[0]
                                                                 .pickup_date != ""
-                                                                ? moment(machinesData.filter((obj: any) =>
+                                                                ? moment(companyMachines.filter((obj: any) =>
                                                                 {return obj.machine_id == machine.machine_id})[0]
                                                                     .pickup_date).format('DD.MM.yyyy HH:mm')
                                                                 : "-"
@@ -621,7 +564,7 @@ export default function StorageSystemDashboard() {
                         setPickupDate={setPickupDate}
                         setPickupDates={setPickupDates}
                         pickupDates={pickupDates}
-                        machinesData={machinesData}
+                        machinesData={companyMachines}
                         isDateConfirmed={isDateConfirmed}
                         setIsDateConfirmed={setIsDateConfirmed}
                         setNewPickupDates={setNewPickupDates}
@@ -647,7 +590,7 @@ export default function StorageSystemDashboard() {
                         setPickupDate={setPickupDate}
                         setPickupDates={setPickupDates}
                         pickupDates={pickupDates}
-                        machinesData={machinesData}
+                        machinesData={companyMachines}
                         isDateConfirmed={isDateConfirmed}
                         setIsDateConfirmed={setIsDateConfirmed}
                         setNewPickupDates={setNewPickupDates}
@@ -662,7 +605,7 @@ export default function StorageSystemDashboard() {
                     />
                 </div>
             </div>}
-            {!isDataLoaded ?
+            {!companyMachines ?
                 <SkeletonTheme baseColor={"#F9FAFB"} highlightColor={"#ffffff"}>
                     <Skeleton className="mt-5 sm:rounded-lg shadow-md flex-row h-40"/>
                 </SkeletonTheme> :
@@ -675,7 +618,7 @@ export default function StorageSystemDashboard() {
                         {moment().format("DD.MM.YYYY")}</p>
                     <p className="flex-grow flex-1">
                         <span className="font-bold">Gesamtmenge aller eMSS<br/></span>
-                        {machinesData && controlDocuments ? machinesData.reduce( function(a: any, b: any){
+                        {companyMachines && companyControlDocuments ? companyMachines.reduce( function(a: any, b: any){
                                 return a + (b['lastIndicate']);
                         }, 0) //+ controlDocuments.
                         //filter((document: any)=>moment(document.timestamp).format("DD/MM/YYYY") ==
@@ -687,8 +630,8 @@ export default function StorageSystemDashboard() {
                     </p>
                     <p className="flex-grow flex-1">
                         <span className="font-bold">Erlös<br/></span>
-                        { machinesData && controlDocuments ?
-                            (machinesData.reduce( function(a: any, b: any){
+                        { companyMachines && companyControlDocuments ?
+                            (companyMachines.reduce( function(a: any, b: any){
                                     if (b.price_list.prices[moment().year()]) {
                                         return a + ((b['lastIndicate'])*
                                             // @ts-ignore
@@ -719,23 +662,23 @@ export default function StorageSystemDashboard() {
                             monthsList[moment().month()]} {moment().year()}</p>
                     <p className="flex-grow flex-1">
                         <span className="font-bold">Gesamtmenge aller eMSS<br/></span>
-                        {machinesData && controlDocuments ? controlDocuments.
+                        {companyMachines && companyControlDocuments ? companyControlDocuments.
                             filter((document: any)=>moment(document.timestamp).month() == moment().month()).
                         reduce( function(a: any, b: any){
                             return a + b['netto']
-                        }, 0) + machinesData.reduce( function(a: any, b: any){
+                        }, 0) + companyMachines.reduce( function(a: any, b: any){
                                 return a + b['lastIndicate']
                         }, 0) + " kg" : "0 kg"}</p>
                     <p className="flex-grow flex-1">
                         <span className="font-bold">Gesamterlöse<br/></span>
-                        {controlDocuments ? (controlDocuments.
+                        {companyControlDocuments ? (companyControlDocuments.
                         filter((document: any)=>moment(document.timestamp).month() == moment().month()).
                         reduce( function(a: any, b: any){
                             return a + ((b['netto']) *
-                                parseInt(machinesData.filter((machine: any) => machine.machine_id == b['machine_id'])[0]
+                                parseInt(companyMachines.filter((machine: any) => machine.machine_id == b['machine_id'])[0]
                                     // @ts-ignore
                                     .price_list.prices[moment().year()][monthsList[moment().month()]])/1000)
-                        }, 0) + (machinesData.reduce( function(a: any, b: any){
+                        }, 0) + (companyMachines.reduce( function(a: any, b: any){
                             if (b.price_list.prices[moment().year()]) {
                                 return a + ((b['lastIndicate']) *
                                     // @ts-ignore

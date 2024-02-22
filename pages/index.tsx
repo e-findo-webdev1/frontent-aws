@@ -1,3 +1,4 @@
+'use client'
 import type { NextPage } from 'next'
 import Header from "./components/start/Header";
 import StorageSystemDashboard from "./components/start/StorageSystemDashboard";
@@ -12,65 +13,100 @@ import CalendarYearSVG from "../public/calendar-clock-svgrepo-com";
 import AnnualSVG from "../public/sales-amount-svgrepo-com";
 import Co2SVG from "../public/truck-trash-svgrepo-com";
 import ScrapSVG from "../public/car-accident-car-crash-scrap-metal-svgrepo-com";
+import useSWR from "swr";
 
+const fetcher = (url:  string) => fetch(url).then(r => r.json())
 const Home: NextPage = () => {
 
+    const [companyWorkers, setCompanyWorkers] = useState<any>();
+    const [companyShifts, setCompanyShifts] = useState<any>();
+    const [companyWorkingHours, setCompanyWorkingHours] = useState<any>();
+    const [companyMachines, setCompanyMachines] = useState<any>();
+    const [companyControlDocuments, setCompanyControlDocuments] = useState<any>();
 
-
-    const [workingHours, setWorkingHours] = useState<any>();
-    const [shifts, setShifts] = useState<any>();
-    const [shiftsList, setShiftsList] = useState<any>();
-    const [workers, setWorkers] = useState<any>();
     const [emailList, setEmailList] = useState<any>();
     const [emailListBack, setEmailListBack] = useState<any>(['webdev1@e-findo.de', 'it-service@e-findo.de',
         'a.maier@rail-kontor.ch']);
-    const [dataLoaded, setDataLoaded] = useState<any>(false);
 
+    const {data: machines, error: machinesError, isLoading: machinesLoading} = useSWR
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines', fetcher)
+    const {data: controlDocuments, error: controlDocumentsError,
+        isLoading: controlDocumentsLoading} = useSWR
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/control-documents', fetcher)
+    const {data: certificates, error: certificatesError, isLoading: certificatesLoading} = useSWR
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/certificates', fetcher)
+    const {data: waretypes, error: waretypesError, isLoading: waretypesLoading} = useSWR
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/waretypes', fetcher)
+    const {data: users, error: usersError, isLoading: usersLoading} = useSWR
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/users', fetcher)
+    const {data: shiftsData, error: shiftsDataError, isLoading: shiftsDataLoading} = useSWR
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/shifts', fetcher)
+    const {data: clients, error: clientsError, isLoading: clientsLoading} = useSWR
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/clients', fetcher)
+    const {data: machineTypes, error: machineTypesError, isLoading: machineTypesLoading} = useSWR
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machine-types', fetcher)
+    const {data: priceMatricesTypes, error: priceMatricesError, isLoading: priceMatricesLoading} = useSWR
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/price-matrices', fetcher)
+    const {data: contractors, error: contractorsError, isLoading: contractorsLoading} = useSWR
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/contractors', fetcher)
+    const {data: emailTexts, error: emailTextsError, isLoading: emailTextsLoading} = useSWR
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/email-texts', fetcher)
+    const {data: qualities, error: qualitiesError, isLoading: qualitiesLoading} = useSWR
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/qualities', fetcher)
+    const {data: accounts, error: accountsError, isLoading: accountsLoading} = useSWR
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/accounts', fetcher)
+    const {data: lands, error: landsError, isLoading: landsLoading} = useSWR
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/lands', fetcher)
+    const {data: sorts, error: sortsError, isLoading: sortsLoading} = useSWR
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/sorts', fetcher)
+    const {data: indexGroup, error: indexGroupError, isLoading: indexGroupLoading} = useSWR
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/index-group', fetcher)
 
-
-    useEffect(() => {
-
-        const fetchData = async () => {
-            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/users')
-                .then((response) => {
-                    setWorkers(
-                        response.data.Items.filter((obj: any) => obj.client_id ==
-                            JSON.parse(sessionStorage.getItem('company') as string).client_id));
-                })
-                .catch((error) => {
-                    console.log(error.response);
-                });
-
-            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/shifts')
-                .then((response) => {
-                    setShifts(
-                        response.data.Items
-                            .filter( (shift: any) => shift.client_id ==
-                                JSON.parse(sessionStorage.getItem('company') as string).client_id)[0].shifts
-                    );
-                    setWorkingHours(
-                        response.data.Items
-                            .filter( (shift: any) => shift.client_id ==
-                                JSON.parse(sessionStorage.getItem('company') as string).client_id)[0].shiftHours
-                    );
-                })
-                .catch((error) => {
-                    console.log(error.response);
-                });
-            setDataLoaded(true)
+    const company = JSON.parse(sessionStorage.getItem('company') as string)
+    const getCompanyWorkers = () => {
+        if (!usersLoading && !companyWorkers) {
+            const companyWorkers = users.Items.filter((user:any) =>
+                user.client_id == company.client_id
+            )
+            setCompanyWorkers(companyWorkers)
         }
-
-        fetchData()
-
-        },[]
-    )
-
-
+    }
+    const getCompanyShifts = () => {
+        if (!shiftsDataLoading && !companyShifts) {
+            const companyShifts = shiftsData.Items.filter((shift:any) =>
+                shift.shift_id == company.client_number
+            )
+            setCompanyShifts(companyShifts[0].shifts)
+            setCompanyWorkingHours(companyShifts[0].shiftHours)
+        }
+    }
+    const getCompanyMachines = () => {
+        if (!machinesLoading && !companyMachines) {
+            const companyMachines = machines.Items.filter((machine:any) =>
+                machine.client == JSON.parse(sessionStorage.getItem('company') as string).client_name
+            )
+            setCompanyMachines(companyMachines)
+        }
+    }
+    const getCompanyControlDocuments = () => {
+        if (!controlDocumentsLoading && companyMachines && !companyControlDocuments) {
+            const companyControlDocuments = controlDocuments.Items.filter((document: any) =>
+                companyMachines.reduce( function(a: any, b: any){
+                    a.push(b['machine_id']);
+                    return a
+                }, []).includes(document.machine_id))
+            setCompanyControlDocuments(companyControlDocuments)
+        }
+    }
+    getCompanyWorkers();
+    getCompanyShifts();
+    getCompanyMachines();
+    getCompanyControlDocuments();
     const sendEmail = (e: any) => {
         e.preventDefault();
         const emailList = []
-        for (let worker in workers) {
-            emailList.push(workers[worker].email)
+        for (let worker in companyWorkers) {
+            emailList.push(companyWorkers[worker].email)
         }
         setEmailList(emailList)
 
@@ -84,8 +120,6 @@ const Home: NextPage = () => {
                 console.log(error.text);
             });
     };
-
-
     const sendEmailBack = (e: any) => {
         e.preventDefault();
 
@@ -93,70 +127,70 @@ const Home: NextPage = () => {
             {
                 client_company: JSON.parse(sessionStorage.getItem('company') as string).client_name,
                 email_list_back: emailListBack,
-                shift1_start: workingHours.shift1_start,
-                shift1_end: workingHours.shift1_end,
-                shift2_start: workingHours.shift2_start,
-                shift2_end: workingHours.shift2_end,
-                shift3_start: workingHours.shift3_start,
-                shift3_end: workingHours.shift3_end,
-                shift4_start: workingHours.shift4_start,
-                shift4_end: workingHours.shift4_end,
-                monday_shift1_start: shifts['monday'].shift1.start,
-                monday_shift1_end: shifts['monday'].shift1.end,
-                monday_shift2_start: shifts['monday'].shift2.start,
-                monday_shift2_end: shifts['monday'].shift2.end,
-                monday_shift3_start: shifts['monday'].shift3.start,
-                monday_shift3_end: shifts['monday'].shift3.end,
-                monday_shift4_start: shifts['monday'].shift4.start,
-                monday_shift4_end: shifts['monday'].shift4.end,
-                tuesday_shift1_start: shifts['tuesday'].shift1.start,
-                tuesday_shift1_end: shifts['tuesday'].shift1.end,
-                tuesday_shift2_start: shifts['tuesday'].shift2.start,
-                tuesday_shift2_end: shifts['tuesday'].shift2.end,
-                tuesday_shift3_start: shifts['tuesday'].shift3.start,
-                tuesday_shift3_end: shifts['tuesday'].shift3.end,
-                tuesday_shift4_start: shifts['tuesday'].shift4.start,
-                tuesday_shift4_end: shifts['tuesday'].shift4.end,
-                wednesday_shift1_start: shifts['wednesday'].shift1.start,
-                wednesday_shift1_end: shifts['wednesday'].shift1.end,
-                wednesday_shift2_start: shifts['wednesday'].shift2.start,
-                wednesday_shift2_end: shifts['wednesday'].shift2.end,
-                wednesday_shift3_start: shifts['wednesday'].shift3.start,
-                wednesday_shift3_end: shifts['wednesday'].shift3.end,
-                wednesday_shift4_start: shifts['wednesday'].shift4.start,
-                wednesday_shift4_end: shifts['wednesday'].shift4.end,
-                thursday_shift1_start: shifts['thursday'].shift1.start,
-                thursday_shift1_end: shifts['thursday'].shift1.end,
-                thursday_shift2_start: shifts['thursday'].shift2.start,
-                thursday_shift2_end: shifts['thursday'].shift2.end,
-                thursday_shift3_start: shifts['thursday'].shift3.start,
-                thursday_shift3_end: shifts['thursday'].shift3.end,
-                thursday_shift4_start: shifts['thursday'].shift4.start,
-                thursday_shift4_end: shifts['thursday'].shift4.end,
-                friday_shift1_start: shifts['friday'].shift1.start,
-                friday_shift1_end: shifts['friday'].shift1.end,
-                friday_shift2_start: shifts['friday'].shift2.start,
-                friday_shift2_end: shifts['friday'].shift2.end,
-                friday_shift3_start: shifts['friday'].shift3.start,
-                friday_shift3_end: shifts['friday'].shift3.end,
-                friday_shift4_start: shifts['friday'].shift4.start,
-                friday_shift4_end: shifts['friday'].shift4.end,
-                saturday_shift1_start: shifts['saturday'].shift1.start,
-                saturday_shift1_end: shifts['saturday'].shift1.end,
-                saturday_shift2_start: shifts['saturday'].shift2.start,
-                saturday_shift2_end: shifts['saturday'].shift2.end,
-                saturday_shift3_start: shifts['saturday'].shift3.start,
-                saturday_shift3_end: shifts['saturday'].shift3.end,
-                saturday_shift4_start: shifts['saturday'].shift4.start,
-                saturday_shift4_end: shifts['saturday'].shift4.end,
-                sunday_shift1_start: shifts['sunday'].shift1.start,
-                sunday_shift1_end: shifts['sunday'].shift1.end,
-                sunday_shift2_start: shifts['sunday'].shift2.start,
-                sunday_shift2_end: shifts['sunday'].shift2.end,
-                sunday_shift3_start: shifts['sunday'].shift3.start,
-                sunday_shift3_end: shifts['sunday'].shift3.end,
-                sunday_shift4_start: shifts['sunday'].shift4.start,
-                sunday_shift4_end: shifts['sunday'].shift4.end
+                shift1_start: companyWorkingHours.shift1_start,
+                shift1_end: companyWorkingHours.shift1_end,
+                shift2_start: companyWorkingHours.shift2_start,
+                shift2_end: companyWorkingHours.shift2_end,
+                shift3_start: companyWorkingHours.shift3_start,
+                shift3_end: companyWorkingHours.shift3_end,
+                shift4_start: companyWorkingHours.shift4_start,
+                shift4_end: companyWorkingHours.shift4_end,
+                monday_shift1_start: companyShifts['monday'].shift1.start,
+                monday_shift1_end: companyShifts['monday'].shift1.end,
+                monday_shift2_start: companyShifts['monday'].shift2.start,
+                monday_shift2_end: companyShifts['monday'].shift2.end,
+                monday_shift3_start: companyShifts['monday'].shift3.start,
+                monday_shift3_end: companyShifts['monday'].shift3.end,
+                monday_shift4_start: companyShifts['monday'].shift4.start,
+                monday_shift4_end: companyShifts['monday'].shift4.end,
+                tuesday_shift1_start: companyShifts['tuesday'].shift1.start,
+                tuesday_shift1_end: companyShifts['tuesday'].shift1.end,
+                tuesday_shift2_start: companyShifts['tuesday'].shift2.start,
+                tuesday_shift2_end: companyShifts['tuesday'].shift2.end,
+                tuesday_shift3_start: companyShifts['tuesday'].shift3.start,
+                tuesday_shift3_end: companyShifts['tuesday'].shift3.end,
+                tuesday_shift4_start: companyShifts['tuesday'].shift4.start,
+                tuesday_shift4_end: companyShifts['tuesday'].shift4.end,
+                wednesday_shift1_start: companyShifts['wednesday'].shift1.start,
+                wednesday_shift1_end: companyShifts['wednesday'].shift1.end,
+                wednesday_shift2_start: companyShifts['wednesday'].shift2.start,
+                wednesday_shift2_end: companyShifts['wednesday'].shift2.end,
+                wednesday_shift3_start: companyShifts['wednesday'].shift3.start,
+                wednesday_shift3_end: companyShifts['wednesday'].shift3.end,
+                wednesday_shift4_start: companyShifts['wednesday'].shift4.start,
+                wednesday_shift4_end: companyShifts['wednesday'].shift4.end,
+                thursday_shift1_start: companyShifts['thursday'].shift1.start,
+                thursday_shift1_end: companyShifts['thursday'].shift1.end,
+                thursday_shift2_start: companyShifts['thursday'].shift2.start,
+                thursday_shift2_end: companyShifts['thursday'].shift2.end,
+                thursday_shift3_start: companyShifts['thursday'].shift3.start,
+                thursday_shift3_end: companyShifts['thursday'].shift3.end,
+                thursday_shift4_start: companyShifts['thursday'].shift4.start,
+                thursday_shift4_end: companyShifts['thursday'].shift4.end,
+                friday_shift1_start: companyShifts['friday'].shift1.start,
+                friday_shift1_end: companyShifts['friday'].shift1.end,
+                friday_shift2_start: companyShifts['friday'].shift2.start,
+                friday_shift2_end: companyShifts['friday'].shift2.end,
+                friday_shift3_start: companyShifts['friday'].shift3.start,
+                friday_shift3_end: companyShifts['friday'].shift3.end,
+                friday_shift4_start: companyShifts['friday'].shift4.start,
+                friday_shift4_end: companyShifts['friday'].shift4.end,
+                saturday_shift1_start: companyShifts['saturday'].shift1.start,
+                saturday_shift1_end: companyShifts['saturday'].shift1.end,
+                saturday_shift2_start: companyShifts['saturday'].shift2.start,
+                saturday_shift2_end: companyShifts['saturday'].shift2.end,
+                saturday_shift3_start: companyShifts['saturday'].shift3.start,
+                saturday_shift3_end: companyShifts['saturday'].shift3.end,
+                saturday_shift4_start: companyShifts['saturday'].shift4.start,
+                saturday_shift4_end: companyShifts['saturday'].shift4.end,
+                sunday_shift1_start: companyShifts['sunday'].shift1.start,
+                sunday_shift1_end: companyShifts['sunday'].shift1.end,
+                sunday_shift2_start: companyShifts['sunday'].shift2.start,
+                sunday_shift2_end: companyShifts['sunday'].shift2.end,
+                sunday_shift3_start: companyShifts['sunday'].shift3.start,
+                sunday_shift3_end: companyShifts['sunday'].shift3.end,
+                sunday_shift4_start: companyShifts['sunday'].shift4.start,
+                sunday_shift4_end: companyShifts['sunday'].shift4.end
             },
             'T3_j793le9k-t00DB')
             .then((result) => {
@@ -238,7 +272,12 @@ const Home: NextPage = () => {
                 </div>
 
                     <div className="col-span-2 pl-10 flex">
-                                    <StorageSystemDashboard/>
+                        <StorageSystemDashboard
+                            companyMachines = { companyMachines }
+                            companyControlDocuments = { companyControlDocuments }
+                            companyShifts = { companyShifts }
+                            contractors = { contractors }
+                        />
                     </div>
             </div>
         </div>

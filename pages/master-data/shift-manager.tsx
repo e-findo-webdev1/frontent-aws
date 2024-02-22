@@ -36,7 +36,7 @@ const ShiftManager = () => {
                             JSON.parse(sessionStorage.getItem("company") as string).client_number )[0]
                 );
                 if (numberOfShifts == 0) {
-                    setNumberOfShitfs(-1)
+                    setNumberOfShitfs(1)
                 }
 
 
@@ -64,7 +64,7 @@ const ShiftManager = () => {
 
         }
         setHoursList(tempHoursList)
-        if (shifts.shiftHours && numberOfShifts == -1) {
+        if (shifts.shiftHours) {
             let x = 0
             for ( let i = 0; i < 4; i++) {
                 if (shifts.shiftHours['shift' + i + '_start'] != "00:00" && shifts.shiftHours['shift' + i + '_end'] != "00:00"
@@ -75,8 +75,7 @@ const ShiftManager = () => {
             }
         }
 
-    },[clientId, numberOfShifts]);
-
+    },[clientId]);
 
     const responseBody = { shift_id: 0, client_id: 0, selection: {}, shifts: {}, shiftHours: {} }
 
@@ -87,7 +86,7 @@ const ShiftManager = () => {
         responseBody.selection = shifts.selection
         responseBody.shiftHours = shifts.shiftHours
         sendData(responseBody)
-        window.location.replace('/master-data/' + JSON.parse(sessionStorage.getItem('company') as string).client_id)
+        //window.location.replace('/master-data/' + JSON.parse(sessionStorage.getItem('company') as string).client_id)
 
     }
 
@@ -101,6 +100,7 @@ const ShiftManager = () => {
                 console.log(error);
             });
     }
+
 
     return(
         <div id="content-page" className="overflow-auto h-full px-48 m-auto">

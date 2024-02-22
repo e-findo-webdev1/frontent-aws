@@ -164,7 +164,7 @@ const PopupFilling = ({machineID, pickupDate, setPickupDates, setMachineID, setP
                                     value={selectedContractor}
                                     onChange={(e)=>setSelectedContractor(e.target.value)}
                             >
-                                {contractors
+                                {contractors.Items
                                 .sort(function (a: any, b: any) {
                                 if (a.contractor_name < b.contractor_name) {
                                 return -1;
