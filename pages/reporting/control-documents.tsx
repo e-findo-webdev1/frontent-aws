@@ -46,11 +46,12 @@ const ControlDocuments = ({children} ) => {
         setFilteredControlDocuments(companyControlDocuments)
     }
 
+
     return (
         <div id="content-page" className="overflow-auto h-full px-48 m-auto">
             <p className="my-9 text-3xl font-bold mb-9">Kontrollbelege</p>
             { !machinesLoading && !controlDocumentsLoading && !certificatesLoading && !waretypesLoading
-            && filteredMachines && filteredControlDocuments
+            && filteredMachines && filteredControlDocuments && filteredMachines
                 ?
                 <div className="mt-4 sm:rounded-lg shadow-md border overflow-auto min-h-[29.9rem] max-h-[29.9rem]">
                     <table className="table-fixed w-full overflow-auto">
@@ -72,7 +73,7 @@ const ControlDocuments = ({children} ) => {
                         </tr>
                         </thead>
                         <tbody className="bg-gray-50">
-                        {filteredControlDocuments.sort(function(a: any, b: any){
+                        {filteredControlDocuments && filteredControlDocuments.length != 0 ? filteredControlDocuments.sort(function(a: any, b: any){
                             // @ts-ignore
                             return moment(b.endOfCycle).unix() - moment(a.endOfCycle).unix()})
                             .map((document: any) =>
@@ -109,12 +110,12 @@ const ControlDocuments = ({children} ) => {
                                     <td>{document.netto}</td>
                                     <td>{ document.startOfCycle ?
                                         ((moment(document.endOfCycle).unix()-moment(document.startOfCycle).unix())
-                                            /3600).toFixed(2) + 'h' :
+                                            /3600).toFixed(2) + 'h' : filteredControlDocuments.length > 1 ?
                                         ((moment(document.endOfCycle).unix()-(moment(filteredControlDocuments
                                                 .filter((page: any)=>page.document_id == document.document_id-1)[0]
                                                 // @ts-ignore
                                                 .timestamp)).unix())
-                                            /3600).toFixed(2) + 'h'
+                                            /3600).toFixed(2) + 'h' : ''
                                     }</td>
                                     <td>{(document.totalProductionTime/3600000).toFixed(2)}h</td>
                                     <td>{filteredControlDocuments ? (document.averageThroughput).toFixed(2) : ''}</td>
@@ -132,7 +133,7 @@ const ControlDocuments = ({children} ) => {
                                         </Link>
                                     </td>
                                 </tr>
-                            )}
+                            ) : ''}
                         </tbody>
                     </table>
                 </div> : <SkeletonTheme baseColor={"#F9FAFB"} highlightColor={"#ffffff"}>
