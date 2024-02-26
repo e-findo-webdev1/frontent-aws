@@ -979,13 +979,11 @@ const MonthlyEvaluation = () => {
                                         <button className="m-auto flex">
                                             {/* @ts-ignore */}
                                             <img className="h-5" src={
-                                                !certificatesLoading
-                                                ?
+                                                !certificatesLoading && filteredControlDocuments
+                                                 &&
                                                 certificates.Items.filter((certificate: any) =>
                                                 certificate.document_id == document.document_id).length == 0
-                                                ||
-                                                !certificates.Items.filter((certificate: any) =>
-                                                certificate.document_id == document.document_id)[0].pdf_data :  "" ? "/upload-svgrepo-com.svg"
+                                                 ? "/upload-svgrepo-com.svg"
                                                  : '/document.png'}/></button>
                                     </Link>
                                 </td>
