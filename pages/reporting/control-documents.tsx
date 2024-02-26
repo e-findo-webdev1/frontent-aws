@@ -42,7 +42,7 @@ const ControlDocuments = ({children} ) => {
             filteredMachines.reduce( function(a: any, b: any){
                 a.push(b['machine_id']);
                 return a
-            }, []).includes(document.machine_id))
+            }, []).includes(document.machine_id)).filter((document: any) => document.totalStandstill != 0 && document.averageThroughput != 0)
         setFilteredControlDocuments(companyControlDocuments)
     }
 
@@ -110,7 +110,8 @@ const ControlDocuments = ({children} ) => {
                                     <td>{document.netto}</td>
                                     <td>{ document.startOfCycle ?
                                         ((moment(document.endOfCycle).unix()-moment(document.startOfCycle).unix())
-                                            /3600).toFixed(2) + 'h' : filteredControlDocuments.length > 1 ?
+                                            /3600).toFixed(2) + 'h' : filteredControlDocuments.length > 1
+                                        && document.totalStandstill != 0  ?
                                         ((moment(document.endOfCycle).unix()-(moment(filteredControlDocuments
                                                 .filter((page: any)=>page.document_id == document.document_id-1)[0]
                                                 // @ts-ignore

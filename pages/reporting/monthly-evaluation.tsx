@@ -1,3 +1,4 @@
+'use client'
 import {useEffect, useState} from "react";
 import API from "axios";
 import moment from "moment";
@@ -8,7 +9,13 @@ import PDFLink from "../components/helpers/pdfLink";
 import Proforma from "../components/helpers/proforma";
 import 'react-loading-skeleton/dist/skeleton.css'
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
+import useSWR from "swr";
+
+const fetcher = (url:  string) => fetch(url).then(r => r.json())
 const MonthlyEvaluation = () => {
+
+
+
     const monthsList = [
         "Januar",
         "Februar",
@@ -27,637 +34,618 @@ const MonthlyEvaluation = () => {
     const [selectedMachine, setSelectedMachine] = useState<any>('- Alle -');
     const [selectedMonth, setSelectedMonth] = useState<any>(monthsList[moment().month()])
     const [selectedYear, setSelectedYear] = useState<any>(moment().year());
-    const [machinesData, setMachinesData] = useState<any>([0]);
-    const [controlDocuments, setControlDocuments] = useState<any>({set: false});
-    const [waretypes, setWaretypes] = useState<any>({set:false});
-    const [certificates, setCertificates] = useState<any>({set:false});
     const [popupCertificate, setPopupCertificate] = useState<any>();
     const [receivedIncome, setReceivedIncome] = useState<any>(0);
-    const [myChart, setMyChart] = useState<any>({set: false});
+    const [myChart, setMyChart] = useState<any>();
     const [myChart2, setMyChart2] = useState<any>();
     const [selectedCategory, setSelectedCategory] = useState<any>('Gewichtentwicklung');
-    const [priceMatrices, setPriceMatrices] = useState<any>();
-    const [sorts, setSorts] = useState<any>();
-    const [isDataLoaded, setIsDataLoaded] = useState<any>(false);
+    const [filteredControlDocuments, setFilteredControlDocuments] = useState<any>();
+    const [companyMachines, setCompanyMachines] = useState<any>();
+    const [chartsDrawn, setChartsDrawn] = useState<any>(false);
 
 
-    useEffect(() => {
-        const fetchData = async () => {
-            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/sorts')
-                .then((response) => {
-                    setSorts(
-                        response.data.Items
-                    );
-                })
-                .catch((error) => {
-                    console.log(error.response);
-                });
+    const {data: waretypes, error: waretypesError,
+        isLoading: waretypesLoading} = useSWR
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/waretypes', fetcher)
+    const {data: priceMatrices, error: priceMatricesError, isLoading: priceMatricesLoading} = useSWR
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/price-matrices', fetcher)
+    const {data: controlDocuments, error: controlDocumentsError,
+        isLoading: controlDocumentsLoading} = useSWR
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/control-documents', fetcher)
+    const {data: machinesData, error: machinesDataError,
+        isLoading: machinesDataLoading} = useSWR
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines', fetcher)
+    const {data: certificates, error: certificatesError,
+        isLoading: certificatesLoading} = useSWR
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/certificates', fetcher)
 
-            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/price-matrices')
-                .then((response) => {
-                    setPriceMatrices(
-                        response.data.Items
-                    );
-                })
-                .catch((error) => {
-                    console.log(error.response);
-                });
-
-            let apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines';
-
-            await API.get(apiName)
-                .then((response) => {
-                    setMachinesData(response.data.Items.filter((machine: any) =>
-                        machine.client == JSON.parse(sessionStorage.getItem('company') as string).client_name));
-                    API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/control-documents')
-                        .then((response) => {
-                            setControlDocuments(
-                                response.data.Items
-                                    .filter((document: any) => moment(document.endOfCycle).year() == selectedYear
-                                        && moment(document.endOfCycle).month() == monthsList.indexOf(selectedMonth))
-                                    .filter((document: any) =>
-                                        machinesData.reduce(function (a: any, b: any) {
-                                            return a + (b['machine_id']);
-                                        }, []).includes(document.machine_id)
-                                    )
-                            );
-                            const labels: any = [];
-                            for (let day = 1; day <= moment(`${selectedYear}-${monthsList.indexOf(selectedMonth) + 1}`,
-                                "YYYY-MM")
-                                .daysInMonth(); day++) {
-                                labels.push(day)
-                            }
-
-                            const datasets = controlDocuments.reduce(function (a: any, b: any) {
-                                if (a && a.includes(b['waretype']) == false) {
-                                    return [...a, (b['waretype'])];
-                                } else {
-                                    return a
-                                }
-                            }, [])
+    const filterControlDocuments = () => {
+        if (!controlDocumentsLoading && !machinesDataLoading && !filteredControlDocuments) {
+            const filteredControlDocuments = controlDocuments.Items.filter((document: any) =>
+                moment(document.endOfCycle).year() == selectedYear
+                && moment(document.endOfCycle).month() == monthsList.indexOf(selectedMonth))
+                .filter((document: any) =>
+                    machinesData.Items.reduce(function (a: any, b: any) {
+                        return a + (b['machine_id']);
+                    }, []).includes(document.machine_id)
+                )
+            setFilteredControlDocuments(filteredControlDocuments)
+        }
+    }
 
 
+    const getCompanyMachines = () => {
+        if (!machinesDataLoading && !companyMachines ) {
+            const companyMachines = machinesData.Items.filter((machine:any) =>
+                machine.client == JSON.parse(sessionStorage.getItem('company') as string).client_name
+            )
+            setCompanyMachines(companyMachines)
+        }
+    }
 
-                            if (selectedCategory == 'Gewichtentwicklung') {
-                                const data = {
-                                    labels: labels,
-                                    datasets: [
-                                        {
-                                            label: 'Gesamt-Werksgewicht',
-                                            backgroundColor: 'rgb(218,0,44)',
-                                            borderColor: 'rgb(218,0,44)',
-                                            data: labels.map((day: any) =>
-                                                certificates
-                                                    .filter((document: any) => {
-                                                        if (selectedMachine != '- Alle -') {
-                                                            return document.machine_id == selectedMachine
-                                                        } else {
-                                                            return true
-                                                        }
-                                                    })
-                                                    .filter((certificate: any) =>
-                                                        moment(certificate.endOfCycle).month() == monthsList.indexOf(selectedMonth)
-                                                        &&  moment(certificate.endOfCycle).date() == day)
-                                                    .reduce(function (a: any, b: any) {
-                                                        return a + (parseInt(b['workingWeight']));
-                                                    }, 0)
-                                            )
-                                        },
-                                    ]
-                                };
+    const drawCharts = () => {
+        if (companyMachines && !certificatesLoading && filteredControlDocuments && !chartsDrawn)
+        {
+            const labels: any = [];
+            for (let day = 1; day <= moment(`${selectedYear}-${monthsList.indexOf(selectedMonth) + 1}`,
+                "YYYY-MM")
+                .daysInMonth(); day++) {
+                labels.push(day)
+            }
 
-                                data.datasets.push(
-                                    {
-                                        label: 'Gesamt-Abgangsgewicht',
-                                        backgroundColor: 'rgb(232,188,83)',
-                                        borderColor: 'rgb(232,188,83)',
-                                        data: labels.map((day: any) =>
-                                            controlDocuments
-                                                .filter((document: any) => {
-                                                    if (selectedMachine != '- Alle -') {
-                                                        return document.machine_id == selectedMachine
-                                                    } else {
-                                                        return true
-                                                    }
-                                                })
-                                                .filter((document: any) =>
-                                                    moment(document.endOfCycle).month() ==
-                                                    monthsList.indexOf(selectedMonth))
-                                                .filter((document: any) => moment(document.endOfCycle).date() == day)
-                                                .reduce(function (a: any, b: any) {
-                                                    return a + ((b['netto']));
-                                                }, 0))
-                                    }
-                                )
+            const datasets = controlDocuments.Items.reduce(function (a: any, b: any) {
+                if (a && a.includes(b['waretype']) == false) {
+                    return [...a, (b['waretype'])];
+                } else {
+                    return a
+                }
+            }, [])
 
-                                const colors = [
-                                    'rgb(88,206,48)',
-                                    'rgb(99,217,213)',
-                                    'rgb(56,97,201)',
-                                    'rgb(161,68,192)',
-                                    'rgb(194,100,41)',
-                                    'rgb(166,220,150)',
-                                    'rgb(69,203,142)',
-                                ]
 
-                                for (let dataset in datasets) {
-                                    data.datasets.push(
-                                        {
-                                            label: datasets[dataset],
-                                            // @ts-ignore
-                                            backgroundColor: colors[dataset],
-                                            // @ts-ignore
-                                            borderColor: colors[dataset],
-                                            data: labels.map((day: any) =>
-                                                certificates
-                                                    .filter((document: any) => {
-                                                        if (selectedMachine != '- Alle -') {
-                                                            return document.machine_id == selectedMachine
-                                                        } else {
-                                                            return true
-                                                        }
-                                                    })
-                                                    .filter((certificate: any) =>
-                                                        moment(certificate.endOfCycle).month() == monthsList.indexOf(selectedMonth)
-                                                        &&  moment(certificate.endOfCycle).date() == day)
-                                                    .reduce(function (a: any, b: any) {
-                                                        return a + (parseInt(b['workingWeight']));
-                                                    }, 0))
+            if (selectedCategory == 'Gewichtentwicklung') {
+                const data = {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Gesamt-Werksgewicht',
+                            backgroundColor: 'rgb(218,0,44)',
+                            borderColor: 'rgb(218,0,44)',
+                            data: labels.map((day: any) =>
+                                certificates.Items
+                                    .filter((document: any) => {
+                                        if (selectedMachine != '- Alle -') {
+                                            return document.machine_id == selectedMachine
+                                        } else {
+                                            return true
                                         }
-                                    )
-                                }
+                                    })
+                                    .filter((certificate: any) =>
+                                        moment(certificate.endOfCycle).month() == monthsList.indexOf(selectedMonth)
+                                        && moment(certificate.endOfCycle).date() == day)
+                                    .reduce(function (a: any, b: any) {
+                                        return a + (parseInt(b['workingWeight']));
+                                    }, 0)
+                            )
+                        },
+                    ]
+                };
 
-                                const config = {
-                                    type: 'bar',
-                                    data: data,
-                                    options: {
-                                        scales: {
-                                            y: {}
-                                        },
-                                        plugins: {
-                                            legend: {
-                                                position: 'right'
-                                            },
-                                            tooltip: {
-                                                callbacks: {
-                                                    label: function (context: any) {
-                                                        let label = context.dataset.label || '';
-
-                                                        if (label) {
-                                                            label += ': ';
-                                                        }
-                                                        if (context.parsed.y !== null) {
-                                                            label += new Intl.NumberFormat('de-DE', {
-                                                                style: 'unit',
-                                                                unit: 'kilogram'
-                                                            }).format(context.parsed.y);
-                                                        }
-                                                        return label;
-                                                    }
-                                                }
-                                            }
-                                        },
-                                    },
-                                };
-
-                                const config2 = {
-                                    type: 'line',
-                                    data: data,
-                                    options: {
-                                        scales: {
-                                            y: {}
-                                        },
-                                        plugins: {
-                                            legend: {
-                                                position: 'right'
-                                            },
-                                            tooltip: {
-                                                callbacks: {
-                                                    label: function (context: any) {
-                                                        let label = context.dataset.label || '';
-
-                                                        if (label) {
-                                                            label += ': ';
-                                                        }
-                                                        if (context.parsed.y !== null) {
-                                                            label += new Intl.NumberFormat('de-DE', {
-                                                                style: 'unit',
-                                                                unit: 'kilogram'
-                                                            }).format(context.parsed.y);
-                                                        }
-                                                        return label;
-                                                    }
-                                                }
-                                            }
-                                        },
-                                    },
-                                };
-
-
-                                // @ts-ignore
-                                document.getElementById("line-chart").innerHTML =
-                                    "<canvas id=\"myChart\"></canvas>"
-                                // @ts-ignore
-                                document.getElementById("line-chart2").innerHTML =
-                                    "<canvas id=\"myChart2\"></canvas>"
-
-
-                                setMyChart(new Chart(
-                                    // @ts-ignore
-                                    document.getElementById('myChart'),
-                                    config
-                                ));
-
-                                setMyChart2(new Chart(
-                                    // @ts-ignore
-                                    document.getElementById('myChart2'),
-                                    config2
-                                ));
-                            }
-
-                            const datasetsIndex = controlDocuments.reduce(function (a: any, b: any) {
-                                if (a && a.includes(b['waretype']) == false) {
-                                    return [...a, (b['waretype'])];
-                                } else {
-                                    return a
-                                }
-                            }, [])
-
-
-                            /// !!!!!!
-
-                            // Add indexes unassigned to any machine to display prices for each month
-                            const datasetPriceMatrices = priceMatrices.filter((matrix: any) =>
-                                 matrix.indeces && matrix.indeces != '' && matrix.prices != undefined
-                            && matrix.prices[selectedYear][selectedMonth])
-                                .reduce(function (a: any, b: any) {
-                                        for (let index in b['indeces']) {
-                                            if (b
-                                                .prices[selectedYear][selectedMonth][b['indeces'][index]] != undefined) {
-                                            return [...a, 'Index: ' + b['price_matrix'] + ' - ' + b['indexgroup_name'] +
-                                            ' - ' + b['indeces'][index]];
-                                            } else {
-                                                return a
-                                            }
+                data.datasets.push(
+                    {
+                        label: 'Gesamt-Abgangsgewicht',
+                        backgroundColor: 'rgb(232,188,83)',
+                        borderColor: 'rgb(232,188,83)',
+                        data: labels.map((day: any) =>
+                            controlDocuments.Items
+                                .filter((document: any) => {
+                                    if (selectedMachine != '- Alle -') {
+                                        return document.machine_id == selectedMachine
+                                    } else {
+                                        return true
                                     }
+                                })
+                                .filter((document: any) =>
+                                    moment(document.endOfCycle).month() ==
+                                    monthsList.indexOf(selectedMonth))
+                                .filter((document: any) => moment(document.endOfCycle).date() == day)
+                                .reduce(function (a: any, b: any) {
+                                    return a + ((b['netto']));
+                                }, 0))
+                    }
+                )
 
-                                }, [])
+                const colors = [
+                    'rgb(88,206,48)',
+                    'rgb(99,217,213)',
+                    'rgb(56,97,201)',
+                    'rgb(161,68,192)',
+                    'rgb(194,100,41)',
+                    'rgb(166,220,150)',
+                    'rgb(69,203,142)',
+                ]
 
-                            for (let dataset in datasetPriceMatrices) {
-                                datasetsIndex.push(datasetPriceMatrices[dataset])
+                for (let dataset in datasets) {
+                    data.datasets.push(
+                        {
+                            label: datasets[dataset],
+                            // @ts-ignore
+                            backgroundColor: colors[dataset],
+                            // @ts-ignore
+                            borderColor: colors[dataset],
+                            data: labels.map((day: any) =>
+                                certificates.Items
+                                    .filter((document: any) => {
+                                        if (selectedMachine != '- Alle -') {
+                                            return document.machine_id == selectedMachine
+                                        } else {
+                                            return true
+                                        }
+                                    })
+                                    .filter((certificate: any) =>
+                                        moment(certificate.endOfCycle).month() == monthsList.indexOf(selectedMonth)
+                                        && moment(certificate.endOfCycle).date() == day)
+                                    .reduce(function (a: any, b: any) {
+                                        return a + (parseInt(b['workingWeight']));
+                                    }, 0))
+                        }
+                    )
+                }
+
+                const config = {
+                    type: 'bar',
+                    data: data,
+                    options: {
+                        scales: {
+                            y: {}
+                        },
+                        plugins: {
+                            legend: {
+                                position: 'right'
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context: any) {
+                                        let label = context.dataset.label || '';
+
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        if (context.parsed.y !== null) {
+                                            label += new Intl.NumberFormat('de-DE', {
+                                                style: 'unit',
+                                                unit: 'kilogram'
+                                            }).format(context.parsed.y);
+                                        }
+                                        return label;
+                                    }
+                                }
                             }
-                            //
+                        },
+                    },
+                };
+
+                const config2 = {
+                    type: 'line',
+                    data: data,
+                    options: {
+                        scales: {
+                            y: {}
+                        },
+                        plugins: {
+                            legend: {
+                                position: 'right'
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context: any) {
+                                        let label = context.dataset.label || '';
+
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        if (context.parsed.y !== null) {
+                                            label += new Intl.NumberFormat('de-DE', {
+                                                style: 'unit',
+                                                unit: 'kilogram'
+                                            }).format(context.parsed.y);
+                                        }
+                                        return label;
+                                    }
+                                }
+                            }
+                        },
+                    },
+                };
+
+                    // @ts-ignore
+                    document.getElementById("line-chart").innerHTML =
+                        "<canvas id=\"myChart\"></canvas>"
+                    // @ts-ignore
+                    document.getElementById("line-chart2").innerHTML =
+                        "<canvas id=\"myChart2\"></canvas>"
 
 
-                            if (selectedCategory == 'Monatspreis') {
-                                const data: any = {
-                                    labels: [monthsList[monthsList.indexOf(selectedMonth)]],
-                                    datasets: []
-                                };
+                    setMyChart(new Chart(
+                        // @ts-ignore
+                        document.getElementById('myChart'),
+                        config
+                    ));
 
-                                const colors = [
-                                    'rgb(232,188,83)',
-                                    'rgb(88,206,48)',
-                                    'rgb(99,217,213)',
-                                    'rgb(56,97,201)',
-                                    'rgb(161,68,192)',
-                                    'rgb(194,100,41)',
-                                    'rgb(166,220,150)',
-                                    'rgb(69,203,142)',
-                                ]
+                    setMyChart2(new Chart(
+                        // @ts-ignore
+                        document.getElementById('myChart2'),
+                        config2
+                    ));
+                }
 
-                                for (let dataset in datasetsIndex) {
-                                    if (datasetsIndex[dataset].includes('Index') && priceMatrices.filter((matrix: any) =>
+
+            const datasetsIndex = controlDocuments.Items.reduce(function (a: any, b: any) {
+                if (a && a.includes(b['waretype']) == false) {
+                    return [...a, (b['waretype'])];
+                } else {
+                    return a
+                }
+            }, [])
+
+
+            /// !!!!!!
+
+            // Add indexes unassigned to any machine to display prices for each month
+            const datasetPriceMatrices = priceMatrices.Items.filter((matrix: any) =>
+                matrix.indeces && matrix.indeces != '' && matrix.prices != undefined
+                && matrix.prices[selectedYear][selectedMonth])
+                .reduce(function (a: any, b: any) {
+                    for (let index in b['indeces']) {
+                        if (b
+                            .prices[selectedYear][selectedMonth][b['indeces'][index]] != undefined) {
+                            return [...a, 'Index: ' + b['price_matrix'] + ' - ' + b['indexgroup_name'] +
+                            ' - ' + b['indeces'][index]];
+                        } else {
+                            return a
+                        }
+                    }
+
+                }, [])
+
+            for (let dataset in datasetPriceMatrices) {
+                datasetsIndex.push(datasetPriceMatrices[dataset])
+            }
+            //
+
+
+            if (selectedCategory == 'Monatspreis') {
+                const data: any = {
+                    labels: [monthsList[monthsList.indexOf(selectedMonth)]],
+                    datasets: []
+                };
+
+                const colors = [
+                    'rgb(232,188,83)',
+                    'rgb(88,206,48)',
+                    'rgb(99,217,213)',
+                    'rgb(56,97,201)',
+                    'rgb(161,68,192)',
+                    'rgb(194,100,41)',
+                    'rgb(166,220,150)',
+                    'rgb(69,203,142)',
+                ]
+
+                for (let dataset in datasetsIndex) {
+                    if (datasetsIndex[dataset].includes('Index') && priceMatrices.Items.filter((matrix: any) =>
+                        datasetsIndex[dataset].includes(matrix.price_matrix) &&
+                        datasetsIndex[dataset].includes(matrix.indexgroup_name)
+                    )[0].prices[selectedYear][selectedMonth][datasetsIndex[dataset]
+                        .slice(datasetsIndex[dataset]
+                            .indexOf("-", datasetsIndex[dataset]
+                                .indexOf("-") + 1) + 1).replace(" ", "")]
+                        .replace(',', '.')) {
+                        data.datasets.push(
+                            {
+                                label: datasetsIndex[dataset],
+                                // @ts-ignore
+                                backgroundColor: colors[dataset],
+                                // @ts-ignore
+                                borderColor: colors[dataset],
+                                data:
+                                    [parseFloat(priceMatrices.Items.filter((matrix: any) =>
                                         datasetsIndex[dataset].includes(matrix.price_matrix) &&
                                         datasetsIndex[dataset].includes(matrix.indexgroup_name)
                                     )[0].prices[selectedYear][selectedMonth][datasetsIndex[dataset]
                                         .slice(datasetsIndex[dataset]
                                             .indexOf("-", datasetsIndex[dataset]
-                                                .indexOf("-") + 1)+1).replace(" ", "")]
-                                        .replace(',', '.')) {
-                                        data.datasets.push(
-                                            {
-                                                label: datasetsIndex[dataset],
-                                                // @ts-ignore
-                                                backgroundColor: colors[dataset],
-                                                // @ts-ignore
-                                                borderColor: colors[dataset],
-                                                data:
-                                                    [parseFloat(priceMatrices.filter((matrix: any) =>
-                                                        datasetsIndex[dataset].includes(matrix.price_matrix) &&
-                                                        datasetsIndex[dataset].includes(matrix.indexgroup_name)
-                                                    )[0].prices[selectedYear][selectedMonth][datasetsIndex[dataset]
-                                                        .slice(datasetsIndex[dataset]
-                                                            .indexOf("-", datasetsIndex[dataset]
-                                                                .indexOf("-") + 1)+1).replace(" ", "")]
-                                                        .replace(',', '.'))]
-                                            });
-                                    } else {
-                                        data.datasets.push(
-                                            {
-                                                label: datasetsIndex[dataset],
-                                                // @ts-ignore
-                                                backgroundColor: colors[dataset],
-                                                // @ts-ignore
-                                                borderColor: colors[dataset],
-                                                data: [parseInt(machinesData
-                                                    .filter((machine: any) => machine.waretype == datasetsIndex[dataset])
-                                                    .map((machine: any) =>
-                                                        parseInt(machine.price_list.prices[selectedYear][selectedMonth])
-                                                    ))]
-                                            }
-                                        )
+                                                .indexOf("-") + 1) + 1).replace(" ", "")]
+                                        .replace(',', '.'))]
+                            });
+                    } else {
+                        data.datasets.push(
+                            {
+                                label: datasetsIndex[dataset],
+                                // @ts-ignore
+                                backgroundColor: colors[dataset],
+                                // @ts-ignore
+                                borderColor: colors[dataset],
+                                data:[parseInt(companyMachines
+                                    .filter((machine: any) => machine.waretype == datasetsIndex[dataset] && machine.price_list.prices[selectedYear])
+                                    .map((machine: any) =>
+                                        parseInt(machine.price_list.prices[selectedYear][selectedMonth])
+                                    ))]
+                            }
+                        )
+                    }
+                }
+
+                const config = {
+                    type: 'bar',
+                    data: data,
+                    options: {
+                        scales: {
+                            y: {}
+                        },
+                        plugins: {
+                            legend: {
+                                position: 'right'
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context: any) {
+                                        let label = context.dataset.label || '';
+
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        if (context.parsed.y !== null) {
+                                            label += new Intl.NumberFormat('de-DE', {
+                                                    style: 'currency',
+                                                    currency: 'EUR'
+                                                }
+                                            ).format(context.parsed.y);
+                                        }
+                                        if (label) {
+                                            label += ' / t';
+                                        }
+                                        return label;
                                     }
                                 }
-
-                                const config = {
-                                    type: 'bar',
-                                    data: data,
-                                    options: {
-                                        scales: {
-                                            y: {}
-                                        },
-                                        plugins: {
-                                            legend: {
-                                                position: 'right'
-                                            },
-                                            tooltip: {
-                                                callbacks: {
-                                                    label: function (context: any) {
-                                                        let label = context.dataset.label || '';
-
-                                                        if (label) {
-                                                            label += ': ';
-                                                        }
-                                                        if (context.parsed.y !== null) {
-                                                            label += new Intl.NumberFormat('de-DE', {
-                                                                    style: 'currency',
-                                                                    currency: 'EUR'
-                                                                }
-                                                            ).format(context.parsed.y);
-                                                        }
-                                                        if (label) {
-                                                            label += ' / t';
-                                                        }
-                                                        return label;
-                                                    }
-                                                }
-                                            }
-                                        },
-                                    },
-                                };
-
-                                const config2 = {
-                                    type: 'line',
-                                    data: data,
-                                    options: {
-                                        scales: {
-                                            y: {
-                                            },
-                                        },
-                                        plugins: {
-                                            legend: {
-                                                position: 'right'
-                                            },
-                                            tooltip: {
-                                                callbacks: {
-                                                    label: function (context: any) {
-                                                        let label = context.dataset.label || '';
-
-                                                        if (label) {
-                                                            label += ': ';
-                                                        }
-                                                        if (context.parsed.y !== null) {
-                                                            label += new Intl.NumberFormat('de-DE', {
-                                                                    style: 'currency',
-                                                                    currency: 'EUR'
-                                                                }
-                                                            ).format(context.parsed.y);
-                                                        }
-                                                        if (label) {
-                                                            label += ' / t';
-                                                        }
-                                                        return label;
-                                                    }
-                                                }
-                                            }
-                                        },
-                                    },
-                                };
-
-                                // @ts-ignore
-                                document.getElementById("line-chart").innerHTML =
-                                    "<canvas id=\"myChart\"></canvas>"
-                                // @ts-ignore
-                                document.getElementById("line-chart2").innerHTML =
-                                    "<canvas id=\"myChart2\"></canvas>"
-
-
-                                setMyChart(new Chart(
-                                    // @ts-ignore
-                                    document.getElementById('myChart'),
-                                    config
-                                ));
-
-                                setMyChart2(new Chart(
-                                    // @ts-ignore
-                                    document.getElementById('myChart2'),
-                                    config2
-                                ));
                             }
+                        },
+                    },
+                };
 
-                            const datasetsPrices = controlDocuments.reduce(function (a: any, b: any) {
-                                if (a && a.includes(b['waretype']) == false) {
-                                    return [...a, (b['waretype'])];
-                                } else {
-                                    return a
-                                }
-                            }, [])
+                const config2 = {
+                    type: 'line',
+                    data: data,
+                    options: {
+                        scales: {
+                            y: {},
+                        },
+                        plugins: {
+                            legend: {
+                                position: 'right'
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context: any) {
+                                        let label = context.dataset.label || '';
 
-                            if (selectedCategory == 'Erlösentwicklung') {
-                                const data: any = {
-                                    labels: labels,
-                                    datasets: [
-                                        {
-                                            label: 'Gesamt-Erlöse',
-                                            backgroundColor: 'rgb(218,0,44)',
-                                            borderColor: 'rgb(218,0,44)',
-                                            data: labels.map((day: any) =>
-                                                certificates
-                                                    .filter((document: any) => {
-                                                        if (selectedMachine != '- Alle -') {
-                                                            return document.machine_id == selectedMachine
-                                                        } else {
-                                                            return true
-                                                        }
-                                                    })
-                                                    .filter((certificate: any) =>
-                                                        moment(certificate.endOfCycle).month() == monthsList.indexOf(selectedMonth)
-                                                        &&  moment(certificate.endOfCycle).date() == day)
-                                                    .reduce(function (a: any, b: any) {
-                                                        return a + (parseInt(b['income']));
-                                                    }, 0))
-                                        },
-                                    ]
-                                };
-
-                                const colors = [
-                                    'rgb(88,206,48)',
-                                    'rgb(99,217,213)',
-                                    'rgb(56,97,201)',
-                                    'rgb(161,68,192)',
-                                    'rgb(194,100,41)',
-                                    'rgb(166,220,150)',
-                                    'rgb(69,203,142)',
-                                ]
-
-                                for (let dataset in datasetsPrices) {
-                                    data.datasets.push(
-                                        {
-                                            label: datasetsPrices[dataset],
-                                            // @ts-ignore
-                                            backgroundColor: colors[dataset],
-                                            // @ts-ignore
-                                            borderColor: colors[dataset],
-                                            data: labels.map((day: any) =>
-                                                certificates
-                                                    .filter((document: any) => {
-                                                        if (selectedMachine != '- Alle -') {
-                                                            return document.machine_id == selectedMachine
-                                                        } else {
-                                                            return true
-                                                        }
-                                                    })
-                                                    .filter((certificate: any) =>
-                                                        moment(certificate.endOfCycle).month() == monthsList.indexOf(selectedMonth)
-                                                        &&  moment(certificate.endOfCycle).date() == day)
-                                                    .reduce(function (a: any, b: any) {
-                                                        return a + (parseInt(b['income']));
-                                                    }, 0))
+                                        if (label) {
+                                            label += ': ';
                                         }
-                                    )
+                                        if (context.parsed.y !== null) {
+                                            label += new Intl.NumberFormat('de-DE', {
+                                                    style: 'currency',
+                                                    currency: 'EUR'
+                                                }
+                                            ).format(context.parsed.y);
+                                        }
+                                        if (label) {
+                                            label += ' / t';
+                                        }
+                                        return label;
+                                    }
                                 }
-
-
-                                const config = {
-                                    type: 'bar',
-                                    data: data,
-                                    options: {
-                                        scales: {
-                                            y: {}
-                                        },
-                                        plugins: {
-                                            legend: {
-                                                position: 'right'
-                                            },
-                                            tooltip: {
-                                                callbacks: {
-                                                    label: function (context: any) {
-                                                        let label = context.dataset.label || '';
-
-                                                        if (label) {
-                                                            label += ': ';
-                                                        }
-                                                        if (context.parsed.y !== null) {
-                                                            label += new Intl.NumberFormat('de-DE', {
-                                                                style: 'currency',
-                                                                currency: 'EUR'
-                                                            }).format(context.parsed.y);
-                                                        }
-                                                        return label;
-                                                    }
-                                                }
-                                            }
-                                        },
-                                    },
-                                };
-
-                                const config2 = {
-                                    type: 'line',
-                                    data: data,
-                                    options: {
-                                        scales: {
-                                            y: {}
-                                        },
-                                        plugins: {
-                                            legend: {
-                                                position: 'right'
-                                            },
-                                            tooltip: {
-                                                callbacks: {
-                                                    label: function (context: any) {
-                                                        let label = context.dataset.label || '';
-
-                                                        if (label) {
-                                                            label += ': ';
-                                                        }
-                                                        if (context.parsed.y !== null) {
-                                                            label += new Intl.NumberFormat('de-DE', {
-                                                                style: 'currency',
-                                                                currency: 'EUR'
-                                                            }).format(context.parsed.y);
-                                                        }
-                                                        return label;
-                                                    }
-                                                }
-                                            }
-                                        },
-                                    },
-                                };
-
-                                // @ts-ignore
-                                document.getElementById("line-chart").innerHTML =
-                                    "<canvas id=\"myChart\"></canvas>"
-                                // @ts-ignore
-                                document.getElementById("line-chart2").innerHTML =
-                                    "<canvas id=\"myChart2\"></canvas>"
-
-
-                                setMyChart(new Chart(
-                                    // @ts-ignore
-                                    document.getElementById('myChart'),
-                                    config
-                                ));
-
-                                setMyChart2(new Chart(
-                                    // @ts-ignore
-                                    document.getElementById('myChart2'),
-                                    config2
-                                ));
                             }
-                        })
-                        .catch((error) => {
-                            console.log(error.response);
-                        });
-                })
-                .catch((error) => {
-                    console.log(error); //
-                });
+                        },
+                    },
+                };
+
+                // @ts-ignore
+                document.getElementById("line-chart").innerHTML =
+                    "<canvas id=\"myChart\"></canvas>"
+                // @ts-ignore
+                document.getElementById("line-chart2").innerHTML =
+                    "<canvas id=\"myChart2\"></canvas>"
 
 
-            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/waretypes')
-                .then((response) => {
-                    setWaretypes(response.data.Items);
-                })
-                .catch((error) => {
-                    console.log(error.response);
-                });
+                setMyChart(new Chart(
+                    // @ts-ignore
+                    document.getElementById('myChart'),
+                    config
+                ));
 
-            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/certificates')
-                .then((response) => {
-                    setCertificates(response.data.Items)
-                })
-                .catch((error) => {
-                    console.log(error.response);
-                });
-            setIsDataLoaded(true)
+                setMyChart2(new Chart(
+                    // @ts-ignore
+                    document.getElementById('myChart2'),
+                    config2
+                ));
+            }
+
+            const datasetsPrices = controlDocuments.Items.reduce(function (a: any, b: any) {
+                if (a && a.includes(b['waretype']) == false) {
+                    return [...a, (b['waretype'])];
+                } else {
+                    return a
+                }
+            }, [])
+
+            if (selectedCategory == 'Erlösentwicklung') {
+                const data: any = {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Gesamt-Erlöse',
+                            backgroundColor: 'rgb(218,0,44)',
+                            borderColor: 'rgb(218,0,44)',
+                            data: labels.map((day: any) =>
+                                certificates.Items
+                                    .filter((document: any) => {
+                                        if (selectedMachine != '- Alle -') {
+                                            return document.machine_id == selectedMachine
+                                        } else {
+                                            return true
+                                        }
+                                    })
+                                    .filter((certificate: any) =>
+                                        moment(certificate.endOfCycle).month() == monthsList.indexOf(selectedMonth)
+                                        && moment(certificate.endOfCycle).date() == day)
+                                    .reduce(function (a: any, b: any) {
+                                        return a + (parseInt(b['income']));
+                                    }, 0))
+                        },
+                    ]
+                };
+
+                const colors = [
+                    'rgb(88,206,48)',
+                    'rgb(99,217,213)',
+                    'rgb(56,97,201)',
+                    'rgb(161,68,192)',
+                    'rgb(194,100,41)',
+                    'rgb(166,220,150)',
+                    'rgb(69,203,142)',
+                ]
+
+                for (let dataset in datasetsPrices) {
+                    data.datasets.push(
+                        {
+                            label: datasetsPrices[dataset],
+                            // @ts-ignore
+                            backgroundColor: colors[dataset],
+                            // @ts-ignore
+                            borderColor: colors[dataset],
+                            data: labels.map((day: any) =>
+                                certificates.Items
+                                    .filter((document: any) => {
+                                        if (selectedMachine != '- Alle -') {
+                                            return document.machine_id == selectedMachine
+                                        } else {
+                                            return true
+                                        }
+                                    })
+                                    .filter((certificate: any) =>
+                                        moment(certificate.endOfCycle).month() == monthsList.indexOf(selectedMonth)
+                                        && moment(certificate.endOfCycle).date() == day)
+                                    .reduce(function (a: any, b: any) {
+                                        return a + (parseInt(b['income']));
+                                    }, 0))
+                        }
+                    )
+                }
+
+
+                const config = {
+                    type: 'bar',
+                    data: data,
+                    options: {
+                        scales: {
+                            y: {}
+                        },
+                        plugins: {
+                            legend: {
+                                position: 'right'
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context: any) {
+                                        let label = context.dataset.label || '';
+
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        if (context.parsed.y !== null) {
+                                            label += new Intl.NumberFormat('de-DE', {
+                                                style: 'currency',
+                                                currency: 'EUR'
+                                            }).format(context.parsed.y);
+                                        }
+                                        return label;
+                                    }
+                                }
+                            }
+                        },
+                    },
+                };
+
+                const config2 = {
+                    type: 'line',
+                    data: data,
+                    options: {
+                        scales: {
+                            y: {}
+                        },
+                        plugins: {
+                            legend: {
+                                position: 'right'
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context: any) {
+                                        let label = context.dataset.label || '';
+
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        if (context.parsed.y !== null) {
+                                            label += new Intl.NumberFormat('de-DE', {
+                                                style: 'currency',
+                                                currency: 'EUR'
+                                            }).format(context.parsed.y);
+                                        }
+                                        return label;
+                                    }
+                                }
+                            }
+                        },
+                    },
+                };
+
+                // @ts-ignore
+                document.getElementById("line-chart").innerHTML =
+                    "<canvas id=\"myChart\"></canvas>"
+                // @ts-ignore
+                document.getElementById("line-chart2").innerHTML =
+                    "<canvas id=\"myChart2\"></canvas>"
+
+
+                setMyChart(new Chart(
+                    // @ts-ignore
+                    document.getElementById('myChart'),
+                    config
+                ));
+
+                setMyChart2(new Chart(
+                    // @ts-ignore
+                    document.getElementById('myChart2'),
+                    config2
+                ));
+            }
+
+            setChartsDrawn(true)
         }
-        fetchData()
-        console.log('data')
-    }, [controlDocuments.set, selectedMonth, myChart.set, selectedMachine, selectedCategory, certificates.set]);
+    }
+
+    filterControlDocuments();
+    getCompanyMachines();
+
+    useEffect(() => {
+        drawCharts();
+    }, );
+
+
+
+
 
     const handlePopupSend = async () => {
-        let certificate = certificates.filter((certificate: any)=> certificate.document_id == popupCertificate)[0]
+        let certificate = certificates.Items.filter((certificate: any)=> certificate.document_id == popupCertificate)[0]
         let responseBody = {
             workingWeight: certificate.workingWeight,
             comment: certificate.comment,
@@ -690,8 +678,8 @@ const MonthlyEvaluation = () => {
                     onChange={(e)=>setSelectedMachine(e.target.value)}
                 >
                     <option selected>- Alle -</option>
-                    {machinesData ?
-                    machinesData.map((machine: any) =>
+                    {!machinesDataLoading && companyMachines ?
+                    companyMachines.map((machine: any) =>
                         <option key={machine.machine_id}
                                 value={machine.machine_id}>{machine.machine_id}
                         </option>
@@ -703,22 +691,22 @@ const MonthlyEvaluation = () => {
                 <button onClick={()=> {
                     if(monthsList.indexOf(selectedMonth) > 0) {
                         setSelectedMonth(monthsList[monthsList.indexOf(selectedMonth) - 1])
-                        setMyChart({set:false})
+                        setChartsDrawn(false)
                     } else {
                         setSelectedMonth(monthsList[11])
                         setSelectedYear(selectedYear - 1)
-                        setMyChart({set:false})
+                        setChartsDrawn(false)
                     }
                 }}>&lt;</button>
                 <span>{selectedMonth} {selectedYear}</span>
                 <button onClick={()=> {
                     if(monthsList.indexOf(selectedMonth) < 11) {
                         setSelectedMonth(monthsList[monthsList.indexOf(selectedMonth) + 1])
-                        setMyChart({set:false})
+                        setChartsDrawn(false)
                     } else {
                         setSelectedMonth(monthsList[0])
                         setSelectedYear(selectedYear + 1)
-                        setMyChart({set:false})
+                        setChartsDrawn(false)
                     }
                 }}>&gt;</button>
             </div>
@@ -732,17 +720,17 @@ const MonthlyEvaluation = () => {
                 <div className="flex justify-center space-x-1 mt-5">
                     <button className="border p-1.5 px-3.5 font-bold border-accent-color-1 bg-accent-color-4
                         hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs flex"
-                            onClick={()=>setSelectedCategory('Gewichtentwicklung')}
+                            onClick={()=>{setSelectedCategory('Gewichtentwicklung');setChartsDrawn(false)}}
                     >Gewichtentwicklung
                     </button>
                     <button className="border p-1.5 px-3.5 font-bold border-accent-color-1 bg-accent-color-4
                         hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs flex"
-                            onClick={()=>setSelectedCategory('Monatspreis')}
+                            onClick={()=>{setSelectedCategory('Monatspreis'); setChartsDrawn(false)}}
                     >Monatspreis
                     </button>
                     <button className="border p-1.5 px-3.5 font-bold border-accent-color-1 bg-accent-color-4
                         hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs flex"
-                            onClick={()=>setSelectedCategory('Erlösentwicklung')}
+                            onClick={()=>{setSelectedCategory('Erlösentwicklung'); setChartsDrawn(false)}}
                     >Erlösentwicklung
                     </button>
                 </div>
@@ -753,7 +741,7 @@ const MonthlyEvaluation = () => {
                 : selectedCategory == 'Erlösentwicklung' ? 'Erlösentwicklung' : ''}
             </p>
 
-            {!isDataLoaded ?
+            {!companyMachines && !chartsDrawn ?
                 <SkeletonTheme baseColor={"#F9FAFB"} highlightColor={"#ffffff"}>
                     <Skeleton className="min-h-[37rem] mt-5 mb-5 w-10/12 sm:rounded-lg shadow-md"/>
                 </SkeletonTheme> :
@@ -770,10 +758,11 @@ const MonthlyEvaluation = () => {
                 <div className=" text-xs p-5">
                     <span className="font-bold">Betrag erhalten</span><br/>
                     <input className="w-20 text-right border rounded pl-2.5 py-0.5"
-                           defaultValue={certificates && popupCertificate && certificates.filter((certificate: any) =>
+                           defaultValue={!certificatesLoading && popupCertificate && certificates.Items
+                               .filter((certificate: any) =>
                                certificate.document_id == popupCertificate
                            )[0].income ?
-                               certificates.filter((certificate: any) =>
+                               certificates.Items.filter((certificate: any) =>
                                certificate.document_id == popupCertificate
                                )[0].income
                                : 0}
@@ -781,7 +770,7 @@ const MonthlyEvaluation = () => {
                     /> €
                     <button className="border border-accent-color-1 bg-accent-color-4
                             hover:bg-accent-color-5 rounded p-2.5 py-0.5 shadow-md ml-2"
-                            onClick={certificates ? ()=>handlePopupSend() : ()=>{}}
+                            onClick={certificatesLoading ? ()=>handlePopupSend() : ()=>{}}
                     >Setzen
                     </button>
                 </div>
@@ -819,8 +808,8 @@ const MonthlyEvaluation = () => {
                     </tr>
                     </thead>
                     <tbody className="bg-gray-50">
-                    { waretypes && controlDocuments.set != false ?
-                        controlDocuments
+                    { !waretypesLoading && !controlDocumentsLoading ?
+                        controlDocuments.Items
                             .sort(function(a: any, b: any){
                                 // @ts-ignore
                                 return a.document_id - b.document_id
@@ -842,8 +831,9 @@ const MonthlyEvaluation = () => {
                                         machine_id = {document.machine_id}
                                         company = {JSON.parse(sessionStorage.getItem('company') as string)}
                                         waretype = {document.waretype}
-                                        sort = { waretypes && waretypes.filter((ware: any) =>
-                                            ware.name_waretype == document.waretype)[0].waretype_number ?
+                                        sort = { !waretypesLoading && waretypes && !controlDocumentsLoading && filteredControlDocuments
+                                            ? waretypes.Items.filter((ware: any) =>
+                                            ware.name_waretype == document.waretype).waretype_number : '' ?
                                         waretypes.filter((ware: any) =>
                                                 ware.name_waretype == document.waretype)[0].waretype_number
                                         : ''}
@@ -861,68 +851,71 @@ const MonthlyEvaluation = () => {
                                         machine_id = {document.machine_id}
                                         company = {JSON.parse(sessionStorage.getItem('company') as string)}
                                         waretype = {document.waretype}
-                                        sort = {
-                                                waretypes.filter((ware: any) =>
-                                                    ware.name_waretype == document.waretype)[0].waretype_number
+                                        sort = {!waretypesLoading && !controlDocumentsLoading && filteredControlDocuments
+                                            ?
+                                                waretypes.Items.filter((ware: any) =>
+                                                    ware.name_waretype == document.waretype).waretype_number : ''
                                                 }
                                     />
                                 </td>
                                 <td>
-                                    {document.waretype}, {machinesData.filter((machine: any) =>
-                                    machine.machine_id == document.machine_id)[0].quality}<br/>
-                                    {waretypes.filter((item: any) =>
+                                    {document.waretype}, {!controlDocumentsLoading && !machinesDataLoading &&
+                                filteredControlDocuments && companyMachines ? companyMachines.filter((machine: any) =>
+                                    machine.machine_id == document.machine_id).quality : ''}<br/>
+                                    {!waretypesLoading && !controlDocumentsLoading && filteredControlDocuments
+                                        ? waretypes.Items.filter((item: any) =>
                                     item.name_waretype == document.waretype
-                                    )[0].internal_number}
+                                    ).internal_number : ''}
                                 </td>
                                 <td className="text-right">
                                     {document.netto}
                                 </td>
                                 <td className="text-right">
-                                    {certificates && certificates.set != false && certificates.filter((certificate: any) =>
+                                    {!certificatesLoading && certificates.Items.filter((certificate: any) =>
                                         certificate.document_id == document.document_id).length != 0 &&
-                                    certificates.filter((certificate: any) =>
+                                    certificates.Items.filter((certificate: any) =>
                                        certificate.document_id == document.document_id)[0].workingWeight
-                                        ? certificates.filter((certificate: any) =>
+                                        ? certificates.Items.filter((certificate: any) =>
                                         certificate.document_id == document.document_id)[0].workingWeight
                                        : ''}
                                 </td>
                                 <td className="text-right">
-                                    {certificates && certificates.set != false && certificates.filter((certificate: any) =>
+                                    {!certificatesLoading && certificates.Items.filter((certificate: any) =>
                                         certificate.document_id == document.document_id).length != 0 &&
-                                    certificates.filter((certificate: any) =>
+                                    certificates.Items.filter((certificate: any) =>
                                         certificate.document_id == document.document_id)[0].workingWeight
-                                        ? (document.netto) - certificates.filter((certificate: any) =>
+                                        ? (document.netto) - certificates.Items.filter((certificate: any) =>
                                         certificate.document_id == document.document_id)[0].workingWeight
                                         : ''}
                                 </td>
                                 <td className="text-right">
-                                        {machinesData.filter((machine:any)=>machine.machine_id==document.machine_id)[0].price_list ?
-                                            parseInt(machinesData.filter((machine:any)=>machine.machine_id==document.machine_id)
+                                        {filteredControlDocuments ? companyMachines.filter((machine:any)=>machine.machine_id==document.machine_id).price_list : '' ?
+                                            parseInt(companyMachines.filter((machine:any)=>machine.machine_id==document.machine_id)
                                                 [0].price_list.prices
                                                 // @ts-ignore
                                                 [moment().year()][monthsList[moment().month()]]).toFixed(2) : "0,00"} €
                                 </td>
                                 <td className="text-right">
-                                    { machinesData.filter((machine:any)=>
-                                        machine.machine_id==document.machine_id)[0].price_list
-                                        ?   ((document.netto) / 1000 *
-                                            parseInt(machinesData.filter((machine:any)=>
+                                    { filteredControlDocuments ? companyMachines.filter((machine:any)=>
+                                        machine.machine_id==document.machine_id).price_list : ''
+                                        ?  ((document.netto) / 1000 *
+                                            parseInt(companyMachines.filter((machine:any)=>
                                                 machine.machine_id==document.machine_id)[0].price_list.prices
                                                 [moment().year()][monthsList[moment().month()]]))
                                             .toFixed(2)
                                         : '0.00'} €
                                 </td>
                                 <td className="text-right">
-                                    { certificates && certificates.set != false && certificates.set != true
-                                    && machinesData && machinesData.filter((machine:any)=>
-                                        machine.machine_id==document.machine_id)[0].price_list &&
-                                    certificates.filter((certificate: any) =>
+                                    { !certificatesLoading
+                                    && !machinesDataLoading && companyMachines ? companyMachines.filter((machine:any)=>
+                                        machine.machine_id==document.machine_id).price_list &&
+                                    certificates.Items.filter((certificate: any) =>
                                         certificate.document_id == document.document_id).length != 0
-                                        && certificates.filter((certificate: any) =>
+                                        && certificates.Items.filter((certificate: any) =>
                                         certificate.document_id == document.document_id)[0].workingWeight
-                                        ?   (certificates.filter((certificate: any) =>
+                                        : '' ?   (certificates.Items.filter((certificate: any) =>
                                                certificate.document_id == document.document_id)[0].workingWeight / 1000 *
-                                            parseInt(machinesData.filter((machine:any)=>
+                                            parseInt(companyMachines.filter((machine:any)=>
                                                 machine.machine_id==document.machine_id)[0].price_list.prices
                                                 [moment().year()][monthsList[moment().month()]]))
                                             .toFixed(2) + ' €' : ''
@@ -930,36 +923,36 @@ const MonthlyEvaluation = () => {
                                 </td>
                                 <td className="text-right">
                                     <button className={JSON.parse(sessionStorage.getItem('user') as string)
-                                        .enterAmountReceivedPermission && certificates
-                                    && certificates.set != true && certificates.set != false
-                                    && certificates.filter((certificate: any)=>
+                                        .enterAmountReceivedPermission && !certificatesLoading
+                                    && certificates.Items.filter((certificate: any)=>
                                         certificate.document_id == document.document_id).length != 0 ? "underline" : "pointer-events-none"}
                                             onClick={()=>setPopupCertificate(document.document_id)}>
-                                        {certificates && certificates.set != false && certificates.set != true
-                                        && certificates.filter((certificate: any)=>
+                                        {!certificatesLoading ?
+                                        certificates.Items.filter((certificate: any)=>
                                             certificate.document_id == document.document_id).length != 0
-                                        && certificates.filter((certificate: any)=>
-                                            certificate.document_id == document.document_id)[0].income ? certificates
+                                        && certificates.Items.filter((certificate: any)=>
+                                            certificate.document_id == document.document_id)[0].income : '' ?
+                                                certificates.Items
                                             .filter((certificate: any)=>
                                         certificate.document_id == document.document_id)[0].income : '0.00'
                                             } €</button>
                                 </td>
                                 <td className="text-right">
-                                    {certificates && certificates.set != false && certificates.set != true
-                                    && machinesData.filter((machine:any)=>
-                                        machine.machine_id==document.machine_id)[0].price_list
-                                        && certificates.filter((certificate: any) =>
+                                    {!certificatesLoading && companyMachines
+                                    ? companyMachines.filter((machine:any)=>
+                                        machine.machine_id==document.machine_id).price_list
+                                        && certificates.Items.filter((certificate: any) =>
                                         certificate.document_id == document.document_id).length != 0
-                                    && certificates.filter((certificate: any) =>
+                                    && certificates.Items.filter((certificate: any) =>
                                         certificate.document_id == document.document_id)[0].workingWeight
-                                        && certificates.filter((certificate: any)=>
+                                        && certificates.Items.filter((certificate: any)=>
                                         certificate.document_id == document.document_id)[0].income
-                                        ?   (certificates.filter((certificate: any) =>
+                                        : '' ?   (certificates.Items.filter((certificate: any) =>
                                                certificate.document_id == document.document_id)[0].workingWeight / 1000 *
-                                            parseInt(machinesData.filter((machine:any)=>
+                                            parseInt(companyMachines.filter((machine:any)=>
                                                 machine.machine_id==document.machine_id)[0].price_list.prices
                                                [moment().year()][monthsList[moment().month()]])
-                                            - certificates.filter((certificate: any)=>
+                                            - certificates.Items.filter((certificate: any)=>
                                         certificate.document_id == document.document_id)[0].income)
                                         .toFixed(2) + ' €': ''
                                         }
@@ -974,29 +967,32 @@ const MonthlyEvaluation = () => {
                                         machine_id = {document.machine_id}
                                         company = {JSON.parse(sessionStorage.getItem('company') as string)}
                                         waretype = {document.waretype}
-                                        sort = {
-                                            waretypes.filter((ware: any) =>
-                                                ware.name_waretype == document.waretype)[0].waretype_number
+                                        sort = {!waretypesLoading && !controlDocumentsLoading && filteredControlDocuments
+                                            ?
+                                            waretypes.Items.filter((ware: any) =>
+                                                ware.name_waretype == document.waretype).waretype_number : ''
                                         }
                                     />
                                 </td>
                                 <td>
                                     <Link href={"/reporting/monthly-evaluation/" + document.document_id}>
                                         <button className="m-auto flex">
+                                            {/* @ts-ignore */}
                                             <img className="h-5" src={
-                                                certificates && certificates.set != false && certificates.set != true
-                                                && certificates.filter((certificate: any) =>
+                                                !certificatesLoading
+                                                ?
+                                                certificates.Items.filter((certificate: any) =>
                                                 certificate.document_id == document.document_id).length == 0
-                                                    || certificates && certificates.set != false
-                                                && certificates.set != true && !certificates.filter((certificate: any) =>
-                                                        certificate.document_id == document.document_id)[0].pdf_data ?
-                                                "/upload-svgrepo-com.svg" : '/document.png'}/></button>
+                                                ||
+                                                !certificates.Items.filter((certificate: any) =>
+                                                certificate.document_id == document.document_id)[0].pdf_data :  "" ? "/upload-svgrepo-com.svg"
+                                                 : '/document.png'}/></button>
                                     </Link>
                                 </td>
                                 <td>
-                                    {certificates && certificates.set != false && certificates.set != true
-                                    && certificates.filter((certificate: any) =>
-                                        certificate.document_id == document.document_id).length > 0 ? certificates.filter((certificate: any) =>
+                                    {!certificatesLoading ? certificates.Items.filter((certificate: any) =>
+                                        certificate.document_id == document.document_id).length > 0 : ''
+                                        ? certificates.Items.filter((certificate: any) =>
                                         certificate.document_id == document.document_id)[0].comment : '' }
                                 </td>
 
