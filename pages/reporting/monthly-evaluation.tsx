@@ -195,6 +195,9 @@ const MonthlyEvaluation = () => {
                     type: 'bar',
                     data: data,
                     options: {
+                        animation: {
+                            duration: 0
+                        },
                         scales: {
                             y: {}
                         },
@@ -228,6 +231,9 @@ const MonthlyEvaluation = () => {
                     type: 'line',
                     data: data,
                     options: {
+                        animation: {
+                            duration: 0
+                        },
                         scales: {
                             y: {}
                         },
@@ -378,6 +384,9 @@ const MonthlyEvaluation = () => {
                     type: 'bar',
                     data: data,
                     options: {
+                        animation: {
+                            duration: 0
+                        },
                         scales: {
                             y: {}
                         },
@@ -415,6 +424,9 @@ const MonthlyEvaluation = () => {
                     type: 'line',
                     data: data,
                     options: {
+                        animation: {
+                            duration: 0
+                        },
                         scales: {
                             y: {},
                         },
@@ -546,6 +558,9 @@ const MonthlyEvaluation = () => {
                     type: 'bar',
                     data: data,
                     options: {
+                        animation: {
+                            duration: 0
+                        },
                         scales: {
                             y: {}
                         },
@@ -579,6 +594,9 @@ const MonthlyEvaluation = () => {
                     type: 'line',
                     data: data,
                     options: {
+                        animation: {
+                            duration: 0
+                        },
                         scales: {
                             y: {}
                         },
@@ -639,10 +657,6 @@ const MonthlyEvaluation = () => {
     useEffect(() => {
         drawCharts();
     }, );
-
-
-
-
 
     const handlePopupSend = async () => {
         let certificate = certificates.Items.filter((certificate: any)=> certificate.document_id == popupCertificate)[0]
@@ -977,7 +991,6 @@ const MonthlyEvaluation = () => {
                                 <td>
                                     <Link href={"/reporting/monthly-evaluation/" + document.document_id}>
                                         <button className="m-auto flex">
-                                            {/* @ts-ignore */}
                                             <img className="h-5" src={
                                                 !certificatesLoading && filteredControlDocuments
                                                  &&
