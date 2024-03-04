@@ -54,8 +54,11 @@ const Home: NextPage = () => {
             const companyShifts = shiftsData.Items.filter((shift:any) =>
                 shift.shift_id == company.client_number
             )
-            setCompanyShifts(companyShifts[0].shifts)
-            setCompanyWorkingHours(companyShifts[0].shiftHours)
+            if(companyShifts[0] && companyShifts[0].shifts) {
+                setCompanyShifts(companyShifts[0].shifts)
+                setCompanyWorkingHours(companyShifts[0].shiftHours)
+            }
+
         }
     }
     const getCompanyMachines = () => {
