@@ -29,7 +29,7 @@ const PriceMatrix = () => {
         }
     );
     const [currentYear, setCurrentYear] = useState<any>(0)
-
+    console.log(priceMatrix)
     const router = useRouter()
     const pid = router.query
 

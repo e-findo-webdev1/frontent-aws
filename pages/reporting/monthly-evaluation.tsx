@@ -826,8 +826,7 @@ const MonthlyEvaluation = () => {
                         controlDocuments.Items
                             .sort(function(a: any, b: any){
                                 // @ts-ignore
-                                return a.document_id - b.document_id
-                            })
+                                return moment(b.endOfCycle).unix() - moment(a.endOfCycle).unix()})
                             .map((document: any) =>
                             <tr key={document.document_id}
                                 className="text-xs text-gray-500 border-b text-left">

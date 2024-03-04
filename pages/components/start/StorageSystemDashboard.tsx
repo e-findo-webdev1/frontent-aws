@@ -370,7 +370,7 @@ export default function StorageSystemDashboard({
                         </tr>
                         </thead>
                             <tbody className="bg-gray-50">
-                            {companyMachines
+                            {companyMachines && companyControlDocuments
                                 ? companyMachines.sort(function(a: any, b: any){
                                     // @ts-ignore
                                     return a.machine_id - b.machine_id})
@@ -538,6 +538,9 @@ export default function StorageSystemDashboard({
                                                     machine.lastIndicate : 0} kg</td>
                                                 <td className="text-right">
                                                     {machine.price_list && machine.price_list.prices[moment().year()]
+                                                        && machine.price_list.prices
+                                                        // @ts-ignore
+                                                        [moment().year()][monthsList[moment().month()]]
                                                         ?
                                                         machine.price_list.prices
                                                             // @ts-ignore
@@ -545,6 +548,9 @@ export default function StorageSystemDashboard({
                                                 </td>
                                                 <td className="text-right">{machine.price_list &&
                                                 machine.price_list.prices[moment().year()]
+                                                    && machine.price_list.prices
+                                                    // @ts-ignore
+                                                    [moment().year()][monthsList[moment().month()]]
                                                     ? ((machine.lastIndicate) *
                                                         parseInt(machine.price_list.prices
                                                             // @ts-ignore
@@ -671,7 +677,7 @@ export default function StorageSystemDashboard({
                         }, 0) + " kg" : "0 kg"}</p>
                     <p className="flex-grow flex-1">
                         <span className="font-bold">Gesamterlöse<br/></span>
-                        {companyControlDocuments ? (companyControlDocuments.
+                        {companyControlDocuments && companyMachines ? (companyControlDocuments.
                         filter((document: any)=>moment(document.timestamp).month() == moment().month()).
                         reduce( function(a: any, b: any){
                             return a + ((b['netto']) *
@@ -680,6 +686,8 @@ export default function StorageSystemDashboard({
                                     .price_list.prices[moment().year()][monthsList[moment().month()]])/1000)
                         }, 0) + (companyMachines.reduce( function(a: any, b: any){
                             if (b.price_list.prices[moment().year()]) {
+                                console.log()
+                                // @ts-ignore
                                 return a + ((b['lastIndicate']) *
                                     // @ts-ignore
                                     parseInt(b.price_list.prices[moment().year()][monthsList[moment().month()]]) / 1000);

@@ -1,27 +1,23 @@
+'use client'
 import Logo from "./Logo";
 import NavigationLinks from "./NavigationLinks";
 import NavigationButtons from "./NavigationButtons";
 import {useEffect, useState} from "react";
 import API from "axios";
+import useSWR from "swr";
 
+const fetcher = (url:  string) => fetch(url).then(r => r.json())
 const Navigation = () => {
 
-    const [clients, setClients] = useState<any>();
     const [selectedCompany, setSelectedCompany] = useState<any>();
     const [userPermissions] = useState(
         JSON.parse(sessionStorage.getItem('user') as string));
 
-    useEffect(() => {
+    const {data: clients, error: clientssError,
+        isLoading: clientsLoading} = useSWR
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/clients', fetcher)
 
-        API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/clients')
-            .then((response) => {
-                setClients(response.data.Items)
-            })
-            .catch((error) => {
-                console.log(error); //
-            });
 
-    }, []);
 
     return (
         <div id="navigation" className="mb-2 flex mx-[1rem]">
@@ -37,13 +33,13 @@ const Navigation = () => {
                         value={JSON.parse(sessionStorage.getItem("company") as string).client_name}
 
                         onChange={(e)=>{sessionStorage
-                            .setItem("company", JSON.stringify(clients.filter((client: any) =>
+                            .setItem("company", JSON.stringify(clients.Items.filter((client: any) =>
                                 client.client_name == e.target.value)[0]));setSelectedCompany(e.target.value);
-                            window.location.reload()}}
+                            window.location.replace('/')}}
 
 
                 >
-                    {clients ? clients.sort(function (a: any, b: any) {
+                    {clients ? clients.Items.sort(function (a: any, b: any) {
                         if (a.client_name < b.client_name) {
                             return 1;
                         }

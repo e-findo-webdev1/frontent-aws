@@ -1,151 +1,79 @@
+'use client'
 import {useRouter} from "next/router";
 import React, {useEffect, useState} from "react";
-
 import "react-datepicker/dist/react-datepicker.css"
 import DatePicker from "react-datepicker";
 import API from 'axios';
 import moment from "moment";
 import Link from "next/link";
+import useSWR from "swr";
+import {machine} from "os";
 
+const fetcher = (url:  string) => fetch(url).then(r => r.json())
 const MachineStorageHistory = () => {
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
     const [newEndDate, setNewEndDate] = useState(new Date());
-    const [data, setData] = useState<any[]>([]);
-    const [machinesData, setMachinesData] = useState<any[]>([{
-        machine_id: 0
-    }]);
+    const [data, setData] = useState<any[]>();
     const [page, setPage] = useState<any>(1);
     const [listLength, setListLength] = useState<any>();
-    const [pageList, setPageList] = useState<any[]>([]);
+    const [pageList, setPageList] = useState<any>();
     const [test, setTest] = useState<any>({test: false})
     const [status, setStatus] = useState<any>('- Alle -')
+
+    const [machineLog, setMachineLog] = useState<any>()
 
     const router = useRouter()
     const pid = router.query
 
     useEffect(() => {
-
-        const newEndDate = new Date();
+        const newDate = new Date();
         startDate.setDate(startDate.getDate())
         setStartDate(startDate)
-        newEndDate.setDate(endDate.getDate() + 1)
-        newEndDate.setHours(0, 0, 0, 0);
-        setNewEndDate(newEndDate)
+        newDate.setDate(endDate.getDate() + 1)
+        newDate.setHours(0, 0, 0, 0);
+        setNewEndDate(newDate)
         startDate.setHours(0, 0, 0, 0)
+    }, []);
 
-        setData([])
-
-        const getData = async () => {
-
-            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines')
-                .then((response) => {
-                    setMachinesData(response.data.Items.filter((item: any) => item.machine_id == pid.id));
-                })
-                .catch((error) => {
-                    console.log(error.response);
-                });
-
-            //if (machinesData[0] && machinesData[0].client == JSON.parse(sessionStorage.getItem('company') as string).client_name) {
-            if (pid.id as string == pid.id) {
-                const apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/log-data/'
-                    + pid.id as string + "/" + moment(startDate.setHours(2, 0, 0, 0))
-                        .unix() + "/" + moment(newEndDate).unix() + "/" + page;
-
-                await API.get(apiName)
-                    .then((response) => {
-                        if (status != '- Alle -') {
-                            setData(response.data[0].filter((log: any) => log.status.includes(status)))
-                        } else {
-                            setData(response.data[0])
-                        }
-
-                        setListLength(response.data[1])
-                        const newPageList = []
-                        if (pageList.length == 0) {
-                            for (let i = 1; i < Math.ceil(listLength / 100) + 1; i++) {
-                                newPageList.push(i)
-                            }
-                            setPageList(newPageList)
-                        }
-                    })
-                    .catch((error) => {
-                        console.log(error.response);
-                    });
-            }
-            else {
-                setTest({test: true})
-            }
-
+    const {data: machinesData, error: machinesDataError,
+        isLoading: machinesDataLoading} = useSWR
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines', fetcher)
+    const {data: logData, error: logDataError,
+        isLoading: logDataLoading} = useSWR
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/log-data/'
+    + pid.id as string + "/" + moment(startDate.setHours(2, 0, 0, 0))
+        .unix() + "/" + moment(newEndDate).unix() + "/" + page, fetcher)
+    const filterMachine = () => {
+        if (!machinesDataLoading && !machineLog) {
+            setMachineLog(machinesData.Items.filter((item: any) => item.machine_id == pid.id)[0]);
         }
-        getData()
-
-    }, [startDate, pageList, endDate, page, test.test, status, listLength, pid.id]);
-
-    setTimeout(() => {
-        if (test.test) {
-            setTest({test: false})
-        } else {
-            setTest({test: true})
+    }
+    const filterData = () => {
+        if (!logDataLoading && !data) {
+            if (status != '- Alle -') {
+                setData(logData[0].filter((log: any) => log.status.includes(status)))
+            } else {
+                setData(logData[0])
+            }
         }
-        }, 1000 * 130);
-
-
-    let averageThroughputInLastHour
-    data !== undefined
-        ? averageThroughputInLastHour = data
-                .filter(item => item.id == pid.id )
-                .filter(item =>
-                    new Date(item.published_at) > moment().subtract(1, 'h').toDate() &&
-                    new Date(item.published_at) < moment().toDate())
-                .reduce((acc, cur)=>((acc = acc + cur.averageThroughput), acc), 0)
-            /
-            data
-                .filter(item => item.id == pid.id )
-                .filter(item =>
-                    new Date(item.published_at) > moment().subtract(1, 'h').toDate() &&
-                    new Date(item.published_at) < moment().toDate()).length
-        : ''
-    const manualTara = () => {
-        // set the isNetto from last item to true
-        let newData = data
-            .filter(item => item.id == pid.id )
-            .filter(item =>
-                new Date(item.published_at) > startDate &&
-                new Date(item.published_at) < newEndDate)
-            .sort(function(a: any, b: any){
-                // @ts-ignore
-                return new Date(b.published_at) - new Date(a.published_at)
-            })
-        newData[0]['isNetWeight'] = 'true'
-        newData[0]['tareWeight'] = parseInt(newData[0]['indicateWeight'])
-        setData(newData)
-        updateStatus('Container tariert (3)');
     }
+    const createPagination = () => {
+        if (logData && !pageList) {
+            setListLength(logData[1])
+            const newPageList = []
+            for (let i = 1; i < Math.ceil(listLength / 100) + 1; i++) {
+                newPageList.push(i)
+                setPageList(newPageList)
+            }
+        }
 
-    const sendData = (responseBody: any) => {
-        API.put('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines',
-            responseBody)
-            .then(function (response) {
-                console.log(response);
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
     }
-
-    const updateStatus = (status: string) => {
-        let responseBody = machinesData[0]
-        responseBody.status = status
-        sendData(responseBody)
-    }
-
-
-
     const changePage = (page: number) => {
         updatePageList(page)
         setPage(page)
-
+        setData(undefined);
+        filterData();
     }
 
     const updatePageList = (page: number) => {
@@ -165,6 +93,30 @@ const MachineStorageHistory = () => {
         }
     };
 
+    setTimeout(() => {
+        if (test.test) {
+            setTest({test: false})
+        } else {
+            setTest({test: true})
+        }
+    }, 1000 * 130);
+
+    filterMachine();
+    filterData();
+    createPagination();
+
+    const changeStartDate = (date: any) => {
+        setStartDate(date);
+        setData(undefined);
+        setPageList(undefined);
+    }
+
+    const changeEndDate = (date: any) => {
+        setEndDate(date);
+        setData(undefined);
+        setPageList(undefined);
+    }
+
     return(
         <div id="content-page" className="overflow-auto h-full px-48 m-auto">
             <Link href="/">
@@ -181,14 +133,14 @@ const MachineStorageHistory = () => {
                         <DatePicker className="shadow-md border text-center p-0.5 w-full"
                                     dateFormat="yyyy/MM/dd"
                                     selected={startDate}
-                                    onChange={(date:Date) => setStartDate(date)}/>
+                                    onChange={(date:Date) => changeStartDate(date)}/>
                     </div>
                     <div className="flex space-x-2">
                         <span className="m-auto">Bis:</span>
                         <DatePicker className="shadow-md border text-center p-0.5 m-0"
                                     dateFormat="yyyy/MM/dd"
                                     selected={endDate}
-                                    onChange={(date:Date) => setEndDate(date)}/>
+                                    onChange={(date:Date) => changeEndDate(date)}/>
                     </div>
                     <div className="flex space-x-2">
                         <span className="m-auto">Status:</span>
@@ -216,55 +168,53 @@ const MachineStorageHistory = () => {
             </div>
             <button className="my-3 mr-3 p-1 px-3.5 border-accent-color-1 bg-accent-color-4 hover:bg-accent-color-5
                     sm:rounded-lg shadow-md border text-xs font-semibold">
-                Zeit seit Stellung: {
-                machinesData.length != 0 && machinesData[0].timeOfContainerTara != 0 &&
-                machinesData[0].timeOfContainerTara
+                Zeit seit Stellung: {machineLog && machineLog.timeOfContainerTara != 0 &&
+                machineLog.timeOfContainerTara
                     //TO-DO translate time outputs to german
-                    ? "ca. " + moment(machinesData[0].timeOfContainerTara).fromNow()
+                    ? "ca. " + moment(machineLog.timeOfContainerTara).fromNow()
                     : "ca. 0 Stunden"}</button>
             <button className="my-3 mr-3 p-1 px-3.5 border-accent-color-1 bg-accent-color-4 hover:bg-accent-color-5
                     sm:rounded-lg shadow-md border text-xs font-semibold">
-                Füllzeit seit Stellung: {
-                machinesData.length != 0 && machinesData[0].timeOfFillingStart != 0 && machinesData[0].timeOfFillingStart
+                Füllzeit seit Stellung: { machineLog && machineLog.timeOfFillingStart != 0 && machineLog.timeOfFillingStart
                     //TO-DO translate time outputs to german
-                ?  machinesData[0].totalFillingTime < 60
-                    ? machinesData[0].totalFillingTime + " Minuten"
-                    : "ca. " + Math.floor(machinesData[0].totalFillingTime /60) + " Stunden"
+                ?  machineLog.totalFillingTime < 60
+                    ? machineLog.totalFillingTime + " Minuten"
+                    : "ca. " + Math.floor(machineLog.totalFillingTime /60) + " Stunden"
                 : "ca. 0 Stunden"}</button>
             <button className="my-3 mr-3 p-1 px-3.5 border-accent-color-1 bg-accent-color-4 hover:bg-accent-color-5
                     sm:rounded-lg shadow-md border text-xs font-semibold">
                 Stillstand seit Produktionszeit: {
-                machinesData.length != 0
+                machineLog
                     //TO-DO translate time outputs to german
-                    ? machinesData && (machinesData[0].totalStandstill / 3600000) < 1
-                        ? " ca. " + Math.ceil(machinesData[0].totalStandstill / 3600000 * 60) + " Minuten"
-                        : machinesData[0].totalStandstill / 3600000 > 1
-                            ? " ca. " + Math.ceil(machinesData[0].totalStandstill / 3600000) + " Stunden"
+                    ? !machinesDataLoading && (machineLog.totalStandstill / 3600000) < 1
+                        ? " ca. " + Math.ceil(machineLog.totalStandstill / 3600000 * 60) + " Minuten"
+                        : machineLog.totalStandstill / 3600000 > 1
+                            ? " ca. " + Math.ceil(machineLog.totalStandstill / 3600000) + " Stunden"
                             : ""
                     : ""}</button>
             <button className="my-3 mr-3 p-1 px-3.5 border-accent-color-1 bg-accent-color-4 hover:bg-accent-color-5
                     sm:rounded-lg shadow-md border text-xs font-semibold">
-                Letzte Befüllung: { machinesData.length != 0 && machinesData[0].lastFilling
-                  && machinesData[0].lastFilling != 0
-                    ? moment(machinesData[0].lastFilling).format('DD.MM.YYYY, HH:mm')
+                Letzte Befüllung: { machineLog && machineLog.lastFilling
+                  && machineLog.lastFilling != 0
+                    ? moment(machineLog.lastFilling).format('DD.MM.YYYY, HH:mm')
                     : 'ca. 0 Stunden'} {
-                machinesData.length != 0 && machinesData[0].lastFilling != 0 && machinesData[0].lastFilling
+                machineLog && machineLog.lastFilling != 0 && machineLog.lastFilling
                     //TO-DO translate time outputs to german
-                    ? "(" + moment(machinesData[0].lastFilling).fromNow() + ")"
+                    ? "(" + moment(machineLog.lastFilling).fromNow() + ")"
                     : ""}</button>
             <button className="my-3 mr-3 p-1 px-3.5 border-accent-color-1 bg-accent-color-4 hover:bg-accent-color-5
                     sm:rounded-lg shadow-md border text-xs font-semibold">
-                Zeit seit Füllstart: { machinesData.length != 0 && machinesData[0].firstFilling != 0 && machinesData[0].firstFilling
+                Zeit seit Füllstart: { machineLog && machineLog.firstFilling != 0 && machineLog.firstFilling
                     //TO-DO translate time outputs to german
-                    ? "ca. " + moment(machinesData[0].firstFilling).fromNow() + " (" +
-                                moment(machinesData[0].firstFilling).format('DD.MM.YYYY, HH:mm') + ")"
+                    ? "ca. " + moment(machineLog.firstFilling).fromNow() + " (" +
+                                moment(machineLog.firstFilling).format('DD.MM.YYYY, HH:mm') + ")"
                     : "ca. 0 Stunden"}</button>
             <button className="my-3 mr-3 p-1 px-3.5 border-accent-color-1 bg-accent-color-4 hover:bg-accent-color-5
                     sm:rounded-lg shadow-md border text-xs font-semibold">
-                Geschwindigkeit letzte Stunde: { machinesData.length != 0 && machinesData[0].averageThroughput != 0
+                Geschwindigkeit letzte Stunde: { machineLog && machineLog.averageThroughput != 0
                 //TO-DO translate time outputs to german
                 //@ts-ignore
-                ? "ca. "  + Math.floor(machinesData[0].averageFillingInLastHour) + " kg/h"
+                ? "ca. "  + Math.floor(machineLog.averageFillingInLastHour) + " kg/h"
                 : "ca. 0 kg/h"}</button>
 
             <div>
@@ -283,7 +233,7 @@ const MachineStorageHistory = () => {
                         <span className="font-normal">{pages != 1 ? "|" : ""}</span><span className="mx-1">{pages}</span>
                     </button>)
                         : ""}
-                    {listLength>0 && page +2< Math.ceil(listLength/100) && Math.ceil(listLength/100) > 6
+                    {listLength && listLength>0 && page +2< Math.ceil(listLength/100) && Math.ceil(listLength/100) > 6
                         ? "| ... |" : ""} {listLength > 0 && page + 1< Math.ceil(listLength/100) ?
                         <button className={ page == Math.ceil(listLength/100) ? "font-bold underline" :"underline"}
                         onClick={()=>changePage(Math.ceil(listLength/100))}>
@@ -346,7 +296,7 @@ const MachineStorageHistory = () => {
                                     {data && item.isNetWeight == "true" ? parseInt(item.indicateWeight) :
                                         parseInt(item.indicateWeight) - parseInt(item.tareWeight)} kg</td>
                                 <td>{item.averageThroughput ? item.averageThroughput.toFixed(2) : "0"}</td>
-                                <td>{machinesData ? machinesData[0].waretype : ''}</td>
+                                <td>{!machinesDataLoading && machineLog ? machineLog.waretype : ''}</td>
                                 <td>
                                     {
                                         item.isNetWeight == "true"
