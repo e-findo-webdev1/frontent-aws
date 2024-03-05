@@ -1,8 +1,11 @@
+'use client'
 import API from "axios";
 import React, {useEffect, useState} from "react";
 import {useRouter} from "next/router";
 import Link from "next/link";
+import useSWR from "swr";
 
+const fetcher = (url:  string) => fetch(url).then(r => r.json())
 const EditMachine = () => {
     const router = useRouter()
     const pid = router.query
@@ -16,75 +19,52 @@ const EditMachine = () => {
         totalStandstill: 0
         }
     );
-    const [waretypes, setWaretypes] = useState<any>();
-    const [clients, setClients] = useState<any>();
-    const [priceMatrices, setPriceMatrices] = useState<any>();
-    const [indeces, setIndeces] = useState<any>({set:false});
-    const [company, setCompany] = useState<any>({set:false});
-    const [qualities, setQualities] = useState<any>();
+    const [indeces, setIndeces] = useState<any>();
+    const [company, setCompany] = useState<any>();
 
-    useEffect(() => {
+    const {data: machines, error: machinesError, isLoading: machinesLoading} = useSWR
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines', fetcher)
+    const {data: waretypes, error: waretypesError, isLoading: waretypesLoading} = useSWR
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/waretypes', fetcher)
+    const {data: clients, error: clientsError, isLoading: clientsLoading} = useSWR
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/clients', fetcher)
+    const {data: qualities, error: qualitiesError, isLoading: qualiteisLoading} = useSWR
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/qualities', fetcher)
+    const {data: priceMatrices, error: priceMatricesError, isLoading: priceMatricesLoading} = useSWR
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/price-matrices', fetcher)
 
-        const fetchData = async () => {
-            const apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines';
-
-            await API.get(apiName)
-                .then((response) => {
-                    setData(response.data.Items.filter((item: any) => item.machine_id == pid.id)[0]);
-                })
-                .catch((error) => {
-                    console.log(error.response);
-                });
-
-            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/waretypes')
-                .then((response) => {
-                    setWaretypes(response.data.Items);
-                })
-                .catch((error) => {
-                    console.log(error.response);
-                });
-
-            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/clients')
-                .then((response) => {
-                    setClients(response.data.Items);
-                })
-                .catch((error) => {
-                    console.log(error.response);
-                });
-
-            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/price-matrices')
-                .then((response) => {
-                    setPriceMatrices(response.data.Items);
-                        let indecesList: any = []
-                        for (let matrix in response.data.Items) {
-                            if (response.data.Items[matrix].indeces) {
-                                for (let index in response.data.Items[matrix].indeces) {
-                                    indecesList.push(
-                                        response.data.Items[matrix].price_matrix + ' - '
-                                        + response.data.Items[matrix].indexgroup_name + ' - '
-                                        + response.data.Items[matrix].indeces[index])
-                                }
-                            }
-                            setIndeces(indecesList)
-                        }
-                })
-                .catch((error) => {
-                    console.log(error.response);
-                });
-
-            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/qualities')
-                .then((response) => {
-                    setQualities(response.data.Items)
-                })
-                .catch((error) => {
-                    console.log(error.response);
-                });
+    const getIndeces = () => {
+        if (!priceMatricesLoading && !indeces) {
+            let indecesList: any = []
+            for (let matrix in priceMatrices.Items) {
+                if (priceMatrices.Items[matrix].indeces) {
+                    for (let index in priceMatrices.Items[matrix].indeces) {
+                        indecesList.push(
+                            priceMatrices.Items[matrix].price_matrix + ' - '
+                            + priceMatrices.Items[matrix].indexgroup_name + ' - '
+                            + priceMatrices.Items[matrix].indeces[index])
+                    }
+                }
+            }
+            setIndeces(indecesList)
         }
-        fetchData()
-        setCompany(sessionStorage.getItem("company"))
+    }
 
+    const getData = () => {
+        if (!machinesLoading && data.machine_id == 0) {
+            const newData = machines.Items.filter((item: any) => item.machine_id == pid.id)[0]
+            setData(newData)
+        }
+    }
+    const getCompany = () => {
+        if (!company) {
+            setCompany(sessionStorage.getItem("company"))
+        }
+    }
 
-    }, [pid, indeces.set] );
+    getData();
+    getIndeces();
+    getCompany();
 
     const responseBody = {
         automaticTara: false,
@@ -292,8 +272,8 @@ const EditMachine = () => {
                                         value={data ? data.waretype : ''}
                                         onChange={(e)=>
                                             setData({...data, waretype: e.target.value})}>
-                                    {waretypes ?
-                                        waretypes
+                                    {!waretypesLoading ?
+                                        waretypes.Items
                                             .sort(function (a: any, b: any) {
                                             if (a.name_waretype < b.name_waretype) {
                                                 return -1;
@@ -334,7 +314,7 @@ const EditMachine = () => {
                                         value={data ? data.quality : ''}
                                         onChange={(e)=>
                                             setData({...data, quality: e.target.value})}>
-                                    {qualities ? qualities.map((quality: any) =>
+                                    {!qualiteisLoading ? qualities.Items.map((quality: any) =>
                                         <option key={quality.quality_id}>
                                             {quality.quality_name}
                                         </option>
@@ -388,7 +368,7 @@ const EditMachine = () => {
                                         onChange={(e) =>
                                             setData({...data, index: e.target.value})}>
                                     <option key={"noIndex"}>{"- kein Index -"}</option>
-                                    {priceMatrices && indeces.set != false ? indeces.map((index: any) =>
+                                    {!priceMatricesLoading && indeces ? indeces.map((index: any) =>
                                         <option key={index}>{index}</option>
                                     ): ""}
 
@@ -404,7 +384,7 @@ const EditMachine = () => {
                                         value={data ? data.client : ''}
                                         onChange={(e)=>
                                             setData({...data, client: e.target.value})}>
-                                    {clients ? clients.map((item: any)=>
+                                    {!clientsLoading ? clients.Items.map((item: any)=>
                                         <option key={item.client_id}>{item.client_name}</option>) : ''}
                                 </select>
                             </td>
