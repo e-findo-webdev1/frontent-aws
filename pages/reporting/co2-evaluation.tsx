@@ -1,14 +1,19 @@
+'use client'
 import DatePicker from "react-datepicker";
 import React, {useEffect, useState} from "react";
 import API from "axios";
 import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
 import Link from "next/link";
+import useSWR from "swr";
+
+
+const fetcher = (url:  string) => fetch(url).then(r => r.json())
 
 const Co2Evaluation = () => {
     const [customer, setCustomer] = useState<any>();
-    const [machines, setMachines] = useState<any>();
-    const [controlDocuments, setControlDocuments] = useState<any>({set: false});
+    const [filteredControlDocuments, setFilteredControlDocuments] = useState<any>();
+    const [filteredMachines, setFilteredMachines] = useState<any>();
 
     const [startDate, setStartDate] = useState(
         moment().set({hour: 0, minute: 0, second: 0}).toDate()
@@ -18,52 +23,57 @@ const Co2Evaluation = () => {
     );
     const [userMessage, setUserMessage] = useState<any>(1);
 
+    const {data: clients, error: clientsError, isLoading: clientsLoading} = useSWR
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/clients', fetcher)
+    const {data: machines, error: machinesError, isLoading: machinesLoading} = useSWR
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines', fetcher)
+    const {data: controlDocuments, error: controlDocumentsError, isLoading: controlDocumentsLoading} = useSWR
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/control-documents', fetcher)
 
-    useEffect(() => {
-
-        const fetchData = async() => {
-            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/clients')
-                .then((response) => {
-                    setCustomer(response.data.Items.filter((client:any) =>
-                        client.client_id == JSON.parse(sessionStorage.getItem('company') as string).client_id
-                    )[0])
-            })
-            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines')
-                .then((response) => {
-                    setMachines(response.data.Items.filter((machine:any) =>
-                        machine.client == JSON.parse(sessionStorage.getItem('company') as string).client_name
-                    ))
-                    if (machines) {
-                        API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/control-documents')
-                            .then((response) => {
-                                userMessage == 1 ?
-                                setControlDocuments(response.data.Items.filter((document: any) =>
-                                    machines.reduce( function(a: any, b: any){
-                                        return a + (b['machine_id']);
-                                    }).includes(document.machine_id))
-
-                                ) : setControlDocuments(response.data.Items.filter((document: any) =>
-                                        machines.reduce( function(a: any, b: any){
-                                            return a + (b['machine_id']);
-                                        }).includes(document.machine_id))
-                                        .filter((document: any) =>
-                                            document.endOfCycle != undefined &&
-                                            new Date(document.endOfCycle) > startDate &&
-                                            new Date(document.endOfCycle) < endDate
-                                        ))
-                            })
-                    } else {
-                        setControlDocuments({set: true})
-                    }
-
-                })
+    const getClient = () => {
+        if (!clientsLoading && !customer) {
+            setCustomer(clients.Items.filter((client:any) =>
+                client.client_id == JSON.parse(sessionStorage.getItem('company') as string).client_id
+            )[0])
+        }
+    }
+    const getFilteredMachines = () => {
+        if (!machinesLoading && !filteredMachines) {
+            setFilteredMachines(machines.Items.filter((machine:any) =>
+                machine.client == JSON.parse(sessionStorage.getItem('company') as string).client_name
+            ))
         }
 
-        fetchData()
+    }
+    const getFilteredControlDocuments = () => {
+        if (!controlDocumentsLoading && filteredMachines && !filteredControlDocuments) {
+            if (filteredMachines.length > 1){
+                setFilteredControlDocuments(controlDocuments.Items.filter((document: any) =>
+                    filteredMachines.reduce( function(a: any, b: any){
+                        return a + (b['machine_id']);
+                    }).includes(document.machine_id))
+                    .filter((document: any) =>
+                        document.endOfCycle != undefined &&
+                        new Date(document.endOfCycle) > startDate &&
+                        new Date(document.endOfCycle) < endDate
+                    ))
+            }else {
+                setFilteredControlDocuments(controlDocuments.Items.filter((document: any) =>
+                    filteredMachines[0].machine_id == document.machine_id)
+                    .filter((document: any) =>
+                        document.endOfCycle != undefined &&
+                        new Date(document.endOfCycle) > startDate &&
+                        new Date(document.endOfCycle) < endDate
+                    ))
+            }
+            }
 
 
-    }, [controlDocuments.set, startDate, endDate, userMessage]);
+    }
 
+    getClient();
+    getFilteredMachines();
+    getFilteredControlDocuments();
     const calculateCO2 = (customer: any, amount: any) => {
 
         // $amount is calculated in advance, all weighed/collected materials in kg over the entire time
@@ -129,11 +139,13 @@ const Co2Evaluation = () => {
                     sm:rounded-lg shadow-md border flex max-w-max px-10">
                 <span className="text-3xl font-bold m-auto">{
                     customer && customer.co_load && customer.co_distance
-                    && controlDocuments.set != false && controlDocuments.set != true ?
-                    calculateCO2(customer, controlDocuments.reduce( function(a: any, b: any){
+                    && filteredMachines && !machinesLoading && !controlDocumentsLoading  && filteredControlDocuments && filteredControlDocuments.length >1 ?
+                    calculateCO2(customer, filteredControlDocuments.reduce( function(a: any, b: any){
                         return a + b['netto'];
                     }, 0)) + ' kg'
-                        : 'Berechnen...'}</span>
+                        : customer && customer.co_load && customer.co_distance
+                        && filteredMachines && !machinesLoading && !controlDocumentsLoading  && filteredControlDocuments && filteredControlDocuments[0] ?
+                            calculateCO2(customer, parseInt(filteredControlDocuments[0].netto)) + ' kg' : 'Berechnen...'}</span>
             </div>
             <p className="mt-9 mb-16 text-sm font-bold text-center">
                 Herzlichen Glückwunsch!
@@ -148,8 +160,8 @@ const Co2Evaluation = () => {
                     <span>Von:</span>
                     <DatePicker
                         dateFormat="d.MM.yyyy"
-                        selected={userMessage == 1 ? null : startDate}
-                        onChange={(date:Date) => {setStartDate(date);
+                        selected={startDate}
+                        onChange={(date:Date) => {setStartDate(date); setFilteredControlDocuments(undefined);
                     setUserMessage(2)}}
                                 className="border text-center rounded w-28 font-light"/>
                 </div>
@@ -157,10 +169,10 @@ const Co2Evaluation = () => {
                     <span>Bis:</span>
                     <DatePicker
                         dateFormat="d.MM.yyyy"
-                        selected={userMessage == 1 ? null : endDate}
+                        selected={ endDate}
                         onChange={(date:Date) => {setEndDate(
                         moment(date).set({hour: 23, minute: 59, second: 59}).toDate()
-                    ); setUserMessage(2)}}
+                    ); setFilteredControlDocuments(undefined); setUserMessage(2)}}
                                 className="border text-center rounded w-28 font-light"/>
                 </div>
 
