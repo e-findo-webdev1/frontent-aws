@@ -1,3 +1,4 @@
+'use client'
 import React, {useEffect, useState} from "react";
 import API from "axios";
 import moment from "moment";
@@ -7,14 +8,15 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import 'react-loading-skeleton/dist/skeleton.css'
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
+import useSWR from "swr";
 
+const fetcher = (url:  string) => fetch(url).then(r => r.json())
 const WasteBalance = () => {
 
-    const [machines, setMachines] = useState<any>();
-    const [controlDocuments, setControlDocuments] = useState<any>({set: false});
-    const [waretypes, setWaretypes] = useState<any>();
-    const [weighingCertificates, setWeighingCertificates] = useState<any>();
 
+    const [filteredControlDocuments, setFilteredControlDocuments] = useState<any>();
+    const [filteredMachines, setFilteredMachines] = useState<any>();
+    const [weighingCertificates, setWeighingCertificates] = useState<any>();
     const [selectedWaretype, setSelectedWaretype] = useState<any>('- Alle -');
     const [selectedAVVNumber, setSelectedAVVNumber] = useState<any>('- Alle -');
 
@@ -25,54 +27,68 @@ const WasteBalance = () => {
         moment().set({hour: 23, minute: 59, second: 59}).toDate()
     );
     const [filterDates, setFilterDates] = useState<any>(false)
-    const [isDataLoaded, setIsDataLoaded] = useState<any>(false)
 
-    useEffect(() => {
+    const {data: machines, error: machinesError, isLoading: machinesLoading} = useSWR
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines', fetcher)
+    const {data: controlDocuments, error: controlDocumentsError, isLoading: controlDocumentsLoading} = useSWR
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/control-documents', fetcher)
+    const {data: waretypes, error: waretypesError, isLoading: waretypesLoading} = useSWR
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/waretypes', fetcher)
+    const {data: certificates, error: certificatesError, isLoading: certificatesLoading} = useSWR
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/certificates', fetcher)
 
-        const fetchData = async () => {
-            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines')
-                .then((response) => {
-                    setMachines(response.data.Items.filter((machine:any) =>
-                        machine.client == JSON.parse(sessionStorage.getItem('company') as string).client_name
-                    ))
-                    if (machines) {
-                        API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/control-documents')
-                            .then((response) => {
-                                filterDates == false ?
-                                    setControlDocuments(response.data.Items.filter((document: any) =>
-                                        machines.reduce( function(a: any, b: any){
-                                            return a + (b['machine_id']);
-                                        }, []).includes(document.machine_id))
-
-                                    ) : setControlDocuments(response.data.Items.filter((document: any) =>
-                                        machines.reduce( function(a: any, b: any){
-                                            return a + (b['machine_id']);
-                                        }, []).includes(document.machine_id))
-                                        .filter((document: any) =>
-                                            document.endOfCycle != undefined &&
-                                            new Date(document.endOfCycle) > startDate &&
-                                            new Date(document.endOfCycle) < endDate
-                                        ))
-                            })
-                    } else {
-                        setControlDocuments({set: true})
-                    }
-                })
-
-            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/waretypes')
-                .then((response) => {
-                    setWaretypes(response.data.Items)})
-            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/certificates')
-                .then((response) => {
-                    setWeighingCertificates(response.data.Items.filter((certificate: any) =>
-                    certificate.client_id == JSON.parse(sessionStorage.getItem('company') as string).client_id))})
-            setIsDataLoaded(true)
+    const getFilteredMachines = () => {
+        if (!machinesLoading && !filteredMachines) {
+            setFilteredMachines(machines.Items.filter((machine:any) =>
+                machine.client == JSON.parse(sessionStorage.getItem('company') as string).client_name
+            ))
         }
 
-        fetchData()
+    }
+    const getFilteredControlDocuments = () => {
+        if (!controlDocumentsLoading && filteredMachines && !filteredControlDocuments) {
+            if (filterDates) {
+                console.log('x')
+                if (filteredMachines.length > 1){
+                    setFilteredControlDocuments(controlDocuments.Items.filter((document: any) =>
+                        filteredMachines.reduce( function(a: any, b: any){
+                            return a + (b['machine_id']);
+                        }).includes(document.machine_id))
+                        .filter((document: any) =>
+                            document.endOfCycle != undefined &&
+                            new Date(document.endOfCycle) > startDate &&
+                            new Date(document.endOfCycle) < endDate
+                        ))
+                }else {
+                    setFilteredControlDocuments(controlDocuments.Items.filter((document: any) =>
+                        filteredMachines[0].machine_id == document.machine_id)
+                        .filter((document: any) =>
+                            document.endOfCycle != undefined &&
+                            new Date(document.endOfCycle) > startDate &&
+                            new Date(document.endOfCycle) < endDate
+                        ))
+                }
+            } else { setFilteredControlDocuments(controlDocuments.Items.filter((document: any) =>
+                filteredMachines.reduce( function(a: any, b: any){
+                    return a + (b['machine_id']);
+                }).includes(document.machine_id)))}
 
-    }, [controlDocuments.set, selectedWaretype, selectedAVVNumber, startDate, endDate, filterDates]);
 
+        }
+
+    }
+    const getWeighingCertificates = () => {
+        if (!certificatesLoading && !weighingCertificates)
+        {
+            const filteredWeighingCertificates =
+                certificates.Items.filter((certificate: any) =>
+                    certificate.client_id == JSON.parse(sessionStorage.getItem('company') as string).client_id)
+            setWeighingCertificates(filteredWeighingCertificates)
+        }
+    }
+    getFilteredMachines();
+    getFilteredControlDocuments();
+    getWeighingCertificates();
 
     return(
         <div id="content-page" className="overflow-auto h-full px-48 m-auto">
@@ -89,8 +105,8 @@ const WasteBalance = () => {
 
                 >
                     <option selected>- Alle -</option>
-                    {waretypes ?
-                        waretypes
+                    {!waretypesLoading ?
+                        waretypes.Items
                             .sort(function (a: { name_waretype: number; }, b: { name_waretype: number; }) {
                                 if (a.name_waretype < b.name_waretype) {
                                     return -1;
@@ -114,8 +130,8 @@ const WasteBalance = () => {
 
                 >
                     <option selected>- Alle -</option>
-                    {waretypes ?
-                        waretypes
+                    {!waretypesLoading ?
+                        waretypes.Items
                             .filter((obj: { [x: string]: any; }, pos: any, arr: any[]) => {
                                 return arr.map(mapObj => mapObj['waretype_number']).indexOf(obj['waretype_number'])
                                     === pos
@@ -138,9 +154,9 @@ const WasteBalance = () => {
                 <DatePicker
                     dateFormat="d.MM.yyyy"
                     selected={filterDates ? startDate : null}
-                    onChange={(date:Date) => {setStartDate((date)); setFilterDates(true)}}
+                    onChange={(date:Date) => {setStartDate((date)); setFilterDates(true); setFilteredControlDocuments(undefined)}}
                     className="border text-center rounded w-32"/>
-                <button onClick={()=>{setFilterDates(false);
+                <button onClick={()=>{setFilterDates(false); setFilteredControlDocuments(undefined)
                     setStartDate(moment().set({hour: 0, minute: 0, second: 0}).toDate());
                     setEndDate(moment().set({hour: 23, minute: 59, second: 59}).toDate())}}
                         className="border float-right px-2 py-0.5  rounded font-semibold border-accent-color-1 bg-accent-color-4
@@ -153,9 +169,9 @@ const WasteBalance = () => {
                     selected={filterDates ? endDate : null}
                     onChange={(date:Date) =>
                     {setEndDate(moment(date).set({hour: 23, minute: 59, second: 59}).toDate());
-                        setFilterDates(true)}}
+                        setFilterDates(true); setFilteredControlDocuments(undefined)}}
                     className="border text-center rounded w-32"/>
-                <button onClick={()=>{setFilterDates(false);
+                <button onClick={()=>{setFilterDates(false); setFilteredControlDocuments(undefined)
                     setStartDate(moment().set({hour: 0, minute: 0, second: 0}).toDate());
                     setEndDate(moment().set({hour: 23, minute: 59, second: 59}).toDate())}}
                         className="border float-right px-2 py-0.5  rounded font-semibold border-accent-color-1 bg-accent-color-4
@@ -163,7 +179,7 @@ const WasteBalance = () => {
                 >
                     x</button>
             </div>
-            {!isDataLoaded ?
+            {!filteredMachines ?
                 <SkeletonTheme baseColor={"#F9FAFB"} highlightColor={"#ffffff"}>
                     <Skeleton className="min-h-[37rem] max-w-[45rem] mt-5 mb-5 sm:rounded-lg shadow-md"/>
                 </SkeletonTheme> :
@@ -185,13 +201,13 @@ const WasteBalance = () => {
                         </tr>
                         </thead>
                         <tbody className="bg-gray-50">
-                        { controlDocuments && controlDocuments.set != false && controlDocuments.set != true?
-                            controlDocuments
+                        { !controlDocumentsLoading && filteredControlDocuments && !waretypesLoading ?
+                            filteredControlDocuments
                                 .filter((document: any) => selectedWaretype == '- Alle -' ?
                                     true : document.waretype == selectedWaretype)
                                 .filter((document: any) =>
 
-                                        selectedAVVNumber == '- Alle -' ? true : waretypes.filter((waretype: any) =>
+                                        selectedAVVNumber == '- Alle -' ? true : waretypes.Items.filter((waretype: any) =>
                                             waretype.name_waretype == document.waretype
                                     )[0].waretype_number == selectedAVVNumber
                                 )
@@ -209,13 +225,13 @@ const WasteBalance = () => {
                                     {document.waretype}
                                 </td>
                                 <td>
-                                    {machines ? machines.filter((machine: any) =>
+                                    {!machinesLoading ? filteredMachines.filter((machine: any) =>
                                         machine.waretype == document.waretype)[0].quality : '-'}
                                 </td>
                                 <td>
-                                    {waretypes && controlDocuments &&
-                                        controlDocuments.set != false && controlDocuments.set != true ?
-                                        waretypes.filter((waretype: any) =>
+                                    {!waretypesLoading && !controlDocumentsLoading &&
+                                        filteredControlDocuments ?
+                                        waretypes.Items.filter((waretype: any) =>
                                             waretype.name_waretype == document.waretype)[0].waretype_number
                                         : '-'}
                                 </td>
@@ -249,12 +265,12 @@ const WasteBalance = () => {
                 </div>
             </div>}
             <p className="font-bold text-sm mb-10 mt-4">Gesamtmenge: {
-                controlDocuments && controlDocuments.set != false && controlDocuments.set != true ?
-                (controlDocuments
+                !controlDocumentsLoading && filteredControlDocuments ?
+                (filteredControlDocuments
                     .filter((document: any) => selectedWaretype == '- Alle -' ? true :
                         document.waretype == selectedWaretype)
                     .filter((document: any) =>
-                        selectedAVVNumber == '- Alle -' ? true : waretypes.filter((waretype: any) =>
+                        selectedAVVNumber == '- Alle -' ? true : waretypes.Items.filter((waretype: any) =>
                             waretype.name_waretype == document.waretype
                         )[0].waretype_number == selectedAVVNumber
                     )
