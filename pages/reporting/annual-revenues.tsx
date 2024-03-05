@@ -1,12 +1,16 @@
-import React, {useEffect, useState} from "react";
+'use client'
+import React, {useState} from "react";
 import moment from "moment";
-import API from "axios";
+import useSWR from "swr";
+import 'react-loading-skeleton/dist/skeleton.css'
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 
+const fetcher = (url:  string) => fetch(url).then(r => r.json())
 const AnnualRevenues = () => {
     const [currentYear, setCurrentYear] = useState(0)
     const [weighingCertificates, setWeighingCertificates] = useState<any>();
-    const [priceMatrices, setPriceMatrices] = useState<any>({set: false});
     const [machinesData, setMachinesData] = useState<any>();
+    const [workingYears, setWorkingYears] = useState<any>();
 
     const monthsList = [
         "Januar",
@@ -37,61 +41,56 @@ const AnnualRevenues = () => {
         'November': 10,
         'Dezember': 11
 }
-    useEffect(() => {
-        currentYear == 0 ? setCurrentYear(moment().year()) : ''
 
-        const fetchData = async () => {
+    const {data: certificates, error: certificatesError, isLoading: certificatesLoading} = useSWR
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/certificates', fetcher);
+    const {data: machines, error: machinesError, isLoading: machinesLoading} = useSWR
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines', fetcher);
 
-            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/certificates')
-                .then((response) => {
-                    setWeighingCertificates(
-                        response.data.Items.filter((certificate: any) => certificate.client_id ==
-                            JSON.parse(sessionStorage.getItem('company') as string).client_id)
-                            .filter((certificate: any) => moment(certificate.endOfCycle).year() == currentYear)
-                    );
+    const getWeighingCertificates = () => {
+        if (!certificatesLoading && !weighingCertificates)
+      {
+          const filteredWeighingCertificates =
+              certificates.Items.filter((certificate: any) => certificate.client_id ==
+                  JSON.parse(sessionStorage.getItem('company') as string).client_id)
+                  .filter((certificate: any) => moment(certificate.endOfCycle).year() == currentYear)
+          setWeighingCertificates(filteredWeighingCertificates)
+      }
+    }
 
-                })
-                .catch((error) => {
-                    console.log(error.response);
-                });
-
-            let apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines';
-
-            await API.get(apiName)
-                .then((response) => {
-                    setMachinesData(response.data.Items.filter((machine: any) =>
-                        machine.client == JSON.parse(sessionStorage.getItem('company') as string).client_name));
-
-                })
-                .catch((error) => {
-                    console.log(error.response);
-                });
-
-            await API.get('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/price-matrices')
-                .then((response) => {
-                    setPriceMatrices(
-                        response.data.Items
-                    );
-                })
-                .catch((error) => {
-                    console.log(error.response);
-                });
-        }
-
-        fetchData();
-
-    }, [currentYear, priceMatrices.set]);
-
-    let workingYears: number | string[] = []
-
-    for (let machine in machinesData) {
-        let machinesWorkingYears= Object.keys(machinesData[machine].price_list.prices)
-        for (let year in machinesWorkingYears) {
-            if (workingYears.includes(machinesWorkingYears[year]) == false) {
-                workingYears.push(machinesWorkingYears[year])
-            }
+    const getMachinesData = () => {
+        if (!machinesLoading && !machinesData) {
+            setMachinesData(machines.Items.filter((machine: any) =>
+                machine.client == JSON.parse(sessionStorage.getItem('company') as string).client_name));
         }
     }
+
+    const getCurrentYear = () => {
+        if (!currentYear) {
+            setCurrentYear(moment().year())
+        }
+    }
+
+    const getWorkingYears = () => {
+        if (machinesData && !workingYears) {
+            let workingYears: number | string[] = []
+
+            for (let machine in machinesData) {
+                let machinesWorkingYears= Object.keys(machinesData[machine].price_list.prices)
+                for (let year in machinesWorkingYears) {
+                    if (workingYears.includes(machinesWorkingYears[year]) == false) {
+                        workingYears.push(machinesWorkingYears[year])
+                    }
+                }
+            }
+            setWorkingYears(workingYears)
+        }
+    }
+
+    getCurrentYear();
+    getWeighingCertificates();
+    getMachinesData();
+    getWorkingYears();
 
     let waretypes: any[] = []
 
@@ -100,17 +99,16 @@ const AnnualRevenues = () => {
             waretypes.push(machinesData[machine].waretype)
         }
     }
-
     return(
         <div id="content-page" className="overflow-auto h-full px-48 m-auto">
             <p className="mt-9 text-3xl font-bold mb-5">Jahreserlöse {currentYear}</p>
             <div className="mb-2.5">
                 <p className="text-sm">
                     {
-                        workingYears.length > 0 ? workingYears.map((year: any) =>
+                        workingYears ? workingYears.sort().map((year: any) =>
                             <a key={year}
                                className="cursor-pointer"
-                               onClick={(e)=>{setCurrentYear(year)}}>
+                               onClick={(e)=>{setWeighingCertificates(undefined);setCurrentYear(year)}}>
                                 <span className={currentYear == year ? 'font-bold underline' : ''}>
                                     {year}
                                 </span>
@@ -118,7 +116,7 @@ const AnnualRevenues = () => {
                             </a>
                         ) : <a key={currentYear}
                                className="cursor-pointer"
-                               onClick={(e)=>{setCurrentYear(currentYear)}}>
+                               onClick={(e)=>{setWeighingCertificates(undefined);setCurrentYear(currentYear)}}>
                                 <span className={'font-bold underline'}>
                                     {currentYear}
                                 </span>
@@ -126,8 +124,8 @@ const AnnualRevenues = () => {
                     }
                     {
                         // @ts-ignore
-                        <a key={workingYears.sort(function(a,b){ // @ts-ignore
-                            return b-a})[0]}
+                        <a key={workingYears ? workingYears.sort(function(a,b){ // @ts-ignore
+                            return b-a})[0] : ''}
                            className="cursor-pointer"
                            onClick={(e)=>{
                                // @ts-ignore
@@ -137,12 +135,12 @@ const AnnualRevenues = () => {
                         >
                             <span className={
                                 // @ts-ignore
-                                currentYear == parseInt(workingYears.sort(function(a,b){ // @ts-ignore
+                                workingYears && currentYear == parseInt(workingYears.sort(function(a,b){ // @ts-ignore
                                     return b-a})[0]) + 1
                                     ? 'font-bold underline' : ''
                             }>
                                 {// @ts-ignore
-                                    workingYears.length > 0 ? parseInt(workingYears.sort(function(a,b){ // @ts-ignore
+                                    workingYears && workingYears.length > 0 ? parseInt(workingYears.sort(function(a,b){ // @ts-ignore
                                         return b-a})[0]) + 1
                                         : ''
                                 }
@@ -153,6 +151,10 @@ const AnnualRevenues = () => {
             </div>
 
             <div className="sm:rounded-lg shadow-md border">
+                {!machinesData ?
+                    <SkeletonTheme baseColor={"#F9FAFB"} highlightColor={"#ffffff"}>
+                        <Skeleton className="h-[10.7rem] shadow-md"/>
+                    </SkeletonTheme> :
                 <table className="flex-row w-full table-auto">
                     <thead>
                     <tr className="text-xs text-gray-500 border-b text-left">
@@ -339,7 +341,7 @@ const AnnualRevenues = () => {
                         </td>
                     </tr>
                     </tbody>
-                </table>
+                </table>}
             </div>
         </div>
     )
