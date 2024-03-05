@@ -346,6 +346,7 @@ export default function StorageSystemDashboard({
         11: "Dezember"
     }
 
+
     return (
         <div id="storage-system" className="min-w-full mr-10">
             <span className="text-xs uppercase font-bold text-gray-500">
@@ -625,13 +626,10 @@ export default function StorageSystemDashboard({
                     <p className="flex-grow flex-1">
                         <span className="font-bold">Gesamtmenge aller eMSS<br/></span>
                         {companyMachines && companyControlDocuments ? companyMachines.reduce( function(a: any, b: any){
-                                return a + (b['lastIndicate']);
-                        }, 0) //+ controlDocuments.
-                        //filter((document: any)=>moment(document.timestamp).format("DD/MM/YYYY") ==
-                            //moment().format("DD/MM/YYYY")).
-                        //reduce( function(a: any, b: any){
-                            //return a + (b['netto']);
-                       // }, 0)
+                                if (b.price_list.prices[moment().year()]) {
+                                    return a + ((b['lastIndicate']))
+                                }
+                            }, 0)
                             + " kg": "0 kg"}
                     </p>
                     <p className="flex-grow flex-1">
@@ -686,7 +684,6 @@ export default function StorageSystemDashboard({
                                     .price_list.prices[moment().year()][monthsList[moment().month()]])/1000)
                         }, 0) + (companyMachines.reduce( function(a: any, b: any){
                             if (b.price_list.prices[moment().year()]) {
-                                console.log()
                                 // @ts-ignore
                                 return a + ((b['lastIndicate']) *
                                     // @ts-ignore

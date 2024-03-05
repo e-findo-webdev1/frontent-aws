@@ -32,7 +32,7 @@ const Home: NextPage = () => {
     ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines', fetcher)
     const {data: controlDocuments, error: controlDocumentsError,
         isLoading: controlDocumentsLoading} = useSWR
-    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/waretypes', fetcher)
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/control-documents', fetcher)
     const {data: users, error: usersError, isLoading: usersLoading} = useSWR
     ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/users', fetcher)
     const {data: shiftsData, error: shiftsDataError, isLoading: shiftsDataLoading} = useSWR
@@ -72,10 +72,12 @@ const Home: NextPage = () => {
     const getCompanyControlDocuments = () => {
         if (!controlDocumentsLoading && companyMachines && !companyControlDocuments) {
             const companyControlDocuments = controlDocuments.Items.filter((document: any) =>
-                companyMachines.reduce( function(a: any, b: any){
-                    a.push(b['machine_id']);
-                    return a
-                }, []).includes(document.machine_id))
+                    companyMachines.reduce( function(a: any, b: any){
+                        a.push(b['machine_id']);
+                        return a
+                    }, []).includes(document.machine_id)
+
+                )
             setCompanyControlDocuments(companyControlDocuments)
         }
     }
@@ -83,6 +85,7 @@ const Home: NextPage = () => {
     getCompanyShifts();
     getCompanyMachines();
     getCompanyControlDocuments();
+
     const sendEmail = (e: any) => {
         e.preventDefault();
         const emailList = []

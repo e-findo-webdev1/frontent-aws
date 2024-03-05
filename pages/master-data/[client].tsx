@@ -53,8 +53,11 @@ const MasterData = () => {
             const companyShifts = shiftsData.Items.filter((shift:any) =>
                 shift.shift_id == company.client_number
             )
-            setCompanyShifts(companyShifts[0].shifts)
-            setCompanyWorkingHours(companyShifts[0].shiftHours)
+            if (companyShifts[0]) {
+                setCompanyShifts(companyShifts[0].shifts)
+                setCompanyWorkingHours(companyShifts[0].shiftHours)
+            }
+
         }
     }
     const getCompanyWorkers = () => {
@@ -98,11 +101,6 @@ const MasterData = () => {
         }
 
         getData()
-        if (!shiftsDataLoading) {
-            // @ts-ignore
-            SHIFT_CALENDAR = capitalizeDays(companyShifts)
-            calculatePlannedDate( '2023/02/14', '10:00')
-        }
 
     },[] );
 
@@ -488,9 +486,8 @@ const MasterData = () => {
                         </Link></span><br/>
                                         <span>{machine.maxNetto} kg</span></td>
                                     <td>{machine.waretype}</td>
-                                    <td className="flex py-9 m-auto">
+                                    <td className="">
                                         <div className="border h-4 border-black bg-white min-w-32 mr-1.5">
-
                                             <div
                                                 // @ts-ignore
                                                 className={ ((machine.lastIndicate)) * 100
@@ -500,14 +497,20 @@ const MasterData = () => {
                                                         / machine.maxNetto
                                                     )
                                                     : 0
-                                                }/>
+                                                }
+
+                                            > <div className="ml-1">
+                                                { parseInt(((machine.lastIndicate) * 100
+                                                    / machine.maxNetto).toFixed(0)) > 0
+                                                    ?
+                                                    ((machine.lastIndicate) * 100
+                                                        / machine.maxNetto).toFixed(0)
+                                                    : 0}%
+                                            </div>
+
+                                            </div>
                                         </div>
-                                        { parseInt(((machine.lastIndicate) * 100
-                                            / machine.maxNetto).toFixed(0)) > 0
-                                            ?
-                                            ((machine.lastIndicate) * 100
-                                                / machine.maxNetto).toFixed(0)
-                                            : 0}%</td>
+                                        </td>
                                     <td className="text-right">{machine.lastIndicate ?
                                         machine.lastIndicate : 0} kg</td>
                                     <td className="text-right">
@@ -555,7 +558,7 @@ const MasterData = () => {
                     <p className="text-xs uppercase font-bold text-gray-500">
                         Schichten
                     </p>
-                    {!companyWorkingHours ?
+                    {!companyMachines ?
                         <SkeletonTheme baseColor={"#F9FAFB"} highlightColor={"#ffffff"}>
                             <Skeleton className=" border min-h-[9.4rem] max-h-[9.4rem] shadow-md"/>
                         </SkeletonTheme> :
@@ -671,7 +674,7 @@ const MasterData = () => {
             <span className="text-xs uppercase font-bold text-gray-500">
                   Arbeitszeiten
             </span>
-            {!companyShifts ?
+            {!companyMachines ?
                 <SkeletonTheme baseColor={"#F9FAFB"} highlightColor={"#ffffff"}>
                     <Skeleton className="border min-h-[18.55rem] max-h-[18.55rem] shadow-md"/>
                 </SkeletonTheme> :
