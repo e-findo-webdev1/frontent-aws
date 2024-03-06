@@ -232,7 +232,7 @@ const WasteBalance = () => {
                                     {!waretypesLoading && !controlDocumentsLoading &&
                                         filteredControlDocuments ?
                                         waretypes.Items.filter((waretype: any) =>
-                                            waretype.name_waretype == document.waretype)[0].waretype_number
+                                            waretype.name_waretype == document.waretype).waretype_number
                                         : '-'}
                                 </td>
                                 <td className="text-right">
