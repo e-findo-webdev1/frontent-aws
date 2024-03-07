@@ -13,10 +13,17 @@ import CalendarYearSVG from "../public/calendar-clock-svgrepo-com";
 import AnnualSVG from "../public/sales-amount-svgrepo-com";
 import Co2SVG from "../public/truck-trash-svgrepo-com";
 import ScrapSVG from "../public/car-accident-car-crash-scrap-metal-svgrepo-com";
-import useSWR from "swr";
+import useSWR, { preload } from "swr";
+
 
 const fetcher = (url:  string) => fetch(url).then(r => r.json())
-const Home: NextPage = () => {
+
+preload('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines', fetcher)
+preload('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/control-documents', fetcher)
+preload('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/users', fetcher)
+preload('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/shifts', fetcher)
+preload('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/contractors', fetcher)
+function Home({ }) {
 
     const [companyWorkers, setCompanyWorkers] = useState<any>();
     const [companyShifts, setCompanyShifts] = useState<any>();

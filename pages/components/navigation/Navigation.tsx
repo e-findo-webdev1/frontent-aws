@@ -12,6 +12,7 @@ const Navigation = () => {
     const [selectedCompany, setSelectedCompany] = useState<any>();
     const [userPermissions] = useState(
         JSON.parse(sessionStorage.getItem('user') as string));
+    const [loggedIn, setLoggedIn] = useState(false);
 
     const {data: clients, error: clientssError,
         isLoading: clientsLoading} = useSWR
@@ -35,7 +36,7 @@ const Navigation = () => {
                         onChange={(e)=>{sessionStorage
                             .setItem("company", JSON.stringify(clients.Items.filter((client: any) =>
                                 client.client_name == e.target.value)[0]));setSelectedCompany(e.target.value);
-                            window.location.replace('/')}}
+                            window.location.reload()}}
 
 
                 >

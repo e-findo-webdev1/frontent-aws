@@ -1,3 +1,4 @@
+'use client'
 import {useEffect, useState} from "react";
 import API from "axios";
 const bcrypt = require('bcryptjs');
@@ -8,6 +9,7 @@ const LoginForm = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [clients, setClients] = useState();
+    const [loggedIn, setLoggedIn] = useState(false);
 
     useEffect(() => {
         let apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/users';
@@ -42,8 +44,7 @@ const LoginForm = () => {
                 // @ts-ignore
                 client.client_id == users.filter((user: any)=> user.email == email)[0].client_id)[0]))
             // @ts-ignore
-            window.location.reload(false);
-            window.location.replace('/');
+            setLoggedIn(true);
         }
 
         else {

@@ -84,7 +84,7 @@ const MonthlyEvaluation = () => {
     }
 
     const drawCharts = () => {
-        if (companyMachines && !certificatesLoading && filteredControlDocuments && !chartsDrawn)
+        if (companyMachines && !priceMatricesLoading && !certificatesLoading && filteredControlDocuments && !chartsDrawn)
         {
             const labels: any = [];
             for (let day = 1; day <= moment(`${selectedYear}-${monthsList.indexOf(selectedMonth) + 1}`,
@@ -755,7 +755,7 @@ const MonthlyEvaluation = () => {
                 : selectedCategory == 'Erlösentwicklung' ? 'Erlösentwicklung' : ''}
             </p>
 
-            {!companyMachines && !chartsDrawn ?
+            {!companyMachines && machinesDataLoading && controlDocumentsLoading && certificatesLoading && priceMatricesLoading && !chartsDrawn ?
                 <SkeletonTheme baseColor={"#F9FAFB"} highlightColor={"#ffffff"}>
                     <Skeleton className="min-h-[37rem] mt-5 mb-5 w-10/12 sm:rounded-lg shadow-md"/>
                 </SkeletonTheme> :
