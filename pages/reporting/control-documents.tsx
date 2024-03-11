@@ -10,6 +10,8 @@ import Image from "next/image";
 import useSWR from "swr";
 import 'react-loading-skeleton/dist/skeleton.css'
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const fetcher = (url:  string) => fetch(url).then(r => r.json())
 
@@ -18,6 +20,15 @@ const ControlDocuments = ({children} ) => {
 
     const [filteredMachines, setFilteredMachines] = useState<any>();
     const [filteredControlDocuments, setFilteredControlDocuments] = useState<any>();
+    const [selectecMachine, setSelectedMachine] = useState<any>('- Alle -');
+
+    const [startDate, setStartDate] = useState(
+        moment().set({hour: 0, minute: 0, second: 0}).toDate()
+    );
+    const [endDate, setEndDate] = useState(
+        moment().set({hour: 23, minute: 59, second: 59}).toDate()
+    );
+    const [filterDates, setFilterDates] = useState<any>(false)
 
     const {data: machines, error: machinesError, isLoading: machinesLoading} = useSWR
     ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines', fetcher)
@@ -38,17 +49,98 @@ const ControlDocuments = ({children} ) => {
     }
 
     if (!controlDocumentsLoading && filteredMachines && !filteredControlDocuments) {
-        const companyControlDocuments = controlDocuments.Items.filter((document: any) =>
-            filteredMachines.reduce( function(a: any, b: any){
-                a.push(b['machine_id']);
-                return a
-            }, []).includes(document.machine_id)).filter((document: any) => document.totalStandstill != 0 && document.averageThroughput != 0)
-        setFilteredControlDocuments(companyControlDocuments)
+        if (filterDates) {
+            if (selectecMachine != '- Alle - ') {
+                const companyControlDocuments = controlDocuments.Items.filter((document: any) =>
+                    document.machine_id == selectecMachine).filter((document: any) => document.totalStandstill != 0 && document.averageThroughput != 0)
+                    .filter((document: any) =>
+                        document.endOfCycle != undefined &&
+                        new Date(document.endOfCycle) > startDate &&
+                        new Date(document.endOfCycle) < endDate
+                    )
+                setFilteredControlDocuments(companyControlDocuments)
+            }
+            if (selectecMachine == '- Alle -') {
+                const companyControlDocuments = controlDocuments.Items.filter((document: any) =>
+                    filteredMachines.reduce( function(a: any, b: any){
+                        a.push(b['machine_id']);
+                        return a
+                    }, []).includes(document.machine_id)).filter((document: any) => document.totalStandstill != 0 && document.averageThroughput != 0)
+                    .filter((document: any) =>
+                        document.endOfCycle != undefined &&
+                        new Date(document.endOfCycle) > startDate &&
+                        new Date(document.endOfCycle) < endDate
+                    )
+                setFilteredControlDocuments(companyControlDocuments)
+            }
+        }
+        if (!filterDates) {
+            if (selectecMachine != '- Alle - ') {
+                const companyControlDocuments = controlDocuments.Items.filter((document: any) =>
+                    document.machine_id == selectecMachine).filter((document: any) => document.totalStandstill != 0 && document.averageThroughput != 0)
+                setFilteredControlDocuments(companyControlDocuments)
+            }
+            if (selectecMachine == '- Alle -') {
+                const companyControlDocuments = controlDocuments.Items.filter((document: any) =>
+                    filteredMachines.reduce( function(a: any, b: any){
+                        a.push(b['machine_id']);
+                        return a
+                    }, []).includes(document.machine_id)).filter((document: any) => document.totalStandstill != 0 && document.averageThroughput != 0)
+                setFilteredControlDocuments(companyControlDocuments)
+            }
+        }
+
     }
 
     return (
         <div id="content-page" className="overflow-auto h-full px-48 m-auto">
             <p className="my-9 text-3xl font-bold mb-9">Kontrollbelege</p>
+            <div className="flex space-x-2 text-sm">
+                <span>Maschine:</span>
+                <select className="w-40 text-blue-500 border" name="machines" id="machines"
+                        onChange={(e)=>{setSelectedMachine(e.target.value);
+                        setFilteredControlDocuments(undefined)}}
+                >
+                    <option selected>- Alle -</option>
+                    {!machinesLoading && filteredMachines ?
+                        filteredMachines.map((machine: any) =>
+                            <option key={machine.machine_id}
+                                    value={machine.machine_id}>{machine.machine_id}
+                            </option>
+                        )
+                        : ""}
+                </select>
+            </div>
+            <div className="mt-2.5 flex space-x-2 text-sm">
+                <span>Datum von:</span>
+                <DatePicker
+                    dateFormat="d.MM.yyyy"
+                    selected={filterDates ? startDate : null}
+                    onChange={(date:Date) => {setStartDate((date)); setFilterDates(true); setFilteredControlDocuments(undefined)}}
+                    className="border text-center rounded w-32"/>
+                <button onClick={()=>{setFilterDates(false); setFilteredControlDocuments(undefined)
+                    setStartDate(moment().set({hour: 0, minute: 0, second: 0}).toDate());
+                    setEndDate(moment().set({hour: 23, minute: 59, second: 59}).toDate())}}
+                        className="border float-right px-2 py-0.5  rounded font-semibold border-accent-color-1 bg-accent-color-4
+                        hover:bg-accent-color-5 shadow-md text-xs flex m-auto"
+                >
+                    x</button>
+                <span>Datum bis:</span>
+                <DatePicker
+                    dateFormat="d.MM.yyyy"
+                    selected={filterDates ? endDate : null}
+                    onChange={(date:Date) =>
+                    {setEndDate(moment(date).set({hour: 23, minute: 59, second: 59}).toDate());
+                        setFilterDates(true); setFilteredControlDocuments(undefined)}}
+                    className="border text-center rounded w-32"/>
+                <button onClick={()=>{setFilterDates(false); setFilteredControlDocuments(undefined)
+                    setStartDate(moment().set({hour: 0, minute: 0, second: 0}).toDate());
+                    setEndDate(moment().set({hour: 23, minute: 59, second: 59}).toDate())}}
+                        className="border float-right px-2 py-0.5  rounded font-semibold border-accent-color-1 bg-accent-color-4
+                        hover:bg-accent-color-5 shadow-md text-xs flex m-auto"
+                >
+                    x</button>
+            </div>
             { !machinesLoading && !controlDocumentsLoading && !certificatesLoading && !waretypesLoading
             && filteredMachines && filteredControlDocuments && filteredMachines
                 ?
