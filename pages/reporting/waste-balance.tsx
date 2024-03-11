@@ -9,6 +9,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import 'react-loading-skeleton/dist/skeleton.css'
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import useSWR from "swr";
+import PDFCsv from "../components/helpers/pdfCSV";
 
 const fetcher = (url:  string) => fetch(url).then(r => r.json())
 const WasteBalance = () => {
@@ -19,6 +20,7 @@ const WasteBalance = () => {
     const [weighingCertificates, setWeighingCertificates] = useState<any>();
     const [selectedWaretype, setSelectedWaretype] = useState<any>('- Alle -');
     const [selectedAVVNumber, setSelectedAVVNumber] = useState<any>('- Alle -');
+    const [CSVRowsContent, setCSVRowsContent] = useState<any>();
 
     const [startDate, setStartDate] = useState(
         moment().set({hour: 0, minute: 0, second: 0}).toDate()
@@ -72,10 +74,7 @@ const WasteBalance = () => {
                 filteredMachines.reduce( function(a: any, b: any){
                     return a + (b['machine_id']);
                 }).includes(document.machine_id)))}
-
-
         }
-
     }
     const getWeighingCertificates = () => {
         if (!certificatesLoading && !weighingCertificates)
@@ -86,18 +85,91 @@ const WasteBalance = () => {
             setWeighingCertificates(filteredWeighingCertificates)
         }
     }
+    const getCSVRows = () => {
+        if (filteredControlDocuments && !waretypesLoading && weighingCertificates && !CSVRowsContent) {
+            let CSVRows =  filteredControlDocuments
+                .sort(function(a: any, b: any){
+                    // @ts-ignore
+                    return b.document_id - a.document_id
+                })
+                .map((doc: any) =>
+                    [doc.endOfCycle, doc.waretype, doc.quality ? doc.quality : '-',
+                    String(waretypes.Items.filter((material: any) => material.name_waretype == doc.waretype)
+                        [0].waretype_number),
+                    String(doc.netto)
+                ])
+
+            setCSVRowsContent(CSVRows)
+        }
+    }
+    const downloadBlob = (filename: any, contentType: any) => {
+        const content = ['Datum', 'Material', 'Qualität', 'Menge in kg (Abgangsgewicht)',
+        'Menge in kg (Werksgewicht)', 'Delta in kg (A. - W.) \r\n'] + (filteredControlDocuments
+            .sort(function(a: any, b: any){
+                // @ts-ignore
+                return b.document_id - a.document_id
+            })
+            .map((doc: any) =>
+                [doc.endOfCycle, doc.waretype, doc.quality ? doc.quality : '-',
+                    String(doc.netto),
+                    weighingCertificates && weighingCertificates.filter((certificate: any) =>
+                        certificate.document_id == doc.document_id)[0] &&
+                    weighingCertificates.filter((certificate: any) =>
+                        certificate.document_id == doc.document_id)[0].workingWeight ?
+                        weighingCertificates.filter((certificate: any) =>
+                            certificate.document_id == doc.document_id)[0].workingWeight
+                         : '0',
+                    weighingCertificates ?
+                            doc.netto - (weighingCertificates.filter((certificate: any) =>
+                                certificate.document_id == doc.document_id)[0] &&
+                            weighingCertificates.filter((certificate: any) =>
+                                certificate.document_id == doc.document_id)[0].workingWeight ?
+                                weighingCertificates.filter((certificate: any) =>
+                                    certificate.document_id == doc.document_id)[0].workingWeight : 0)
+                            : '0'
+
+                ]).map((row: any) =>
+            row
+                .map(String)  // convert every value to String
+                .map((v: any) => v.replaceAll('"', '""'))  // escape double quotes
+                .map((v: any) => `"${v}"`)  // quote it
+                .join(',')  // comma-separated
+        ).join('\r\n'));  // rows starting on new lines
+        var blob = new Blob([content], { type: contentType });
+        var url = URL.createObjectURL(blob);
+
+        // Create a link to download it
+        var pom = document.createElement('a');
+        pom.href = url;
+        pom.setAttribute('download', filename);
+        pom.click();
+    }
+
     getFilteredMachines();
     getFilteredControlDocuments();
     getWeighingCertificates();
-
+    getCSVRows();
 
     return(
         <div id="content-page" className="overflow-auto h-full px-48 m-auto">
-            <Link href="/reporting">
+            <div className="w-[45rem]">
+                <Link href="/reporting">
+                    <button className="float-right border ml-auto p-1.5 px-3.5 font-bold border-accent-color-1 bg-accent-color-4
+                        hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs mt-10"
+                    >← Zurück
+                    </button>
+                </Link>
+                <PDFCsv
+                    csvContent = {CSVRowsContent ? CSVRowsContent : ''}
+                />
                 <button className="float-right border ml-auto p-1.5 px-3.5 font-bold border-accent-color-1 bg-accent-color-4
-                        hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs mt-10">← Zurück
+                        hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs mt-10 m-1"
+                        onClick={(e)=>{
+                            downloadBlob('export.csv', 'text/csv;charset=utf-8;')}}
+                >Export
                 </button>
-            </Link>
+            </div>
+
             <p className="mt-9 text-3xl font-bold mb-10">Abfallbilanz</p>
             <div className="flex space-x-2 text-sm">
                 <span>Material:</span>
