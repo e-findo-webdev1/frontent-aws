@@ -90,6 +90,7 @@ const WasteBalance = () => {
     getFilteredControlDocuments();
     getWeighingCertificates();
 
+
     return(
         <div id="content-page" className="overflow-auto h-full px-48 m-auto">
             <Link href="/reporting">
@@ -228,11 +229,12 @@ const WasteBalance = () => {
                                     {!machinesLoading ? filteredMachines.filter((machine: any) =>
                                         machine.waretype == document.waretype)[0].quality : '-'}
                                 </td>
-                                <td>
-                                    {!waretypesLoading && !controlDocumentsLoading &&
+                                <td className="text-right">
+                                    {!waretypesLoading && !controlDocumentsLoading && waretypes.Items.filter((waretype: any) =>
+                                        waretype.name_waretype == document.waretype)[0] &&
                                         filteredControlDocuments ?
                                         waretypes.Items.filter((waretype: any) =>
-                                            waretype.name_waretype == document.waretype).waretype_number
+                                            waretype.name_waretype == document.waretype)[0].waretype_number
                                         : '-'}
                                 </td>
                                 <td className="text-right">
