@@ -46,7 +46,6 @@ const ControlDocuments = ({children} ) => {
         setFilteredControlDocuments(companyControlDocuments)
     }
 
-
     return (
         <div id="content-page" className="overflow-auto h-full px-48 m-auto">
             <p className="my-9 text-3xl font-bold mb-9">Kontrollbelege</p>
@@ -110,12 +109,21 @@ const ControlDocuments = ({children} ) => {
                                     <td>{document.netto}</td>
                                     <td>{ document.startOfCycle ?
                                         ((moment(document.endOfCycle).unix()-moment(document.startOfCycle).unix())
-                                            /3600).toFixed(2) + 'h' : filteredControlDocuments.length > 1
-                                        && document.totalStandstill != 0  ?
-                                        ((moment(document.endOfCycle).unix()-(moment(filteredControlDocuments
-                                                .filter((page: any)=>page.document_id == document.document_id-1)[0]
-                                                // @ts-ignore
-                                                .timestamp)).unix())
+                                            /3600).toFixed(2) + 'h' :
+                                        filteredControlDocuments.length > 1 && document.totalStandstill != 0  ?
+                                        (
+                                            (moment(document.endOfCycle)
+                                                    .unix()
+                                                -
+                                            (moment(
+                                                filteredControlDocuments.sort(function(a: any, b: any){
+                                                    // @ts-ignore
+                                                    return moment(b.endOfCycle).unix() - moment(a.endOfCycle).unix()})
+                                                    .find((doc: any) => doc.document_id < document.document_id)
+                                                        // @ts-ignore
+                                                        .timestamp))
+                                                        .unix()
+                                            )
                                             /3600).toFixed(2) + 'h' : ''
                                     }</td>
                                     <td>{(document.totalProductionTime/3600000).toFixed(2)}h</td>

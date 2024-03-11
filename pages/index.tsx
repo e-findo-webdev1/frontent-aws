@@ -88,9 +88,9 @@ function Home({ }) {
             setCompanyControlDocuments(companyControlDocuments)
         }
     }
+    getCompanyMachines();
     getCompanyWorkers();
     getCompanyShifts();
-    getCompanyMachines();
     getCompanyControlDocuments();
 
     const sendEmail = (e: any) => {

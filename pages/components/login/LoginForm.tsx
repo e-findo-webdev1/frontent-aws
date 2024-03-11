@@ -1,9 +1,10 @@
 'use client'
 import {useEffect, useState} from "react";
 import API from "axios";
-const bcrypt = require('bcryptjs');
 
+const bcrypt = require('bcryptjs');
 const LoginForm = () => {
+
     const [users, setUsers] = useState([]);
     const [error, setError] = useState(0);
     const [email, setEmail] = useState("");
