@@ -628,7 +628,7 @@ export default function StorageSystemDashboard({
                         {companyMachines && companyControlDocuments ? companyMachines.reduce( function(a: any, b: any){
                                 if (b.price_list.prices[moment().year()]) {
                                     return a + ((b['lastIndicate']))
-                                }
+                                } else return 0
                             }, 0)
                             + " kg": "0 kg"}
                     </p>

@@ -145,7 +145,7 @@ const Co2Evaluation = () => {
                     }, 0)) + ' kg'
                         : customer && customer.co_load && customer.co_distance
                         && filteredMachines && !machinesLoading && !controlDocumentsLoading  && filteredControlDocuments && filteredControlDocuments[0] ?
-                            calculateCO2(customer, parseInt(filteredControlDocuments[0].netto)) + ' kg' : 'Berechnen...'}</span>
+                            calculateCO2(customer, parseInt(filteredControlDocuments[0].netto)) + ' kg' : '0 kg'}</span>
             </div>
             <p className="mt-9 mb-16 text-sm font-bold text-center">
                 Herzlichen Glückwunsch!
