@@ -20,43 +20,48 @@ pdfMake.fonts = {
         bolditalics: 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-MediumItalic.ttf'
     },
 }
-const PDFCsv = (csvContent: any) => {
+const PDFControl = (csvContent: any) => {
     const [url, setUrl] = useState(null)
 
+    if (csvContent.csvControl) {
+        console.log(csvContent.csvControl)
+    }
     const docDefinition =
-            csvContent.csvContent != '' ? {
+        csvContent.csvControl != '' ? {
             content: [
-                {text: `Abfallbilanz`, color: 'black', fontSize: 9},
+                {text: `Kontrolbellege`, color: 'black', fontSize: 9},
                 {text: `    `, bold: true, color: 'black', fontSize: 12},
                 {
                     table: {
 
                         headerRows: 1,
-                        widths: [ '*', '*', '*', '*', '*'],
+                        widths: [ '*', '*', '*', '*', '*', '*', '*', '*'],
 
-                        body: [
-                            ['Datum', 'Material', 'Qualitat', 'AVV Nr.', {text: 'Menge', alignment: 'right'}]
+                        body: [['Maschine', 'Wiegenr.', 'Datum', 'Warenart',
+                            {text: 'Bruttogewitcht', alignment: 'right'}, {text: 'Taragewitcht', alignment: 'right'},
+                            {text: 'Nettogewitcht', alignment: 'right'}, 'Bemerkung']
                         ].concat(
-                            csvContent.csvContent.map((row: any) => [row[0], row[1], row[2], row[3],
-                                {text: row[4], alignment: 'right'}]))
+                            csvContent.csvControl.map((row: any) => [row[0], row[1], row[2], row[3],
+                                {text: row[4], alignment: 'right'}, {text: row[5], alignment: 'right'},
+                                {text: row[6], alignment: 'right'}, {text: row[7]}]))
                     }
                 },
 
             ],
-                pageSize: 'A4',
-                pageMargins: [25, 10],
+            pageSize: 'A4',
+            pageMargins: [25, 10],
 
-                defaultStyle: {
-                    fontSize: 7,
-                    color: '#3F3C3E'
-                },
+            defaultStyle: {
+                fontSize: 5,
+                color: '#3F3C3E'
+            },
 
-                styles: {
-                    header: {
-                    }
+            styles: {
+                header: {
                 }
-    } : {
-     content: []}
+            }
+        } : {
+            content: []}
 
     const createPdf = () => {
         // @ts-ignore
@@ -77,6 +82,6 @@ const PDFCsv = (csvContent: any) => {
     )
 }
 
-export default PDFCsv;
+export default PDFControl;
 
 

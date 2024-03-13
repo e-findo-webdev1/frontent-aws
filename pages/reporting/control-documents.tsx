@@ -12,7 +12,8 @@ import 'react-loading-skeleton/dist/skeleton.css'
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-
+import PDFControl from "../components/helpers/pdfControl";
+import PDFCsv from "../components/helpers/pdfCSV";
 const fetcher = (url:  string) => fetch(url).then(r => r.json())
 
 // @ts-ignore
@@ -21,6 +22,7 @@ const ControlDocuments = ({children} ) => {
     const [filteredMachines, setFilteredMachines] = useState<any>();
     const [filteredControlDocuments, setFilteredControlDocuments] = useState<any>();
     const [selectecMachine, setSelectedMachine] = useState<any>('- Alle -');
+    const [controlRows, setControlRows] = useState<any>();
 
     const [startDate, setStartDate] = useState(
         moment().set({hour: 0, minute: 0, second: 0}).toDate()
@@ -92,8 +94,29 @@ const ControlDocuments = ({children} ) => {
 
     }
 
+    const getControlRows = () => {
+        if (filteredControlDocuments && !waretypesLoading && !controlRows) {
+            let ControlRows =  filteredControlDocuments
+                .sort(function(a: any, b: any){
+                    // @ts-ignore
+                    return b.document_id - a.document_id
+                })
+                .map((doc: any) =>
+                    [doc.machine_id, company.client_number + "-" + parseInt(company.client_number), doc.endOfCycle,
+                        doc.waretype, doc.netto + doc.tara, doc.tara, doc.netto, doc.comment
+                    ])
+
+            setControlRows(ControlRows)
+        }
+    }
+
+    getControlRows();
+
     return (
         <div id="content-page" className="overflow-auto h-full px-48 m-auto">
+            <PDFControl
+                csvControl = {controlRows ? controlRows : ''}
+            />
             <p className="my-9 text-3xl font-bold mb-9">Kontrollbelege</p>
             <div className="flex space-x-2 text-sm">
                 <span>Maschine:</span>
