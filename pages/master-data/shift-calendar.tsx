@@ -284,7 +284,6 @@ const ShiftCalendar = () => {
 
     const holidaysResponseBody = filteredHolidays && filteredHolidays[0] ? filteredHolidays[0] :
         {holidays: [], client_id: JSON.parse(sessionStorage.getItem('company') as string).client_id}
-    console.log(holidaysResponseBody)
 
     const sendHolidaysData = async (holidaysResponseBody: any) => {
         if (startDate && endDate && holidayName) {

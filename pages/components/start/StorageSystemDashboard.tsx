@@ -273,18 +273,16 @@ export default function StorageSystemDashboard({
             currentDate.add(1,'day')
         }
     }
+
+    let holidaysAdded: string[] = []
     const calculatePlannedDate = (workingHours: any, machineID: any) => {
         let taskDuration = workingHours*60;
         let taskStart = moment()
         // @ts-ignore
         let [firstShift, firstShiftStartDate] = returnFirstShift(taskStart)
 
-        ///
-        console.log(firstShift, firstShiftStartDate)
-
         let currentDate = moment(taskStart.format('L'))
 
-        console.log(currentDate)
 
         while (taskDuration > 0) {
             for (let day in SHIFT_CALENDAR) {
@@ -293,6 +291,38 @@ export default function StorageSystemDashboard({
                     // @ts-ignore
                     let todayShifts = SHIFT_CALENDAR[daysOfWeek[currentDate.day()]]
 
+                    ///
+                    for (let holiday in companyHolidays[0].holidays) {
+                        let holidayStart = moment(companyHolidays[0].holidays[holiday].date_start)
+                        let holidayEnd = moment(companyHolidays[0].holidays[holiday].date_end)
+                        if (currentDate.unix() >= holidayStart.unix() && currentDate.unix() <= holidayEnd.unix()) {
+                            if (!holidaysAdded.includes(currentDate.format("DD.MM.YYYY"))) {
+                                holidaysAdded.push(currentDate.format("DD.MM.YYYY"))
+                            }
+                        }
+                    }
+                    ///
+
+                    if (holidaysAdded.includes(currentDate.format("DD.MM.YYYY"))) {
+                        todayShifts = {'shift1': {
+                                startTime: '',
+                                endTime: '',
+                            },
+                            'shift2': {
+                                startTime: '',
+                                endTime: '',
+                            },
+                            'shift3': {
+                                startTime: '',
+                                endTime: '',
+                            },
+                            'shift4': {
+                                startTime: '',
+                                endTime: '',
+                            },}
+                    }
+                    console.log(currentDate.format("MM.DD.YYYY"))
+                    console.log(todayShifts)
                     for (let i = 1; i < 5; i++) {
                         let currentShift = 'shift' + i
                         if (todayShifts[currentShift].start == "") {
