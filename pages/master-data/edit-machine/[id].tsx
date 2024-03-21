@@ -51,7 +51,7 @@ const EditMachine = () => {
     }
 
     const getData = () => {
-        if (!machinesLoading && data.machine_id == 0) {
+        if (!machinesLoading && data.machine_id == 0 && !data) {
             const newData = machines.Items.filter((item: any) => item.machine_id == pid.id)[0]
             setData(newData)
         }

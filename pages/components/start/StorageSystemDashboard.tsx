@@ -13,7 +13,7 @@ import React from 'react';
 
 export default function StorageSystemDashboard({
 // @ts-ignore
-   companyMachines, companyControlDocuments, companyShifts, contractors
+   companyMachines, companyControlDocuments, companyShifts, contractors, companyHolidays
 }) {
 
     const [machineID, setMachineID] = useState<any>("");
@@ -29,7 +29,6 @@ export default function StorageSystemDashboard({
     const [isDatePicked, setIsDatePicked] = useState<any>(false);
     const [defaultContractor, setDefaultContractor] = useState<any>();
     const [selectedContractor, setSelectedContractor] = useState<any>();
-    const [pageReload, setPageReload] = useState<any>({set: false});
     const [userPermissions] = useState(
         JSON.parse(sessionStorage.getItem('user') as string));
     const [isDataLoaded, setIsDataLoaded] = useState<any>(false);
@@ -190,8 +189,31 @@ export default function StorageSystemDashboard({
 
         return capitalizedCalendar;
     }
+
+    const checkHolidays = () => {
+        /// check if date is a holiday
+        let currentDate = moment()
+        let newCurrentDate = currentDate
+
+        for (let holiday in companyHolidays[0].holidays) {
+            let holidayStart = moment(companyHolidays[0].holidays[holiday].date_start)
+            let holidayEnd = moment(companyHolidays[0].holidays[holiday].date_end)
+            if (currentDate.unix() >= holidayStart.unix() && currentDate.unix() <= holidayEnd.unix()) {
+                let n
+                n = (holidayEnd.unix() - holidayStart.unix())/ 86400
+                newCurrentDate = currentDate.add(n + 1, 'days')
+            }
+        }
+        if (newCurrentDate == currentDate) {
+            return currentDate
+        } else {
+            return newCurrentDate.startOf('day')
+        }
+    }
     const returnFirstShift = (taskStart: any) => {
-        let currentDate = moment(taskStart.format('L'))
+        //let currentDate = moment(taskStart.format('L'))
+        let newCurrentDate = checkHolidays();
+        let currentDate = moment(newCurrentDate.format('L'))
         // @ts-ignore
         for (let i = 0 ; i < 7 ; i++) {
             // @ts-ignore
@@ -256,7 +278,14 @@ export default function StorageSystemDashboard({
         let taskStart = moment()
         // @ts-ignore
         let [firstShift, firstShiftStartDate] = returnFirstShift(taskStart)
+
+        ///
+        console.log(firstShift, firstShiftStartDate)
+
         let currentDate = moment(taskStart.format('L'))
+
+        console.log(currentDate)
+
         while (taskDuration > 0) {
             for (let day in SHIFT_CALENDAR) {
                 // @ts-ignore

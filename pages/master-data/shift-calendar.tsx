@@ -1,7 +1,25 @@
 import React, {ChangeEvent, useEffect, useState} from "react";
 import API from "axios";
+import DatePicker from "react-datepicker";
+import moment from "moment/moment";
+import useSWR from "swr";
+import "react-datepicker/dist/react-datepicker.css";
+const fetcher = (url:  string) => fetch(url).then(r => r.json())
 
 const ShiftCalendar = () => {
+
+
+    const [startDate, setStartDate] = useState<any>(
+    );
+    const [endDate, setEndDate] = useState<any>(
+    );
+    const [holidayName, setHolidayName] = useState<any>();
+
+    const {data: holidays, error: holidaysError, isLoading: holidaysLoading} = useSWR
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/holidays', fetcher)
+    const {data: shiftsData, error: shiftsDataError, isLoading: shiftsDataLoading} = useSWR
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/shifts', fetcher)
+
     const [shifts, setShift] = useState({
         monday: {
             shift1: {
@@ -189,41 +207,43 @@ const ShiftCalendar = () => {
         select56: "So:"
     })
     const [shiftHours, setShiftHours] = useState<any>({
-            shift1_end: "00:00",
-            shift1_start: "00:00",
-            shift2_end: "00:00",
-            shift2_start: "00:00",
-            shift3_end: "00:00",
-            shift3_start: "00:00",
-            shift4_end: "00:00",
-            shift4_start: "00:00"
+        shift1_end: "00:00",
+        shift1_start: "00:00",
+        shift2_end: "00:00",
+        shift2_start: "00:00",
+        shift3_end: "00:00",
+        shift3_start: "00:00",
+        shift4_end: "00:00",
+        shift4_start: "00:00"
     });
 
-    useEffect(() => {
-        const apiName = 'https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/shifts';
+    const [filteredHolidays, setFilteredHolidays] = useState<any>();
+    const [companyShifts, setCompanyShifts] = useState<any>();
 
-        API.get(apiName)
-            .then((response) => {
-                setShift(
-                    response.data.Items
-                        .filter( (shift: any) => shift.shift_id ==
-                            JSON.parse(sessionStorage.getItem('company') as string).client_number)[0].shifts
-                );
-                setSelection(
-                    response.data.Items
-                        .filter( (shift: any) => shift.shift_id ==
-                            JSON.parse(sessionStorage.getItem('company') as string).client_number )[0].selection
-                );
-                setShiftHours(
-                    response.data.Items
-                        .filter( (shift: any) => shift.shift_id ==
-                            JSON.parse(sessionStorage.getItem('company') as string).client_number )[0].shiftHours
-                )
-            })
-            .catch((error) => {
-                console.log(error.response);
-            });
-    },[]);
+    const filterHolidays = () => {
+        if (!holidaysLoading && !filteredHolidays) {
+            //@ts-ignore
+            const filteredHolidays = holidays.Items.filter((holidays: any) => holidays.client_id == JSON.parse(sessionStorage.getItem('company')).client_id)
+            setFilteredHolidays(filteredHolidays)
+        }
+    }
+    const getCompanyShifts = () => {
+        if (!shiftsDataLoading && !companyShifts) {
+            const companyShifts = shiftsData.Items.filter( (shift: any) => shift.shift_id ==
+                JSON.parse(sessionStorage.getItem('company') as string).client_number)[0].shifts
+            const companySelection = shiftsData.Items.filter( (shift: any) => shift.shift_id ==
+                    JSON.parse(sessionStorage.getItem('company') as string).client_number )[0].selection
+            const companyHours = shiftsData.Items.filter( (shift: any) => shift.shift_id ==
+                JSON.parse(sessionStorage.getItem('company') as string).client_number )[0].shiftHours
+            setShift(companyShifts)
+            setCompanyShifts(companyShifts)
+            setSelection(companySelection)
+            setShiftHours(companyHours)
+        }
+    }
+
+    filterHolidays();
+    getCompanyShifts();
 
     function handleChange(event: ChangeEvent<HTMLInputElement>, day: string, shiftNum: string, field: string) {
         setShift({
@@ -262,11 +282,31 @@ const ShiftCalendar = () => {
             });
     }
 
+    const holidaysResponseBody = filteredHolidays && filteredHolidays[0] ? filteredHolidays[0] :
+        {holidays: [], client_id: JSON.parse(sessionStorage.getItem('company') as string).client_id}
+    console.log(holidaysResponseBody)
+
+    const sendHolidaysData = async (holidaysResponseBody: any) => {
+        if (startDate && endDate && holidayName) {
+            holidaysResponseBody.holidays.push({name: holidayName, date_start: startDate,
+                date_end: endDate})
+            await API.put('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/holidays',
+                holidaysResponseBody)
+                .then(function (response) {
+                    console.log(response);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            window.location.replace('/master-data/shift-calendar')
+        }
+    }
+
     return(
         <div id="content-page" className="overflow-auto h-full px-48 m-auto">
-            <p className="mt-5 text-3xl font-bold mb-5">Arbetszeiten</p>
+            <p className="mt-5 text-3xl font-bold mb-5">Arbeitszeiten</p>
             <div className="mb-10 sm:rounded-lg shadow-md border overflow-auto">
-                <table className="flex-row w-full table-auto">
+                <table className="flex-row w-full">
                     <thead>
                     <tr className="text-xs text-gray-500 border-b text-center">
                         <th/>
@@ -280,7 +320,7 @@ const ShiftCalendar = () => {
                         <th className="font-normal">Ende Schicht 4</th>
                     </tr>
                     </thead>
-                    <tbody>
+                    <tbody className="">
                     <tr className="text-xs border-b text-left">
                         <td>
                             Montag
@@ -1974,6 +2014,62 @@ const ShiftCalendar = () => {
             >
                 Speichern
             </button>
+            <hr className="mt-5"/>
+            <p className="mt-5 text-3xl font-bold mb-5">Betriebsurlaub</p>
+
+            <div className="mt-2.5 flex space-x-2 text-sm">
+                <div className="flex space-x-1">
+                    <span className="font-light justify-center mt-1 align-middle">Neue Urlaubszeit:</span>
+                    <DatePicker
+                        dateFormat="d.MM.yyyy"
+                        placeholderText="Von"
+                        selected={startDate ? startDate : null}
+                        onChange={(date:Date) => {setStartDate((date))}}
+                        className="border pl-2 py-0.5 rounded w-32"/>
+                    <DatePicker
+                        dateFormat="d.MM.yyyy"
+                        placeholderText="Bis"
+                        selected={endDate ? endDate : null}
+                        onChange={(date:Date) => {setEndDate((date))}}
+                        className="border pl-2 py-0.5 rounded w-32"/>
+                    <input  className="border ml-2 rounded pl-2.5 py-0.5"
+                            defaultValue={holidayName && holidayName != '' ? holidayName : null}
+                            placeholder="Bezeichnung"
+                            onChange={(e)=>{setHolidayName(e.target.value)}}/>
+                </div>
+            </div>
+            <button className="border mt-5 ml-auto p-1.5 px-3.5 font-bold
+                              border-accent-color-1 bg-accent-color-4
+                              hover:bg-accent-color-5 sm:rounded-lg shadow-md text-xs"
+                    onClick={(e)=> {sendHolidaysData(holidaysResponseBody);
+                         setHolidayName(''); setStartDate(undefined)
+                    ;setEndDate(undefined); setFilteredHolidays(undefined)}}
+            >
+                Speichern
+            </button>
+            <div className="mt-4 sm:rounded-lg shadow-md border overflow-auto w-[23rem]">
+                <table className="table-auto overflow-auto">
+                    <thead>
+                    <tr className="text-xs text-gray-500 border-b">
+                        <th className="font-normal text-left min-w-[6rem]">Start</th>
+                        <th className="font-normal text-left min-w-[6rem]">Ende</th>
+                        <th className="font-normal w-full"></th>
+                    </tr>
+                    </thead>
+                    <tbody className="bg-gray-50">
+                    {filteredHolidays && filteredHolidays[0] ? filteredHolidays[0].holidays
+                        .sort(function(a: any, b: any){
+                            // @ts-ignore
+                            return moment(a.date_start).unix() - moment(b.date_start).unix()})
+                        .map((holiday: any) =>
+                            <tr key='' className="text-xs border-t">
+                                <td>{moment(holiday.date_start).format("DD.MM.yyyy")}</td>
+                                <td>{moment(holiday.date_end).format("DD.MM.yyyy")}</td>
+                                <td>{holiday.name}</td>
+                            </tr>) : ''}
+                    </tbody>
+                </table>
+            </div>
         </div>
     )
 }

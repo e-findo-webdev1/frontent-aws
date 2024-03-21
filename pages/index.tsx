@@ -30,6 +30,7 @@ function Home({ }) {
     const [companyWorkingHours, setCompanyWorkingHours] = useState<any>();
     const [companyMachines, setCompanyMachines] = useState<any>();
     const [companyControlDocuments, setCompanyControlDocuments] = useState<any>();
+    const [companyHolidays, setCompanyHolidays] = useState<any>();
 
     const [emailList, setEmailList] = useState<any>();
     const [emailListBack, setEmailListBack] = useState<any>(['webdev1@e-findo.de', 'it-service@e-findo.de',
@@ -46,6 +47,8 @@ function Home({ }) {
     ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/shifts', fetcher)
     const {data: contractors, error: contractorsError, isLoading: contractorsLoading} = useSWR
     ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/contractors', fetcher)
+    const {data: holidays, error: holidaysError, isLoading: holidaysLoading} = useSWR
+    ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/holidays', fetcher)
 
     const company = JSON.parse(sessionStorage.getItem('company') as string)
     const getCompanyWorkers = () => {
@@ -88,10 +91,22 @@ function Home({ }) {
             setCompanyControlDocuments(companyControlDocuments)
         }
     }
+    const getCompanyHolidays = () => {
+        if (!holidaysLoading && !companyHolidays) {
+            const companyHolidays = holidays.Items.filter((holidays: any) =>
+                //@ts-ignore
+                holidays.client_id == JSON.parse(sessionStorage.getItem('company')).client_id
+            )
+            setCompanyHolidays(companyHolidays)
+        }
+    }
+
+
     getCompanyMachines();
     getCompanyWorkers();
     getCompanyShifts();
     getCompanyControlDocuments();
+    getCompanyHolidays();
 
     const sendEmail = (e: any) => {
         e.preventDefault();
@@ -268,6 +283,7 @@ function Home({ }) {
                             companyControlDocuments = { companyControlDocuments }
                             companyShifts = { companyShifts }
                             contractors = { contractors }
+                            companyHolidays = { companyHolidays }
                         />
                     </div>
             </div>
