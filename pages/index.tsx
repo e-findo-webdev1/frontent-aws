@@ -4,7 +4,7 @@ import Header from "./components/start/Header";
 import StorageSystemDashboard from "./components/start/StorageSystemDashboard";
 import Link from "next/link";
 import emailjs from "@emailjs/browser";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import API from "axios";
 import 'react-loading-skeleton/dist/skeleton.css'
 import PDFSVG from "../public/pdf-svgrepo-com";
@@ -14,17 +14,21 @@ import AnnualSVG from "../public/sales-amount-svgrepo-com";
 import Co2SVG from "../public/truck-trash-svgrepo-com";
 import ScrapSVG from "../public/car-accident-car-crash-scrap-metal-svgrepo-com";
 import useSWR, { preload } from "swr";
+import {Audio} from "react-loader-spinner";
 
 
-const fetcher = (url:  string) => fetch(url).then(r => r.json())
 
-preload('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines', fetcher)
-preload('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/control-documents', fetcher)
-preload('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/users', fetcher)
-preload('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/shifts', fetcher)
-preload('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/contractors', fetcher)
+
 function Home({ }) {
+    const fetcher = (url:  string) => fetch(url).then(r => r.json())
 
+    preload('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines', fetcher)
+    preload('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/control-documents', fetcher)
+    preload('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/users', fetcher)
+    preload('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/shifts', fetcher)
+    preload('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/contractors', fetcher)
+    preload('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/holidays', fetcher)
+    const company = JSON.parse(sessionStorage.getItem('company') as string)
     const [companyWorkers, setCompanyWorkers] = useState<any>();
     const [companyShifts, setCompanyShifts] = useState<any>();
     const [companyWorkingHours, setCompanyWorkingHours] = useState<any>();
@@ -50,7 +54,6 @@ function Home({ }) {
     const {data: holidays, error: holidaysError, isLoading: holidaysLoading} = useSWR
     ('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/holidays', fetcher)
 
-    const company = JSON.parse(sessionStorage.getItem('company') as string)
     const getCompanyWorkers = () => {
         if (!usersLoading && !companyWorkers) {
             const companyWorkers = users.Items.filter((user:any) =>
@@ -73,7 +76,6 @@ function Home({ }) {
     }
     const getCompanyMachines = () => {
         if (!machinesLoading && !companyMachines) {
-            console.log('s')
             const companyMachines = machines.Items.filter((machine:any) =>
                 machine.client == JSON.parse(sessionStorage.getItem('company') as string).client_name
             )

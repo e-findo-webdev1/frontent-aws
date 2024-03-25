@@ -9,7 +9,7 @@ import PopupFilling from "./PopupFilling";
 import 'react-loading-skeleton/dist/skeleton.css'
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import React from 'react';
-
+import { Audio } from 'react-loader-spinner'
 
 export default function StorageSystemDashboard({
 // @ts-ignore
@@ -326,8 +326,6 @@ export default function StorageSystemDashboard({
                                 endTime: '',
                             },}
                     }
-                    console.log(currentDate.format("MM.DD.YYYY"))
-                    console.log(todayShifts)
                     for (let i = 1; i < 5; i++) {
                         let currentShift = 'shift' + i
                         if (todayShifts[currentShift].start == "") {
@@ -413,96 +411,99 @@ export default function StorageSystemDashboard({
 
     return (
         <div id="storage-system" className="min-w-full mr-10">
-            <span className="text-xs uppercase font-bold text-gray-500">
+
+            <div>
+                            <span className="text-xs uppercase font-bold text-gray-500">
                   Lagersysteme
             </span>
-            {!companyMachines ?
-                <SkeletonTheme baseColor={"#F9FAFB"} highlightColor={"#ffffff"}>
-                <Skeleton className="min-h-80 max-h-80 sm:rounded-lg shadow-md"/>
-                </SkeletonTheme> :
-            <div className="sm:rounded-lg shadow-md overflow-auto">
-                <div className="sm:rounded-lg shadow-md border overflow-auto max-h-80 bg-gray-50">
-                    <table className="flex-row table-fixed w-full overflow-auto min-w-full max-w-52">
-                        <thead className="bg-gray-50">
-                        <tr className="text-xs text-gray-500 border-b text-left bg-white">
-                            <th className="font-normal w-[5.6rem]">Masch.-ID<br/>Max Netto</th>
-                            <th className="font-normal w-[7rem]">Material</th>
-                            <th className="font-normal w-[9.1rem]">Füllgrad</th>
-                            <th className="font-normal w-[6rem]">Plandatum<br/>Abholdatum</th>
-                            <th className="font-normal w-[4rem]">Netto (kg)</th>
-                            <th className="font-normal w-[6.5rem] text-right">Monatspreis<br/>(in € / t)</th>
-                            <th className="font-normal w-[5rem] text-right">Summe<br/>(in €)</th>
-                        </tr>
-                        </thead>
-                            <tbody className="bg-gray-50">
-                            {companyMachines && companyControlDocuments
-                                ? companyMachines.sort(function(a: any, b: any){
-                                    // @ts-ignore
-                                    return a.machine_id - b.machine_id})
-                                    .map((machine: any) =>
-                                            <tr key={machine.machine_id} className="text-xs border-t">
-                                                <td>
-                                                    {machine.machineType}: <span className="underline">
+                {!companyMachines ?
+                    <SkeletonTheme baseColor={"#F9FAFB"} highlightColor={"#ffffff"}>
+                        <Skeleton className="min-h-80 max-h-80 sm:rounded-lg shadow-md"/>
+                    </SkeletonTheme> :
+                    <div className="sm:rounded-lg shadow-md overflow-auto">
+                        <div className="sm:rounded-lg shadow-md border overflow-auto max-h-80 bg-gray-50">
+                            <table className="flex-row table-fixed w-full overflow-auto min-w-full max-w-52">
+                                <thead className="bg-gray-50">
+                                <tr className="text-xs text-gray-500 border-b text-left bg-white">
+                                    <th className="font-normal w-[5.6rem]">Masch.-ID<br/>Max Netto</th>
+                                    <th className="font-normal w-[7rem]">Material</th>
+                                    <th className="font-normal w-[9.1rem]">Füllgrad</th>
+                                    <th className="font-normal w-[6rem]">Plandatum<br/>Abholdatum</th>
+                                    <th className="font-normal w-[4rem]">Netto (kg)</th>
+                                    <th className="font-normal w-[6.5rem] text-right">Monatspreis<br/>(in € / t)</th>
+                                    <th className="font-normal w-[5rem] text-right">Summe<br/>(in €)</th>
+                                </tr>
+                                </thead>
+                                <tbody className="bg-gray-50">
+                                {companyMachines && companyControlDocuments
+                                    ? companyMachines.sort(function(a: any, b: any){
+                                        // @ts-ignore
+                                        return a.machine_id - b.machine_id})
+                                        .map((machine: any) =>
+                                                <tr key={machine.machine_id} className="text-xs border-t">
+                                                    <td>
+                                                        {machine.machineType}: <span className="underline">
                         <Link href={"/machines/" + machine.machine_id}>
                             {machine.machine_id}
                         </Link></span><br/>
-                                                    <span>{machine.maxNetto} kg</span></td>
-                                                <td>{machine.waretype}</td>
-                                                <td className=" py-4">
-                                                    <a className={ machine.total_working_time != 0 &&
-                                                    userPermissions.abholdatumPopupPermission && machine.averageThroughput
-                                                        ? "cursor-pointer flex"
-                                                        : "pointer-events-none flex"}
-                                                       onClick={()=>
-                                                       {
-                                                           setSelectedContractor(machine.selectedContractor)
-                                                           setPopupFilling(true)
-                                                           setMachineID(machine.machine_id)
-                                                           if (companyMachines && companyMachines.filter((obj: any) =>
-                                                           {return obj.machine_id == machine.machine_id})[0]
-                                                               .pickup_date != "") {
-                                                               setPickupDate(moment(companyMachines.filter((obj: any) =>
-                                                               {return obj.machine_id == machine.machine_id})[0].pickup_date))
-                                                           } else if (pickupDates) {
-                                                               setPickupDate(pickupDates
-                                                                   .filter((obj:any) =>
-                                                                   {return obj.machineID===machine.machine_id})[0]
-                                                                   // @ts-ignore
-                                                                   .taskEnd)
+                                                        <span>{machine.maxNetto} kg</span></td>
+                                                    <td>{machine.waretype}</td>
+                                                    <td className=" py-4">
+                                                        <a className={ machine.total_working_time != 0 &&
+                                                        userPermissions.abholdatumPopupPermission && machine.averageThroughput
+                                                            ? "cursor-pointer flex"
+                                                            : "pointer-events-none flex"}
+                                                           onClick={()=>
+                                                           {
+                                                               setSelectedContractor(machine.selectedContractor)
+                                                               setPopupFilling(true)
+                                                               setMachineID(machine.machine_id)
+                                                               if (companyMachines && companyMachines.filter((obj: any) =>
+                                                               {return obj.machine_id == machine.machine_id})[0]
+                                                                   .pickup_date != "") {
+                                                                   setPickupDate(moment(companyMachines.filter((obj: any) =>
+                                                                   {return obj.machine_id == machine.machine_id})[0].pickup_date))
+                                                               } else if (pickupDates) {
+                                                                   setPickupDate(pickupDates
+                                                                       .filter((obj:any) =>
+                                                                       {return obj.machineID===machine.machine_id})[0]
+                                                                       // @ts-ignore
+                                                                       .taskEnd)
+                                                               }
+
+                                                               setIsDateConfirmed(companyMachines.filter((obj: any) =>
+                                                               {return obj.machine_id == machine.machine_id})[0]
+                                                                   .isDateConfirmed)
+                                                               setRadioConfirmed(companyMachines.filter((obj: any) =>
+                                                               {return obj.machine_id == machine.machine_id})[0]
+                                                                   .isDateConfirmed)
                                                            }
+                                                           }>
+                                                            <div className="border border-black w-28 bg-white mr-1.5">
 
-                                                           setIsDateConfirmed(companyMachines.filter((obj: any) =>
-                                                           {return obj.machine_id == machine.machine_id})[0]
-                                                               .isDateConfirmed)
-                                                           setRadioConfirmed(companyMachines.filter((obj: any) =>
-                                                           {return obj.machine_id == machine.machine_id})[0]
-                                                               .isDateConfirmed)
-                                                       }
-                                                       }>
-                                                        <div className="border border-black w-28 bg-white mr-1.5">
+                                                                <div
+                                                                    // @ts-ignore
+                                                                    className={ (machine.lastIndicate) * 100
+                                                                    / machine.maxNetto > 0
+                                                                        ? getFillerStyle(
+                                                                            (machine.lastIndicate) * 100
+                                                                            / machine.maxNetto
+                                                                        )
+                                                                        : 0
+                                                                    }/>
+                                                            </div>
+                                                            { parseInt(((machine.lastIndicate) * 100
+                                                                / machine.maxNetto).toFixed(0)) > 0
+                                                                ?
+                                                                ((machine.lastIndicate) * 100
+                                                                    / machine.maxNetto).toFixed(0)
+                                                                : 0}%
+                                                        </a>
+                                                    </td>
 
-                                                            <div
-                                                                // @ts-ignore
-                                                                className={ (machine.lastIndicate) * 100
-                                                                / machine.maxNetto > 0
-                                                                    ? getFillerStyle(
-                                                                        (machine.lastIndicate) * 100
-                                                                        / machine.maxNetto
-                                                                    )
-                                                                    : 0
-                                                                }/>
-                                                        </div>
-                                                        { parseInt(((machine.lastIndicate) * 100
-                                                            / machine.maxNetto).toFixed(0)) > 0
-                                                            ?
-                                                            ((machine.lastIndicate) * 100
-                                                                / machine.maxNetto).toFixed(0)
-                                                            : 0}%
-                                                    </a>
-                                                </td>
-                                                <td>
-                                                    {
-                                                        <span>
+                                                    <td>
+                                                        {
+                                                            <span>
                                                     { machine.total_working_time != 0 && plannedDates && plannedDates
                                                         .filter((obj:any) =>
                                                         {return obj.machineID===machine.machine_id}).length != 0
@@ -597,171 +598,173 @@ export default function StorageSystemDashboard({
                                                                 :""}
                                                     </a>
                                                 </span>
-                                                    }
-                                                </td>
-                                                <td className="text-right">{machine.lastIndicate ?
-                                                    machine.lastIndicate : 0} kg</td>
-                                                <td className="text-right">
-                                                    {machine.price_list && machine.price_list.prices[moment().year()]
+                                                        }
+                                                    </td>
+                                                    <td className="text-right">{machine.lastIndicate ?
+                                                        machine.lastIndicate : 0} kg</td>
+                                                    <td className="text-right">
+                                                        {machine.price_list && machine.price_list.prices[moment().year()]
                                                         && machine.price_list.prices
+                                                            // @ts-ignore
+                                                            [moment().year()][monthsList[moment().month()]]
+                                                            ?
+                                                            machine.price_list.prices
+                                                                // @ts-ignore
+                                                                [moment().year()][monthsList[moment().month()]] : "0,00"} €
+                                                    </td>
+                                                    <td className="text-right">{machine.price_list &&
+                                                    machine.price_list.prices[moment().year()]
+                                                    && machine.price_list.prices
                                                         // @ts-ignore
                                                         [moment().year()][monthsList[moment().month()]]
-                                                        ?
-                                                        machine.price_list.prices
-                                                            // @ts-ignore
-                                                            [moment().year()][monthsList[moment().month()]] : "0,00"} €
-                                                </td>
-                                                <td className="text-right">{machine.price_list &&
-                                                machine.price_list.prices[moment().year()]
-                                                    && machine.price_list.prices
-                                                    // @ts-ignore
-                                                    [moment().year()][monthsList[moment().month()]]
-                                                    ? ((machine.lastIndicate) *
-                                                        parseInt(machine.price_list.prices
-                                                            // @ts-ignore
-                                                            [moment().year()][monthsList[moment().month()]]) /1000)
-                                                        .toFixed(2)
-                                                        .replace(".",",") : "0,00"} €</td>
-                                            </tr>
-                                    )
-                                : ""
-                            }
-                            </tbody>
-                    </table>
-                    <PopupFilling
-                        machineID={machineID}
-                        pickupDate={pickupDate}
-                        setMachineID={setMachineID}
-                        setPickupDate={setPickupDate}
-                        setPickupDates={setPickupDates}
-                        pickupDates={pickupDates}
-                        machinesData={companyMachines}
-                        isDateConfirmed={isDateConfirmed}
-                        setIsDateConfirmed={setIsDateConfirmed}
-                        setNewPickupDates={setNewPickupDates}
-                        newPickupDates={newPickupDates}
-                        areDatesConfirmed={areDatesConfirmed}
-                        setAreDatesConfirmed={setAreDatesConfirmed}
-                        radioConfirmed={radioConfirmed}
-                        setRadioConfirmed={setRadioConfirmed}
-                        popupFilling={popupFilling}
-                        setPopupFilling={setPopupFilling}
-                        contractors = {contractors}
-                        isDatePicked = {isDatePicked}
-                        setIsDatePicked = {setIsDatePicked}
-                        defaultContractor = {defaultContractor}
-                        selectedContractor = {selectedContractor}
-                        setSelectedContractor = {setSelectedContractor}
-                        plannedDates = {plannedDates}
-                    />
-                    <Popup
-                        machineID={machineID}
-                        pickupDate={pickupDate}
-                        setMachineID={setMachineID}
-                        setPickupDate={setPickupDate}
-                        setPickupDates={setPickupDates}
-                        pickupDates={pickupDates}
-                        machinesData={companyMachines}
-                        isDateConfirmed={isDateConfirmed}
-                        setIsDateConfirmed={setIsDateConfirmed}
-                        setNewPickupDates={setNewPickupDates}
-                        newPickupDates={newPickupDates}
-                        areDatesConfirmed={areDatesConfirmed}
-                        setAreDatesConfirmed={setAreDatesConfirmed}
-                        radioConfirmed={radioConfirmed}
-                        setRadioConfirmed={setRadioConfirmed}
-                        popup={popup}
-                        setPopup={setPopup}
-                        isDatePicked={isDatePicked}
-                    />
-                </div>
-            </div>}
-            {!companyMachines ?
-                <SkeletonTheme baseColor={"#F9FAFB"} highlightColor={"#ffffff"}>
-                    <Skeleton className="mt-5 sm:rounded-lg shadow-md flex-row h-40"/>
-                </SkeletonTheme> :
-            <div id="summary"
-                 className="mt-5 overflow-auto sm:rounded-lg shadow-md border flex-row text-center
+                                                        ? ((machine.lastIndicate) *
+                                                            parseInt(machine.price_list.prices
+                                                                // @ts-ignore
+                                                                [moment().year()][monthsList[moment().month()]]) /1000)
+                                                            .toFixed(2)
+                                                            .replace(".",",") : "0,00"} €</td>
+                                                </tr>
+                                        )
+                                    : ""
+                                }
+                                </tbody>
+                            </table>
+                            <PopupFilling
+                                machineID={machineID}
+                                pickupDate={pickupDate}
+                                setMachineID={setMachineID}
+                                setPickupDate={setPickupDate}
+                                setPickupDates={setPickupDates}
+                                pickupDates={pickupDates}
+                                machinesData={companyMachines}
+                                isDateConfirmed={isDateConfirmed}
+                                setIsDateConfirmed={setIsDateConfirmed}
+                                setNewPickupDates={setNewPickupDates}
+                                newPickupDates={newPickupDates}
+                                areDatesConfirmed={areDatesConfirmed}
+                                setAreDatesConfirmed={setAreDatesConfirmed}
+                                radioConfirmed={radioConfirmed}
+                                setRadioConfirmed={setRadioConfirmed}
+                                popupFilling={popupFilling}
+                                setPopupFilling={setPopupFilling}
+                                contractors = {contractors}
+                                isDatePicked = {isDatePicked}
+                                setIsDatePicked = {setIsDatePicked}
+                                defaultContractor = {defaultContractor}
+                                selectedContractor = {selectedContractor}
+                                setSelectedContractor = {setSelectedContractor}
+                                plannedDates = {plannedDates}
+                            />
+                            <Popup
+                                machineID={machineID}
+                                pickupDate={pickupDate}
+                                setMachineID={setMachineID}
+                                setPickupDate={setPickupDate}
+                                setPickupDates={setPickupDates}
+                                pickupDates={pickupDates}
+                                machinesData={companyMachines}
+                                isDateConfirmed={isDateConfirmed}
+                                setIsDateConfirmed={setIsDateConfirmed}
+                                setNewPickupDates={setNewPickupDates}
+                                newPickupDates={newPickupDates}
+                                areDatesConfirmed={areDatesConfirmed}
+                                setAreDatesConfirmed={setAreDatesConfirmed}
+                                radioConfirmed={radioConfirmed}
+                                setRadioConfirmed={setRadioConfirmed}
+                                popup={popup}
+                                setPopup={setPopup}
+                                isDatePicked={isDatePicked}
+                            />
+                        </div>
+                    </div>}
+                {!companyMachines ?
+                    <SkeletonTheme baseColor={"#F9FAFB"} highlightColor={"#ffffff"}>
+                        <Skeleton className="mt-5 sm:rounded-lg shadow-md flex-row h-40"/>
+                    </SkeletonTheme> :
+                    <div id="summary"
+                         className="mt-5 overflow-auto sm:rounded-lg shadow-md border flex-row text-center
                  py-7 mt-1 text-xs">
-                <div className="flex">
-                    <p className="flex-grow flex-1">
-                        <span className="font-bold">Aktuell</span><br/>
-                        {moment().format("DD.MM.YYYY")}</p>
-                    <p className="flex-grow flex-1">
-                        <span className="font-bold">Gesamtmenge aller eMSS<br/></span>
-                        {companyMachines && companyControlDocuments ? companyMachines.reduce( function(a: any, b: any){
-                                if (b.price_list.prices[moment().year()]) {
-                                    return a + ((b['lastIndicate']))
-                                } else return 0
-                            }, 0)
-                            + " kg": "0 kg"}
-                    </p>
-                    <p className="flex-grow flex-1">
-                        <span className="font-bold">Erlös<br/></span>
-                        { companyMachines && companyControlDocuments ?
-                            (companyMachines.reduce( function(a: any, b: any){
+                        <div className="flex">
+                            <p className="flex-grow flex-1">
+                                <span className="font-bold">Aktuell</span><br/>
+                                {moment().format("DD.MM.YYYY")}</p>
+                            <p className="flex-grow flex-1">
+                                <span className="font-bold">Gesamtmenge aller eMSS<br/></span>
+                                {companyMachines && companyControlDocuments ? companyMachines.reduce( function(a: any, b: any){
+                                        if (b.price_list.prices[moment().year()]) {
+                                            return a + ((b['lastIndicate']))
+                                        } else return 0
+                                    }, 0)
+                                    + " kg": "0 kg"}
+                            </p>
+                            <p className="flex-grow flex-1">
+                                <span className="font-bold">Erlös<br/></span>
+                                { companyMachines && companyControlDocuments ?
+                                    (companyMachines.reduce( function(a: any, b: any){
+                                            if (b.price_list.prices[moment().year()]) {
+                                                return a + ((b['lastIndicate'])*
+                                                    // @ts-ignore
+                                                    parseInt(b.price_list.prices[moment().year()][monthsList[moment().month()]]) / 1000);
+                                            }
+                                            else {
+                                                return a+((b['lastIndicate']))
+                                            }
+                                        }, 0)
+                                        //+ controlDocuments.
+                                        //filter((document: any)=>moment(document.timestamp).format("DD/MM/YYYY") ==
+                                        // moment().format("DD/MM/YYYY")).
+                                        //reduce( function(a: any, b: any){
+                                        //return a + ((b['netto'] - b['tara'])*
+                                        // parseInt(machinesData.filter((machine: any) =>
+                                        //    machine.machine_id == b['machine_id']
+                                        // @ts-ignore
+                                        // )[0].price_list.prices[moment().year()][monthsList[moment().month()]]) / 1000);
+                                        //  }, 0)
+                                    ).toFixed(2).replace(".", ",") + " €": "0 €"}
+                            </p>
+                        </div>
+                        <hr className="my-5 mx-10"/>
+                        <div className="flex">
+                            <p className="flex-grow flex-1">
+                                <span className="font-bold">lfd. Monat</span><br/>
+                                {// @ts-ignore
+                                    monthsList[moment().month()]} {moment().year()}</p>
+                            <p className="flex-grow flex-1">
+                                <span className="font-bold">Gesamtmenge aller eMSS<br/></span>
+                                {companyMachines && companyControlDocuments ? companyControlDocuments.
+                                filter((document: any)=>moment(document.timestamp).month() == moment().month()).
+                                reduce( function(a: any, b: any){
+                                    return a + b['netto']
+                                }, 0) + companyMachines.reduce( function(a: any, b: any){
+                                    return a + b['lastIndicate']
+                                }, 0) + " kg" : "0 kg"}</p>
+                            <p className="flex-grow flex-1">
+                                <span className="font-bold">Gesamterlöse<br/></span>
+                                {companyControlDocuments && companyMachines ? (companyControlDocuments.
+                                filter((document: any)=>moment(document.timestamp).month() == moment().month()).
+                                reduce( function(a: any, b: any){
+                                    return a + ((b['netto']) *
+                                        parseInt(companyMachines.filter((machine: any) => machine.machine_id == b['machine_id'])[0]
+                                            // @ts-ignore
+                                            .price_list.prices[moment().year()][monthsList[moment().month()]])/1000)
+                                }, 0) + (companyMachines.reduce( function(a: any, b: any){
                                     if (b.price_list.prices[moment().year()]) {
-                                        return a + ((b['lastIndicate'])*
+                                        // @ts-ignore
+                                        return a + ((b['lastIndicate']) *
                                             // @ts-ignore
                                             parseInt(b.price_list.prices[moment().year()][monthsList[moment().month()]]) / 1000);
                                     }
                                     else {
                                         return a+((b['lastIndicate']))
                                     }
-                        }, 0)
-                                //+ controlDocuments.
-                        //filter((document: any)=>moment(document.timestamp).format("DD/MM/YYYY") ==
-                           // moment().format("DD/MM/YYYY")).
-                        //reduce( function(a: any, b: any){
-                            //return a + ((b['netto'] - b['tara'])*
-                               // parseInt(machinesData.filter((machine: any) =>
-                                //    machine.machine_id == b['machine_id']
-                                    // @ts-ignore
-                               // )[0].price_list.prices[moment().year()][monthsList[moment().month()]]) / 1000);
-                      //  }, 0)
-                            ).toFixed(2).replace(".", ",") + " €": "0 €"}
-                    </p>
-                </div>
-                <hr className="my-5 mx-10"/>
-                <div className="flex">
-                    <p className="flex-grow flex-1">
-                        <span className="font-bold">lfd. Monat</span><br/>
-                        {// @ts-ignore
-                            monthsList[moment().month()]} {moment().year()}</p>
-                    <p className="flex-grow flex-1">
-                        <span className="font-bold">Gesamtmenge aller eMSS<br/></span>
-                        {companyMachines && companyControlDocuments ? companyControlDocuments.
-                            filter((document: any)=>moment(document.timestamp).month() == moment().month()).
-                        reduce( function(a: any, b: any){
-                            return a + b['netto']
-                        }, 0) + companyMachines.reduce( function(a: any, b: any){
-                                return a + b['lastIndicate']
-                        }, 0) + " kg" : "0 kg"}</p>
-                    <p className="flex-grow flex-1">
-                        <span className="font-bold">Gesamterlöse<br/></span>
-                        {companyControlDocuments && companyMachines ? (companyControlDocuments.
-                        filter((document: any)=>moment(document.timestamp).month() == moment().month()).
-                        reduce( function(a: any, b: any){
-                            return a + ((b['netto']) *
-                                parseInt(companyMachines.filter((machine: any) => machine.machine_id == b['machine_id'])[0]
-                                    // @ts-ignore
-                                    .price_list.prices[moment().year()][monthsList[moment().month()]])/1000)
-                        }, 0) + (companyMachines.reduce( function(a: any, b: any){
-                            if (b.price_list.prices[moment().year()]) {
-                                // @ts-ignore
-                                return a + ((b['lastIndicate']) *
-                                    // @ts-ignore
-                                    parseInt(b.price_list.prices[moment().year()][monthsList[moment().month()]]) / 1000);
-                            }
-                            else {
-                                return a+((b['lastIndicate']))
-                            }
 
-                        }, 0))).toFixed(2).replace(".", ",") + " €" : "0 €"}
-                        </p>
-                </div>
+                                }, 0))).toFixed(2).replace(".", ",") + " €" : "0 €"}
+                            </p>
+                        </div>
+                    </div>
+                }
             </div>
-            }
+
         </div>
     )
 }

@@ -49,6 +49,7 @@ const MachineStorageHistory = () => {
             setMachineLog(machinesData.Items.filter((item: any) => item.machine_id == pid.id)[0]);
         }
     }
+
     const filterData = () => {
         if (!logDataLoading && !data) {
             if (status != '- Alle -') {
@@ -60,15 +61,18 @@ const MachineStorageHistory = () => {
     }
     const createPagination = () => {
         if (logData && !pageList) {
-            setListLength(logData[1])
+            if (logData[1] != '0') {
+                setListLength(logData[1])
+            }
             const newPageList = []
-            for (let i = 1; i < Math.ceil(listLength / 100) + 1; i++) {
+            for (let i = 1; i < listLength + 1; i++) {
                 newPageList.push(i)
                 setPageList(newPageList)
             }
         }
 
     }
+
     const changePage = (page: number) => {
         updatePageList(page)
         setPage(page)
@@ -77,7 +81,7 @@ const MachineStorageHistory = () => {
     }
 
     const updatePageList = (page: number) => {
-        const lastPage = Math.ceil(listLength / 100);
+        const lastPage =listLength;
         const visiblePages = [];
 
         if (lastPage > 4) {
@@ -105,8 +109,11 @@ const MachineStorageHistory = () => {
     filterData();
     createPagination();
 
+
     const changeStartDate = (date: any) => {
-        setStartDate(date);
+        if (moment(date) < moment(endDate)) {
+            setStartDate(date);
+        }
         setData(undefined);
         setPageList(undefined);
     }

@@ -1,29 +1,20 @@
 'use client'
 import '../styles/globals.css'
-import type { AppProps } from 'next/app'
 import {useEffect, useState} from "react";
 import LoginForm from "./components/login/LoginForm";
 import Navigation from "./components/navigation/Navigation";
 import Logo from "./components/navigation/Logo";
 import Breadcrumbs from "./components/navigation/Breadcrumbs";
 import useSWR, { preload } from "swr";
-const fetcher = (url:  string) => fetch(url).then(r => r.json())
-
-preload('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines', fetcher)
-preload('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/control-documents', fetcher)
-preload('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/users', fetcher)
-preload('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/shifts', fetcher)
-preload('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/contractors', fetcher)
-preload('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/certificates', fetcher)
-preload('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/waretypes', fetcher)
-preload('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/clients', fetcher)
-preload('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/price-matrices', fetcher)
-preload('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machine-types', fetcher)
-preload('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/qualities', fetcher)
-preload('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/accounts', fetcher)
 export default function MyApp({ Component, pageProps} :any) {
+    const fetcher = (url:  string) => fetch(url).then(r => r.json())
 
-
+    preload('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/machines', fetcher)
+    preload('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/control-documents', fetcher)
+    preload('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/users', fetcher)
+    preload('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/shifts', fetcher)
+    preload('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/contractors', fetcher)
+    preload('https://8v9jqts989.execute-api.eu-central-1.amazonaws.com/holidays', fetcher)
 
     const [loggedIn, setLoggedIn] = useState(false);
     const [userToken, setUserToken] = useState('');
