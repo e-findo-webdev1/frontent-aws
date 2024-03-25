@@ -228,7 +228,8 @@ const ShiftCalendar = () => {
         }
     }
     const getCompanyShifts = () => {
-        if (!shiftsDataLoading && !companyShifts) {
+        if (!shiftsDataLoading && !companyShifts && shiftsData.Items.filter( (shift: any) => shift.shift_id ==
+            JSON.parse(sessionStorage.getItem('company') as string).client_number)[0]) {
             const companyShifts = shiftsData.Items.filter( (shift: any) => shift.shift_id ==
                 JSON.parse(sessionStorage.getItem('company') as string).client_number)[0].shifts
             const companySelection = shiftsData.Items.filter( (shift: any) => shift.shift_id ==

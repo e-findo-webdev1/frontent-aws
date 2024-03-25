@@ -191,28 +191,33 @@ export default function StorageSystemDashboard({
     }
 
     const checkHolidays = () => {
-        /// check if date is a holiday
-        let currentDate = moment()
-        let newCurrentDate = currentDate
+        if (companyHolidays && companyHolidays[0])
+        {
+            /// check if date is a holiday
+            let currentDate = moment()
+            let newCurrentDate = currentDate
 
-        for (let holiday in companyHolidays[0].holidays) {
-            let holidayStart = moment(companyHolidays[0].holidays[holiday].date_start)
-            let holidayEnd = moment(companyHolidays[0].holidays[holiday].date_end)
-            if (currentDate.unix() >= holidayStart.unix() && currentDate.unix() <= holidayEnd.unix()) {
-                let n
-                n = (holidayEnd.unix() - holidayStart.unix())/ 86400
-                newCurrentDate = currentDate.add(n + 1, 'days')
+            for (let holiday in companyHolidays[0].holidays) {
+                let holidayStart = moment(companyHolidays[0].holidays[holiday].date_start)
+                let holidayEnd = moment(companyHolidays[0].holidays[holiday].date_end)
+                if (currentDate.unix() >= holidayStart.unix() && currentDate.unix() <= holidayEnd.unix()) {
+                    let n
+                    n = (holidayEnd.unix() - holidayStart.unix())/ 86400
+                    newCurrentDate = currentDate.add(n + 1, 'days')
+                }
+            }
+            if (newCurrentDate == currentDate) {
+                return currentDate
+            } else {
+                return newCurrentDate.startOf('day')
             }
         }
-        if (newCurrentDate == currentDate) {
-            return currentDate
-        } else {
-            return newCurrentDate.startOf('day')
-        }
+
     }
     const returnFirstShift = (taskStart: any) => {
         //let currentDate = moment(taskStart.format('L'))
         let newCurrentDate = checkHolidays();
+        // @ts-ignore
         let currentDate = moment(newCurrentDate.format('L'))
         // @ts-ignore
         for (let i = 0 ; i < 7 ; i++) {

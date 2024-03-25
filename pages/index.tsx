@@ -73,6 +73,7 @@ function Home({ }) {
     }
     const getCompanyMachines = () => {
         if (!machinesLoading && !companyMachines) {
+            console.log('s')
             const companyMachines = machines.Items.filter((machine:any) =>
                 machine.client == JSON.parse(sessionStorage.getItem('company') as string).client_name
             )
@@ -107,7 +108,6 @@ function Home({ }) {
     getCompanyShifts();
     getCompanyControlDocuments();
     getCompanyHolidays();
-
     const sendEmail = (e: any) => {
         e.preventDefault();
         const emailList = []
@@ -276,7 +276,6 @@ function Home({ }) {
                         </div>
                     </div>
                 </div>
-
                     <div className="col-span-2 pl-10 flex">
                         <StorageSystemDashboard
                             companyMachines = { companyMachines }
